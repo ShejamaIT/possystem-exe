@@ -45,7 +45,6 @@ const Navbar = () => {
                 console.error('Error fetching notifications:', err);
             }
         };
-
         fetchEmployees();
         if (type === 'ADMIN') fetchAllNotifications();
     }, []);
@@ -65,9 +64,9 @@ const Navbar = () => {
         <nav className="navbar">
             <div className="sidebar-button">
                 <BiMenu className="sidebarBtn" />
-                {/* <span className="dashboard" onClick={() => navigate(-1)}>
+                <span className="dashboard" onClick={() => navigate(-1)}>
                     Dashboard
-                </span> */}
+                </span>
             </div>
 
             <div className="profile-details">
