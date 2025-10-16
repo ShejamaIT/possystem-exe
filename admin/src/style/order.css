@@ -1,0 +1,17 @@
+.table {
+    width: 100%;
+    margin: 0 auto;
+    text-align: center; /* Center text in the table */
+}
+
+.table tbody tr td img{
+    width: 40px !important;
+    height: 40px !important;
+    object-fit: cover;
+}
+td i{
+    cursor: pointer;
+}
+td,th{
+    color: var(--primary-color);
+}

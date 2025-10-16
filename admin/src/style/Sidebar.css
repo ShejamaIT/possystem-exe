@@ -1,0 +1,127 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 220px;
+    background: #0A2558;
+    overflow: hidden; /* prevent scrolling */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: width 0.3s ease;
+}
+
+.sidebar.active {
+    width: 60px;
+}
+
+.logo-details {
+    height: 80px;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+}
+
+.logo-details i {
+    font-size: 28px;
+    color: #fff;
+    margin-right: 10px;
+}
+
+.logo-details .logo_name {
+    font-size: 20px;
+    color: #fff;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.nav-links {
+    list-style: none;
+    padding: 10px 0;
+    flex-grow: 1;
+}
+
+.nav-links li {
+    height: 50px;
+    line-height: 50px;
+}
+
+.nav-links li a {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    color: #f1f1f1;
+    text-decoration: none;
+    padding: 0 20px;
+    font-size: 16px;
+    transition: 0.3s ease;
+}
+
+.nav-links li a i {
+    font-size: 20px;
+    margin-right: 16px;
+    min-width: 24px;
+    text-align: center;
+}
+
+.nav-links li a.active,
+.nav-links li a:hover {
+    background: #081D45;
+    color: #ffffff;
+    font-weight: 500;
+}
+
+.nav-links li .links_name {
+    white-space: nowrap;
+    font-size: 15px;
+}
+
+.log_out {
+    margin-bottom: 30px; /* lift it a bit from bottom */
+}
+.sidebar-icon {
+    margin-right: 10px;
+    font-size: 18px;
+    width: 20px;
+    text-align: center;
+    display: inline-block;
+}
+
+.nav-links a {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    color: #333;
+    text-decoration: none;
+}
+
+.nav-links a.active {
+    background-color: #e0e0e0;
+    font-weight: bold;
+}
+
+.nav-links a:hover {
+    background-color: #f0f0f0;
+}
+
+.logo-details {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.logo_name {
+    margin-left: 10px;
+}

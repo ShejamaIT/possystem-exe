@@ -1,0 +1,247 @@
+/* Modal Overlay */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    overflow-y: auto; /* Allow scrolling if content overflows */
+}
+
+/* Modal Content */
+.modal-content {
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 900px;
+    max-height: 90vh; /* Ensure the modal is fully visible */
+    overflow-y: auto; /* Scrollable content if it exceeds max-height */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Ensure modal fits properly in larger screens */
+@media (min-width: 1200px) {
+    .modal-content {
+        width: 70%; /* Reduce width on large screens to fit better */
+        max-width: 1000px;
+    }
+}
+
+/* Invoice Title */
+.invoice-title {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+/* Invoice Sections */
+.invoice-section {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+}
+
+.invoice-section p {
+    width: 48%;
+    font-size: 1rem;
+    margin: 0.5rem 0;
+    color: #333;
+}
+
+.invoice-section strong {
+    color: #333;
+    font-size: 1.1rem;
+}
+
+/* Invoice Table */
+.invoice-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1.5rem;
+}
+
+.invoice-table th, .invoice-table td {
+    border: 1px solid #ddd;
+    padding: 0.75rem;
+    text-align: center;
+}
+
+.invoice-table th {
+    background-color: #f5f5f5;
+    font-weight: 600;
+}
+
+/* Invoice Summary */
+.invoice-summary {
+    margin-top: 1.5rem;
+    font-size: 1rem;
+}
+
+.invoice-summary p {
+    font-size: 1rem;
+    margin: 0.5rem 0;
+    color: #333;
+}
+
+.invoice-summary-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.invoice-summary-item label {
+    font-weight: bold;
+    width: 50%;
+}
+
+.invoice-summary-item input, .invoice-summary-item select {
+    width: 45%;
+    padding: 0.5rem;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+/* Modal Buttons */
+.modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.print-btn, .close-btn, .scan-btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.print-btn {
+    background-color: #4caf50;
+    color: #fff;
+}
+
+.print-btn:hover {
+    background-color: #45a049;
+}
+
+.close-btn {
+    background-color: #f44336;
+    color: #fff;
+}
+
+.close-btn:hover {
+    background-color: #e53935;
+}
+
+.scan-btn {
+    background-color: #4c70af;
+    color: #fff;
+}
+.pass-btn{
+    background-color: #679bf5;
+    color: #fff;
+}
+
+.scan-btn:hover {
+    background-color: #3558e5;
+}
+
+/* Dropdown Styling */
+.dropdown {
+    position: absolute;
+    z-index: 100;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    max-height: 200px;
+    overflow-y: auto;
+    width: 100%;
+}
+
+.dropdown-item {
+    padding: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.dropdown-item:hover {
+    background: #f0f0f0;
+}
+
+/* Selected Items Table */
+.selected-items-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.selected-items-table th, .selected-items-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+
+.selected-items-table th {
+    background: #f8f8f8;
+    font-weight: bold;
+}
+
+/* Print Styles */
+@media print {
+    .modal-overlay, .modal-buttons {
+        display: none;
+    }
+
+    .modal-content {
+        width: 100%;
+        height: auto;
+        max-height: none;
+        box-shadow: none;
+        border: none;
+    }
+
+    .invoice-title {
+        font-size: 1.5rem;
+    }
+
+    .invoice-table th, .invoice-table td {
+        font-size: 0.9rem;
+    }
+
+    .invoice-section strong {
+        color: #333;
+        font-size: 1.2rem;
+    }
+
+    .invoice-section p {
+        color: #333;
+        font-size: 1.1rem;
+    }
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+/* Hide everything except the modal content */
+@media print {
+    /* Hide buttons and any other UI elements that shouldn't be printed */
+    .modal-buttons {
+        display: none;
+    }
+}
+

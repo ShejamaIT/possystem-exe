@@ -1,0 +1,889 @@
+CREATE TABLE Supplier(
+    s_ID VARCHAR(25) PRIMARY KEY,
+    name VARCHAR(45),
+    address TEXT,
+    contact VARCHAR(10),
+    contact2 VARCHAR(10)
+);
+CREATE TABLE Category (
+    Ca_Id VARCHAR(15) PRIMARY KEY,
+    name VARCHAR(40)
+);
+CREATE TABLE subCat_one(
+      sb_c_id VARCHAR(15) PRIMARY KEY,
+      subcategory TEXT,
+      Ca_Id VARCHAR(15),
+      img LONGBLOB NOT NULL,
+        CONSTRAINT FOREIGN KEY (Ca_Id) REFERENCES Category (Ca_Id)
+        			ON DELETE CASCADE ON UPDATE CASCADE
+);
+CREATE TABLE subCat_two(
+      sb_cc_id VARCHAR(15) PRIMARY KEY,
+      subcategory TEXT,
+      sb_c_id VARCHAR(15),
+      img LONGBLOB NOT NULL,
+        CONSTRAINT FOREIGN KEY (sb_c_id) REFERENCES subCat_one (sb_c_id)
+        			ON DELETE CASCADE ON UPDATE CASCADE
+);
+CREATE TABLE Item(
+      I_Id VARCHAR(25) PRIMARY KEY,
+      I_name TEXT ,
+      descrip TEXT,
+      color VARCHAR(20),
+      material VARCHAR(20),
+      price DOUBLE,
+      warrantyPeriod VARCHAR(25),
+      stockQty INT,
+      bookedQty INT,
+      damageQty INT,
+      reservedQty INT,
+      dispatchedQty INT,
+      availableQty INT,
+      minQTY INT,
+      img LONGBLOB NOT NULL,
+      img1 LONGBLOB NOT NULL,
+      img2 LONGBLOB NOT NULL,
+      img3 LONGBLOB NOT NULL,
+      mn_Cat VARCHAR(35),
+      sb_catOne VARCHAR(35),
+      sb_catTwo VARCHAR(35)
+);
+CREATE TABLE item_supplier (
+  I_Id varchar(25) NOT NULL,
+  s_ID varchar(25) NOT NULL,
+  unit_cost DOUBLE,
+  PRIMARY KEY (I_Id,s_ID),
+  CONSTRAINT FOREIGN KEY (I_Id) REFERENCES Item (I_Id)
+              ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT FOREIGN KEY (s_ID) REFERENCES Supplier (s_ID)
+                ON DELETE CASCADE ON UPDATE CASCADE
+);
+CREATE TABLE Employee(
+      E_Id VARCHAR(15) PRIMARY KEY,
+      name TEXT ,
+      address TEXT,
+      nic VARCHAR(12),
+      dob DATE,
+      contact VARCHAR(15),
+      job VARCHAR(15),
+      basic DOUBLE,
+      type VARCHAR(20)
+);
+CREATE TABLE driver(
+    devID VARCHAR(25) PRIMARY KEY,
+    E_ID VARCHAR(15),
+    balance DOUBLE
+);
+ALTER TABLE driver
+ADD COLUMN dailyTarget DOUBLE NOT NULL DEFAULT 0;
+ALTER TABLE driver
+ADD COLUMN monthlyTarget DOUBLE NOT NULL DEFAULT 0;
+CREATE TABLE sales_team(
+    stID VARCHAR(25) PRIMARY KEY,
+    E_Id VARCHAR(15),
+    orderTarget DOUBLE,
+    issuedTarget DOUBLE,
+    totalOrder DOUBLE,
+    totalIssued DOUBLE,
+        CONSTRAINT FOREIGN KEY (E_Id) REFERENCES Employee (E_Id)
+                                   ON DELETE CASCADE ON UPDATE CASCADE
+);
+CREATE TABLE sales_coupon(
+    cpID VARCHAR(25) PRIMARY KEY,
+    stID VARCHAR(25),
+    discount DOUBLE,
+        CONSTRAINT FOREIGN KEY (stID) REFERENCES sales_team (stID)
+                                   ON DELETE CASCADE ON UPDATE CASCADE
+);
+CREATE TABLE Promotion(
+       img LONGBLOB NOT NULL,
+       date DATE
+);
+CREATE TABLE Customer_log(
+       name TEXT,
+       email TEXT,
+       password TEXT
+);
+CREATE TABLE Customer(
+       c_ID VARCHAR(15) PRIMARY KEY,
+       title VARCHAR(10),
+       FtName TEXT,
+       SrName TEXT,
+       id VARCHAR(15),
+       address TEXT,
+       contact1 VARCHAR(10),
+       contact2 VARCHAR(10),
+       balance DOUBLE,
+       category VARCHAR(15),
+       type VARCHAR(15),
+       t_name TEXT,
+       occupation TEXT,
+       workPlace TEXT
+);
+CREATE TABLE deli_Rates(
+    district VARCHAR(25) PRIMARY KEY,
+    amount DOUBLE
+);
+CREATE TABLE delivery_schedule(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    ds_date DATE,
+    district VARCHAR(25)
+);
+CREATE TABLE Orders (
+    OrID VARCHAR(25) PRIMARY KEY,
+    orDate DATE,
+    c_ID VARCHAR(15),
+    orStatus VARCHAR(15),
+    delStatus VARCHAR(10),
+    delPrice DOUBLE,
+    discount DOUBLE,
+    specialdic DOUBLE,
+    netTotal DOUBLE,
+    total DOUBLE,
+    advance DOUBLE,
+    balance DOUBLE,
+    payStatus VARCHAR(20),
+    stID VARCHAR(25),
+    expectedDate DATE,
+    specialNote TEXT,
+    ordertype VARCHAR(10),
+    CONSTRAINT FOREIGN KEY (stID) REFERENCES sales_team (stID)
+                        ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT FOREIGN KEY (c_ID) REFERENCES Customer (c_ID)
+                            ON DELETE CASCADE ON UPDATE CASCADE
+);
+CREATE TABLE Order_Detail (
+    orID VARCHAR(25),
+    I_Id VARCHAR(25),
+    qty INT,
+    tprice DOUBLE,
+    discount DOUBLE,
+    PRIMARY KEY (orID, I_Id),
+    CONSTRAINT FOREIGN KEY (orID) REFERENCES Orders (orID)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT FOREIGN KEY (I_Id) REFERENCES Item (I_Id)
+        ON DELETE CASCADE ON UPDATE CASCADE
+);
+CREATE TABLE delivery(
+    dv_id VARCHAR(25) PRIMARY KEY,
+    orID VARCHAR(25),
+    address TEXT,
+    district VARCHAR(25) NOT NULL,
+    c_ID VARCHAR(15),
+    status VARCHAR(15),
+    schedule_Date DATE,
+    delivery_Date DATE,
+    type VARCHAR(10),
+    devID VARCHAR(15),
+    driverBalance DOUBLE,
+        CONSTRAINT FOREIGN KEY (orID) REFERENCES Orders (orID)
+                                   ON DELETE CASCADE ON UPDATE CASCADE,
+        CONSTRAINT FOREIGN KEY (c_ID) REFERENCES Customer (c_ID)
+                                    ON DELETE CASCADE ON UPDATE CASCADE,
+        CONSTRAINT FOREIGN KEY (devID) REFERENCES driver (devID)
+                                            ON DELETE CASCADE ON UPDATE CASCADE
+);
+CREATE TABLE accept_orders (
+    ao_ID INT AUTO_INCREMENT PRIMARY KEY,
+    orID VARCHAR(25),
+    I_Id VARCHAR(25),
+    itemReceived VARCHAR(25),
+    status VARCHAR(25),
+    CONSTRAINT FK_accept_orders_orID FOREIGN KEY (orID) REFERENCES Orders (orID)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT FOREIGN KEY (I_Id) REFERENCES Item (I_Id)
+                     ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE booked_item (
+    bi_ID INT AUTO_INCREMENT PRIMARY KEY,
+    orID VARCHAR(25),
+    I_Id VARCHAR(25),
+    qty INT,
+        CONSTRAINT FOREIGN KEY (orID) REFERENCES Orders (orID)
+                                           ON DELETE CASCADE ON UPDATE CASCADE,
+        CONSTRAINT FOREIGN KEY (I_Id) REFERENCES Item (I_Id)
+                        			ON DELETE CASCADE ON UPDATE CASCADE
+);
+CREATE TABLE return_orders(
+    rid INT AUTO_INCREMENT PRIMARY KEY,
+    OrID VARCHAR(25),
+    detail TEXT,
+       CONSTRAINT FOREIGN KEY (orID) REFERENCES Orders (orID)
+                           ON DELETE CASCADE ON UPDATE CASCADE
+);
+CREATE TABLE canceled_orders(
+    cid INT AUTO_INCREMENT PRIMARY KEY,
+    OrID VARCHAR(25),
+    detail TEXT,
+    CONSTRAINT FOREIGN KEY (orID) REFERENCES Orders (orID)
+                               ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE order_coupon(
+    ocID VARCHAR(25) PRIMARY KEY,
+    orID VARCHAR(25),
+    cpID VARCHAR(25),
+        CONSTRAINT FOREIGN KEY (orID) REFERENCES Orders (orID)
+                                   ON DELETE CASCADE ON UPDATE CASCADE,
+        CONSTRAINT FOREIGN KEY (cpID) REFERENCES sales_coupon (cpID)
+                                   ON DELETE CASCADE ON UPDATE CASCADE
+);
+CREATE TABLE production(
+    p_ID VARCHAR(25) PRIMARY KEY,
+    I_Id VARCHAR(25),
+    qty INT,
+    s_ID VARCHAR(25),
+    expectedDate DATE,
+    specialNote TEXT,
+    status VARCHAR(12),
+        CONSTRAINT FOREIGN KEY (I_Id) REFERENCES Item (I_Id)
+                			ON DELETE CASCADE ON UPDATE CASCADE,
+        CONSTRAINT FOREIGN KEY (s_ID) REFERENCES Supplier (s_ID)
+                    			    ON DELETE CASCADE ON UPDATE CASCADE
+);
+CREATE TABLE order_payment(
+    op_ID VARCHAR(25) PRIMARY KEY,
+    orID VARCHAR(25),
+    amount DOUBLE,
+    netTotal DOUBLE,
+    or_status VARCHAR(25),
+    stID VARCHAR(25),
+    dateTime DATETIME ,
+    CONSTRAINT FOREIGN KEY (stID) REFERENCES sales_team (stID)
+                            ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT FOREIGN KEY (orID) REFERENCES Orders (orID)
+                         ON DELETE CASCADE ON UPDATE CASCADE
+);
+CREATE TABLE salary_advance(
+    ad_ID VARCHAR(25) PRIMARY KEY,
+    E_Id VARCHAR(25),
+    amount DOUBLE,
+    dateTime DATETIME ,
+    CONSTRAINT FOREIGN KEY (E_Id) REFERENCES Employee (E_Id)
+                         ON DELETE CASCADE ON UPDATE CASCADE
+);
+CREATE TABLE salary_loan(
+    sl_ID VARCHAR(25) PRIMARY KEY,
+    E_Id VARCHAR(25),
+    amount DOUBLE,
+    installment DOUBLE,
+    months INT,
+    skip INT,
+    dateTime DATETIME ,
+    CONSTRAINT FOREIGN KEY (E_Id) REFERENCES Employee (E_Id)
+                         ON DELETE CASCADE ON UPDATE CASCADE
+);
+CREATE TABLE sal_loan_detail(
+    Id INT AUTO_INCREMENT PRIMARY KEY,
+    sl_ID VARCHAR(25),
+    date DATE,
+    installment DOUBLE,
+    CONSTRAINT FOREIGN KEY (sl_ID) REFERENCES salary_loan (sl_ID)
+                             ON DELETE CASCADE ON UPDATE CASCADE
+);
+CREATE TABLE cash_balance (
+    Id INT AUTO_INCREMENT PRIMARY KEY,
+    reason VARCHAR(45),
+    ref VARCHAR(25),
+    ref_type ENUM('order', 'advance','loss','other','supplier','Loan','hire') NOT NULL,
+    dateTime DATETIME,
+    amount DOUBLE
+);
+CREATE TABLE purchase(
+    pc_Id varchar(25) PRIMARY KEY,
+    s_ID VARCHAR(25) NOT NULL,
+    rDate DATE NOT NULL,
+    total DOUBLE,
+    pay DOUBLE,
+    balance DOUBLE,
+    deliveryCharge DOUBLE,
+    invoiceId varchar(25),
+    CONSTRAINT FOREIGN KEY (s_ID) REFERENCES Supplier (s_ID)
+                        ON DELETE CASCADE ON UPDATE CASCADE
+);
+CREATE TABLE purchase_detail(
+    psd_ID INT AUTO_INCREMENT PRIMARY KEY,
+    pc_Id varchar(25) NOT NULL,
+    I_Id varchar(25) NOT NULL,
+    rec_count INT,
+    unitPrice DOUBLE,
+    total DOUBLE,
+    stock_range varchar(10),
+    CONSTRAINT FOREIGN KEY (pc_Id) REFERENCES purchase (pc_Id)
+                            ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT FOREIGN KEY (I_Id) REFERENCES Item (I_Id)
+                          ON DELETE CASCADE ON UPDATE CASCADE
+);
+CREATE TABLE p_i_detail(
+    pid_Id INT AUTO_INCREMENT PRIMARY KEY,
+    pc_Id varchar(25) NOT NULL,
+    I_Id varchar(25) NOT NULL,
+    stock_Id varchar(25) NOT NULL,
+    barcode_img LONGBLOB NOT NULL,
+    status VARCHAR(15),
+    orID VARCHAR(25),
+    datetime DATETIME,
+    CONSTRAINT FOREIGN KEY (I_Id) REFERENCES Item (I_Id)
+                      ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT FOREIGN KEY (pc_Id) REFERENCES purchase (pc_Id)
+                                ON DELETE CASCADE ON UPDATE CASCADE
+);
+CREATE TABLE issued_items(
+    delNoID INT AUTO_INCREMENT PRIMARY KEY,
+    orID VARCHAR(25),
+    pid_Id INT,
+    status VARCHAR(15),
+    date DATETIME,
+    CONSTRAINT FOREIGN KEY (orID) REFERENCES Orders (orID)
+                                 ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT FOREIGN KEY (pid_Id) REFERENCES p_i_detail (pid_Id)
+                                     ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE delivery_note(
+    delNoID INT AUTO_INCREMENT PRIMARY KEY,
+    driverName VARCHAR(25),
+    devID VARCHAR(25),
+    vehicalName VARCHAR(25),
+    date DATE,
+    hire DOUBLE,
+    district VARCHAR(35),
+    balanceToCollect DOUBLE,
+    status VARCHAR(15),
+    CONSTRAINT FOREIGN KEY (devID) REFERENCES driver (devID)
+                                 ON DELETE CASCADE ON UPDATE CASCADE
+);
+CREATE TABLE delivery_note_orders(
+    delNoID INT,
+    orID VARCHAR(25),
+    balance DOUBLE,
+    PRIMARY KEY (delNoID, orID),
+    CONSTRAINT FOREIGN KEY (orID) REFERENCES Orders (orID)
+                             ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT FOREIGN KEY (delNoID) REFERENCES delivery_note (delNoID)
+                                 ON DELETE CASCADE ON UPDATE CASCADE
+);
+CREATE TABLE ST_order_review(
+    stID VARCHAR(25),
+    year int,
+    month VARCHAR(15),
+    totalOrder DOUBLE,
+    totalIssued DOUBLE,
+        PRIMARY KEY (stID, year,month),
+        CONSTRAINT FOREIGN KEY (stID) REFERENCES sales_team (stID)
+                                ON DELETE CASCADE ON UPDATE CASCADE
+);
+CREATE TABLE Special_Reservation(
+    srID INT AUTO_INCREMENT PRIMARY KEY,
+    orID VARCHAR(25),
+    pid_Id INT,
+    CONSTRAINT FOREIGN KEY (orID) REFERENCES Orders (orID)
+                                 ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT FOREIGN KEY (pid_Id) REFERENCES p_i_detail (pid_Id)
+                          ON DELETE CASCADE ON UPDATE CASCADE
+);
+CREATE TABLE Damage_item(
+    diID INT AUTO_INCREMENT PRIMARY KEY,
+    orID VARCHAR(25),
+    pid_Id INT,
+    CONSTRAINT FOREIGN KEY (orID) REFERENCES Orders (orID)
+                                 ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT FOREIGN KEY (pid_Id) REFERENCES p_i_detail (pid_Id)
+                          ON DELETE CASCADE ON UPDATE CASCADE
+);
+CREATE TABLE order_target_bonus(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    targetRate DOUBLE,
+    bonus DOUBLE
+);
+ALTER TABLE Order_Detail MODIFY tprice DOUBLE NOT NULL DEFAULT 0;
+ALTER TABLE order_payment
+ADD COLUMN netTotal DOUBLE AFTER amount,
+ADD COLUMN or_status VARCHAR(25) AFTER netTotal,
+ADD COLUMN stID VARCHAR(25) AFTER or_status,
+ADD CONSTRAINT fk_order_payment_stID FOREIGN KEY (stID)
+    REFERENCES sales_team(stID)
+    ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE sal_loan_detail
+ADD COLUMN status ENUM('Paid', 'Unpaid') NOT NULL DEFAULT 'Unpaid';
+ALTER TABLE salary_loan
+ADD COLUMN status ENUM('Finished', 'Unfinished') NOT NULL DEFAULT 'Unfinished';
+ALTER TABLE p_i_detail
+ADD COLUMN material VARCHAR(20) NOT NULL;
+ALTER TABLE p_i_detail
+ADD COLUMN price DOUBLE NOT NULL DEFAULT 0;
+ALTER TABLE Order_Detail
+ADD COLUMN material VARCHAR(20) NOT NULL;
+CREATE TABLE vehicle (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    registration_no VARCHAR(25) UNIQUE,
+    brand VARCHAR(25),
+    model VARCHAR(25),
+    color VARCHAR(20),
+    year INT,
+    license_Date DATE,
+    insurance_Date DATE,
+    fuel_type VARCHAR(25),
+    size VARCHAR(25),
+    status ENUM('Active', 'Inactive', 'Sold')
+);
+CREATE TABLE otherHire (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    customer VARCHAR(50),
+    date DATE,
+    bookingDate DATE,
+    pickup TEXT,
+    destination TEXT,
+    distance INT,
+    hire DOUBLE,
+    driverId VARCHAR(25),
+    vehicleID INT,
+    status VARCHAR(20),
+    payment DOUBLE,
+    CONSTRAINT FOREIGN KEY (customer) REFERENCES Customer(c_ID)
+            ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT FOREIGN KEY (vehicleID) REFERENCES vehicle(id)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT FOREIGN KEY (driverId) REFERENCES driver(devID)
+        ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE sessionlogs (
+  SessionID INT AUTO_INCREMENT PRIMARY KEY,
+  user INT NOT NULL,
+  LoginTime datetime DEFAULT current_timestamp(),
+  LogoutTime datetime DEFAULT NULL,
+  Token varchar(255) DEFAULT NULL,
+  CONSTRAINT FOREIGN KEY (user) REFERENCES user(id)
+              ON DELETE CASCADE ON UPDATE CASCADE
+);
+CREATE TABLE Emp_leaves (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    E_Id VARCHAR(25),
+    date DATE,
+    leave_type VARCHAR(20),
+    duration_type VARCHAR(10),
+    reason TEXT,
+    status VARCHAR(20) NOT NULL,
+    CONSTRAINT FOREIGN KEY (E_Id) REFERENCES Employee (E_Id)
+        ON DELETE CASCADE ON UPDATE CASCADE
+);
+CREATE TABLE delivery_target_bonus(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    targetRate DOUBLE,
+    bonus DOUBLE,
+    type VARCHAR(10)
+);
+
+CREATE TABLE sale_target(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    targetType TEXT,
+    bonus DOUBLE
+);
+CREATE TABLE Request(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    E_Id VARCHAR(25),
+    reason TEXT,
+    status VARCHAR(25),
+        CONSTRAINT FOREIGN KEY (E_Id) REFERENCES Employee (E_Id)
+                ON DELETE CASCADE ON UPDATE CASCADE
+);
+ALTER TABLE Order_Detail
+DROP PRIMARY KEY;
+ALTER TABLE Order_Detail
+ADD COLUMN id INT AUTO_INCREMENT PRIMARY KEY FIRST;
+ALTER TABLE Order_Detail
+ADD COLUMN status VARCHAR(25) DEFAULT 'Not Reserved';
+ALTER TABLE Special_Reservation
+ADD COLUMN orderDetailId INT;
+ALTER TABLE Special_Reservation
+ADD CONSTRAINT FK_OrderDetailID
+FOREIGN KEY (orderDetailId) REFERENCES Order_Detail(id)
+ON DELETE CASCADE ON UPDATE CASCADE;
+
+CREATE TABLE ord_Pay_type(
+    optId INT AUTO_INCREMENT PRIMARY KEY,
+    orID VARCHAR(25),
+    type VARCHAR(25),
+    subType VARCHAR(25),
+    CONSTRAINT FOREIGN KEY (orID) REFERENCES Orders (orID)
+                                 ON DELETE CASCADE ON UPDATE CASCADE
+);
+CREATE TABLE ord_Cheque_Pay(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    optId INT,
+    amount DOUBLE,
+    bank TEXT,
+    branch TEXT,
+    accountNumber INT,
+    chequeNumber TEXT,
+    date DATE,
+    CONSTRAINT FOREIGN KEY (optId) REFERENCES ord_Pay_type (optId)
+                                 ON DELETE CASCADE ON UPDATE CASCADE
+);
+CREATE TABLE ord_Card_Pay(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    optId INT,
+    type VARCHAR(25),
+    amount DOUBLE,
+    intrestValue DOUBLE,
+    CONSTRAINT FOREIGN KEY (optId) REFERENCES ord_Pay_type (optId)
+                                 ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE ord_Credit_Pay(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    optId INT,
+    amount DOUBLE,
+    c_ID VARCHAR(15),
+    expectedDate DATE,
+    CONSTRAINT FOREIGN KEY (c_ID) REFERENCES Customer(c_ID)
+            ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT FOREIGN KEY (optId) REFERENCES ord_Pay_type (optId)
+                                 ON DELETE CASCADE ON UPDATE CASCADE
+);
+CREATE TABLE ord_Transfer_Pay(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    optId INT,
+    amount DOUBLE,
+    bank TEXT,
+    CONSTRAINT FOREIGN KEY (optId) REFERENCES ord_Pay_type (optId)
+                                 ON DELETE CASCADE ON UPDATE CASCADE
+);
+ALTER TABLE order_payment
+ADD COLUMN otherCharges DOUBLE NOT NULL DEFAULT 0,
+ADD COLUMN fullPaidAmount DOUBLE NOT NULL DEFAULT 0,
+ADD COLUMN issuable ENUM('Now', 'Later') NOT NULL DEFAULT 'Now';
+ALTER TABLE ord_Credit_Pay
+ADD COLUMN balance DOUBLE NOT NULL DEFAULT 0;
+ALTER TABLE driver
+ADD COLUMN lincense LONGBLOB NULL DEFAULT NULL;
+ALTER TABLE driver
+ADD COLUMN lincenseDate DATE NULL DEFAULT NULL;
+CREATE TABLE shop_Banks(
+    sbID INT AUTO_INCREMENT PRIMARY KEY,
+    Bank TEXT,
+    branch TEXT
+);
+CREATE TABLE accountNumbers(
+    acnID INT AUTO_INCREMENT PRIMARY KEY,
+    sbID INT,
+    number TEXT,
+        CONSTRAINT FOREIGN KEY (sbID) REFERENCES shop_Banks (sbID)
+                                 ON DELETE CASCADE ON UPDATE CASCADE
+);
+CREATE TABLE handover_cheque (
+    hcID INT AUTO_INCREMENT PRIMARY KEY,
+    chequeNumber TEXT,
+    givenName TEXT,
+    givenDate DATE,
+    purpose TEXT,
+    type ENUM('Handover', 'Return') DEFAULT 'Handover'
+);
+ALTER TABLE order_payment
+ADD COLUMN c_ID VARCHAR(15),
+ADD COLUMN balance DOUBLE;
+ALTER TABLE order_payment
+ADD CONSTRAINT fk_order_customer
+FOREIGN KEY (c_ID) REFERENCES Customer(c_ID)
+ON DELETE CASCADE ON UPDATE CASCADE;
+
+CREATE TABLE ord_Cash_Pay(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    optId INT,
+    amount DOUBLE,
+    CONSTRAINT FOREIGN KEY (optId) REFERENCES ord_Pay_type (optId)
+                                 ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+ALTER TABLE `item` CHANGE `img1` `img1` LONGBLOB NULL;
+ALTER TABLE `item` CHANGE `img2` `img2` LONGBLOB NULL;
+ALTER TABLE `item` CHANGE `img3` `img3` LONGBLOB NULL;
+ALTER TABLE `emp_leaves` ADD `present` ENUM('In ','Out','','') NOT NULL DEFAULT 'Out' AFTER `status`;
+ALTER TABLE ord_Cheque_Pay
+MODIFY status ENUM('received', 'cashed', 'returned') DEFAULT 'received';
+ALTER TABLE ord_Transfer_Pay
+CHANGE COLUMN bank acnID INT;
+SELECT acnID
+FROM ord_Transfer_Pay
+WHERE acnID NOT IN (SELECT acnID FROM accountNumbers);
+DELETE FROM ord_Transfer_Pay
+WHERE acnID NOT IN (SELECT acnID FROM accountNumbers);
+ALTER TABLE ord_Transfer_Pay
+ADD CONSTRAINT fk_ord_transfer_account
+FOREIGN KEY (acnID) REFERENCES accountNumbers(acnID)
+ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `ord_pay_type` ADD `payDate` DATETIME NULL DEFAULT NULL AFTER `subType`;
+CREATE TABLE deposit_withdrawals (
+    dwID INT AUTO_INCREMENT PRIMARY KEY,
+    acnID INT,
+    type ENUM('Deposit', 'Withdrawal') DEFAULT 'Deposit',
+    amount DOUBLE,
+    dwdate DATE,
+    remark TEXT,
+    CONSTRAINT FOREIGN KEY (acnID) REFERENCES accountNumbers (acnID)
+        ON DELETE CASCADE ON UPDATE CASCADE
+);
+ALTER TABLE `cash_balance` CHANGE `ref_type` `ref_type` ENUM('order','advance','loss','other','supplier','Loan','hire','Deposit','Withdrawl') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'other';
+ALTER TABLE `ord_cheque_pay` CHANGE `status` `status` ENUM('received','cashed','returned','handover') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'received';
+CREATE TABLE gatePass(
+    gatepassID INT AUTO_INCREMENT PRIMARY KEY,
+    orID VARCHAR(25),
+    vehicalNum VARCHAR(25),
+    date DATE,
+    CONSTRAINT FOREIGN KEY (orID) REFERENCES Orders (orID)
+                                    ON DELETE CASCADE ON UPDATE CASCADE
+);
+CREATE TABLE gatePass_details(
+    g_p_dID INT AUTO_INCREMENT PRIMARY KEY,
+    gatepassID INT,
+    pid_Id INT,
+    CONSTRAINT FOREIGN KEY (gatepassID) REFERENCES gatePass (gatepassID)
+                                    ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT FOREIGN KEY (pid_Id) REFERENCES p_i_detail (pid_Id)
+                                        ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE ords_Pay_type (
+    optId INT AUTO_INCREMENT PRIMARY KEY,
+    type VARCHAR(25),
+    subType VARCHAR(25)
+);
+
+CREATE TABLE Pay_type_orders (
+    optId INT,
+    orID VARCHAR(25),
+    PRIMARY KEY (optId, orID),
+    CONSTRAINT fk_pay_type FOREIGN KEY (optId) REFERENCES ords_Pay_type (optId)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT fk_order FOREIGN KEY (orID) REFERENCES Orders (orID)
+        ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE ords_cash_pay(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    optId INT,
+    amount DOUBLE DEFAULT NULL,
+    CONSTRAINT FOREIGN KEY (optId) REFERENCES ords_Pay_type (optId)
+        ON DELETE CASCADE ON UPDATE CASCADE
+);
+CREATE TABLE ords_transfer_pay(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    optId INT,
+    amount DOUBLE,
+    bank TEXT,
+    CONSTRAINT FOREIGN KEY (optId) REFERENCES ords_Pay_type (optId)
+        ON DELETE CASCADE ON UPDATE CASCADE
+);
+CREATE TABLE `ords_cheque_pay` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `optId` INT(11) DEFAULT NULL,
+  `amount` DOUBLE DEFAULT NULL,
+  `bank` VARCHAR(100) DEFAULT NULL,
+  `branch` VARCHAR(100) DEFAULT NULL,
+  `accountNumber` VARCHAR(50) DEFAULT NULL,
+  `chequeNumber` VARCHAR(100) DEFAULT NULL,
+  `date` DATE DEFAULT NULL,
+  `status` ENUM('received', 'cashed', 'returned', 'handover') DEFAULT 'received',
+  PRIMARY KEY (`id`),
+  CONSTRAINT `ords_cheque_pay_ibfk_1` FOREIGN KEY (`optId`) REFERENCES `ords_pay_type` (`optId`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+CREATE TABLE `ords_credit_pay` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `optId` INT(11) DEFAULT NULL,
+  `amount` DOUBLE DEFAULT NULL,
+  `c_ID` VARCHAR(15) DEFAULT NULL,
+  `expectedDate` DATE DEFAULT NULL,
+  `balance` DOUBLE NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  KEY `c_ID` (`c_ID`),
+  CONSTRAINT `ords_credit_pay_ibfk_1` FOREIGN KEY (`optId`) REFERENCES `ords_pay_type` (`optId`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `ords_credit_pay_ibfk_2` FOREIGN KEY (`c_ID`) REFERENCES `customer` (`c_ID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+CREATE TABLE `ords_card_pay` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `optId` INT(11) DEFAULT NULL,
+  `type` VARCHAR(25) DEFAULT NULL,
+  `amount` DOUBLE DEFAULT NULL,
+  `intrestValue` DOUBLE DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `ords_card_pay_ibfk_1` FOREIGN KEY (`optId`) REFERENCES `ords_pay_type` (`optId`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+CREATE TABLE driver_dept(
+    devID VARCHAR(25),
+    year int,
+    month VARCHAR(15),
+    balance DOUBLE,
+    status VARCHAR(25),
+    CONSTRAINT FOREIGN KEY (devID) REFERENCES driver(devID)
+        ON DELETE CASCADE ON UPDATE CASCADE
+);
+CREATE TABLE purchase_pay_type (
+    pptId INT AUTO_INCREMENT PRIMARY KEY,
+    type VARCHAR(50),
+    subType VARCHAR(50)
+);
+
+CREATE TABLE purchase_payment (
+    pp_ID VARCHAR(25) PRIMARY KEY,
+    pc_Id VARCHAR(25),
+    s_ID VARCHAR(25),
+    amount DOUBLE,
+    dateTime DATETIME,
+    FOREIGN KEY (pc_Id) REFERENCES purchase(pc_Id)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (s_ID) REFERENCES Supplier(s_ID)
+        ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE pay_type_purchases (
+    pptId INT,
+    pc_Id VARCHAR(25),
+    FOREIGN KEY (pptId) REFERENCES purchase_pay_type(pptId),
+    FOREIGN KEY (pc_Id) REFERENCES purchase(pc_Id)
+);
+CREATE TABLE `ord_cheque_pay` (
+  `id` int(11) NOT NULL,
+  `pptId` int(11) DEFAULT NULL,
+  `amount` double DEFAULT NULL,
+  `bank` text DEFAULT NULL,
+  `branch` text DEFAULT NULL,
+  `accountNumber` int(11) DEFAULT NULL,
+  `chequeNumber` text DEFAULT NULL,
+  `date` date DEFAULT NULL,
+  `status` enum('received','cashed','returned','handover') DEFAULT 'received'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+CREATE TABLE handover_cheque(
+    id INT NOT NULL,
+    pptId INT,
+    amount DOUBLE,
+    bank TEXT,
+    branch TEXT,
+    accountNumber TEXT,
+    chequeNumber TEXT,
+    date DATE,
+    status ENUM('handover''returned','casshout')DEFAULT 'handover',
+    FOREIGN KEY (pptId) REFERENCES purchase_pay_type(pptId)
+);
+
+ALTER TABLE `ords_pay_type` ADD `payDate` DATETIME NULL DEFAULT CURRENT_TIMESTAMP AFTER `subType`;
+
+CREATE TABLE ord_courier (
+    Id INT AUTO_INCREMENT PRIMARY KEY,
+    orID VARCHAR(25),
+    expectedDate DATE,
+    charge DOUBLE,
+    CONSTRAINT fk_ord_courier_orders FOREIGN KEY (orID) 
+        REFERENCES Orders (orID)
+        ON DELETE CASCADE 
+        ON UPDATE CASCADE
+);
+CREATE TABLE courier_services (
+    Id INT AUTO_INCREMENT PRIMARY KEY,
+    ser_name VARCHAR(25),
+    contact VARCHAR(12),
+    othercontact VARCHAR(12),
+    address TEXT,
+    type VARCHAR(10)
+);
+CREATE TABLE courier_pass (
+    cpId INT AUTO_INCREMENT PRIMARY KEY,
+    handOverDate DATE,
+    courier INT,
+    CONSTRAINT fk_courier_pass FOREIGN KEY (courier) 
+        REFERENCES courier_services (Id)
+        ON DELETE CASCADE ON UPDATE CASCADE
+);
+CREATE TABLE courier_pass_order (
+    Id INT AUTO_INCREMENT PRIMARY KEY,
+    cpId INT,
+    orID VARCHAR(25),
+    courierDate DATE,
+    trackingNum VARCHAR(25) NULL,
+    status VARCHAR(10),
+    CONSTRAINT fk_courier_pass_order_orID FOREIGN KEY (orID) 
+        REFERENCES Orders (orID)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT fk_courier_pass_order_cpId FOREIGN KEY (cpId) 
+        REFERENCES courier_pass (cpId)
+        ON DELETE CASCADE ON UPDATE CASCADE
+);
+CREATE TABLE user (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    contact VARCHAR(10),
+    password TEXT,
+    type VARCHAR(15),
+    E_Id VARCHAR(15),
+    CONSTRAINT FOREIGN KEY (E_Id) REFERENCES Employee(E_Id)
+                  ON DELETE CASCADE ON UPDATE CASCADE
+);
+CREATE TABLE recepitLog(
+    Repid INT AUTO_INCREMENT PRIMARY KEY,
+    repdate DATETIME,
+    orID VARCHAR(25),
+    repType VARCHAR(15),
+    chashier VARCHAR(25),
+    CONSTRAINT FOREIGN KEY (chashier) REFERENCES Employee (E_Id)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT FOREIGN KEY (orID) REFERENCES Orders (orID)
+        ON DELETE CASCADE ON UPDATE CASCADE
+);
+ALTER TABLE recepitLog AUTO_INCREMENT = 100000001;
+ALTER TABLE `recepitlog` ADD `repstatus` VARCHAR(25) NOT NULL AFTER `chashier`;
+CREATE TABLE invoiceLog (
+    invid VARCHAR(20) PRIMARY KEY,  
+    invdate DATETIME,                     
+    orID VARCHAR(25),                    
+    cashier VARCHAR(25),                              
+    repType VARCHAR(15),              
+
+    -- Foreign Keys
+    CONSTRAINT fk_invoice_employee FOREIGN KEY (cashier) REFERENCES Employee(E_Id)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT fk_invoice_order FOREIGN KEY (orID) REFERENCES Orders(orID)
+        ON DELETE CASCADE ON UPDATE CASCADE
+);
+CREATE TABLE repetLog (
+    id VARCHAR(20) PRIMARY KEY,  
+    invdate DATETIME,                     
+    orID VARCHAR(25),                    
+    cashier VARCHAR(25),                              
+    repType VARCHAR(15),     
+    admin INT,         
+    CONSTRAINT fk_repet_employee FOREIGN KEY (cashier) REFERENCES Employee(E_Id)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT fk_repet_order FOREIGN KEY (orID) REFERENCES Orders(orID)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT fk_repet_user FOREIGN KEY (admin) REFERENCES user(id)
+        ON DELETE CASCADE ON UPDATE CASCADE
+);
+ALTER TABLE `delivery_note` CHANGE `dnnumber` `dnnumber` INT(11) NULL;
+ALTER TABLE `salary_advance` CHANGE `dateTime` `dateTime` DATE NULL DEFAULT NULL;
+CREATE TABLE emp_salary(
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      E_Id VARCHAR(25),
+      month VARCHAR(25),
+      payTotal DOUBLE,
+      payDate DATE,
+      CONSTRAINT FOREIGN KEY (E_Id) REFERENCES Employee (E_Id)
+                ON DELETE CASCADE ON UPDATE CASCADE
+);
+CREATE TABLE emp_saving(
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      E_Id VARCHAR(25),
+      month VARCHAR(25),
+      amount DOUBLE,
+      CONSTRAINT FOREIGN KEY (E_Id) REFERENCES Employee (E_Id)
+                ON DELETE CASCADE ON UPDATE CASCADE
+);
+ALTER TABLE `cash_balance` CHANGE `ref_type` `ref_type` ENUM('order','advance','loss','other','supplier','Loan','hire','Deposit','Withdrawl','Salary') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'other';
+CREATE TABLE return_item_details (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    orID VARCHAR(25),
+    I_Id VARCHAR(25),
+    pc_Id VARCHAR(25),
+    date DATE,
+    CONSTRAINT FOREIGN KEY (orID) REFERENCES Orders (orID)
+        ON DELETE CASCADE ON UPDATE CASCADE 
+);

@@ -1,0 +1,185 @@
+/* Container styling */
+.table-container {
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Wrapper for responsive tables */
+.table-wrapper {
+    width: 100%;
+    max-height: 380px;
+    overflow-y: auto;
+    display: block;
+}
+
+/* Scrollbar styling */
+.table-wrapper::-webkit-scrollbar {
+    width: 6px;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 10px;
+}
+
+/* Styled table */
+.styled-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+/* Sticky table headers */
+.styled-table thead {
+    position: sticky;
+    top: 0;
+    background-color: #2c3e50;
+    color: white;
+    z-index: 10;
+}
+
+/* Header cells */
+.styled-table th {
+    padding: 12px;
+    text-align: left;
+    font-weight: bold;
+    border-bottom: 2px solid #ddd;
+}
+
+/* Table rows */
+.styled-table tr {
+    border-bottom: 1px solid #eee;
+}
+
+/* Table cells */
+.styled-table td {
+    padding: 12px;
+    font-size: 14px;
+}
+
+/* Status labels */
+.status {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 15px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+/* Status colors */
+.status.completed {
+    background-color: rgba(46, 204, 113, 0.2);
+    color: #27ae60;
+}
+
+.status.cancelled {
+    background-color: rgba(231, 76, 60, 0.2);
+    color: #e74c3c;
+}
+
+.status.pending {
+    background-color: rgba(241, 196, 15, 0.2);
+    color: #f39c12;
+}
+
+.status.accepted {
+    background-color: rgba(155, 89, 182, 0.2);
+    color: #9b59b6;
+}
+
+.status.returned {
+    background-color: rgba(89, 146, 182, 0.2);
+    color: #59a0b6;
+}
+
+/* No data message */
+.no-data {
+    text-align: center;
+    color: #888;
+    font-weight: bold;
+    padding: 20px;
+}
+
+/* Action buttons */
+.action-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.action-buttons button {
+    border: none;
+    padding: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    background: none;
+    transition: color 0.3s ease;
+}
+
+.view-btn,
+.delete-btn {
+    background: #4A5568;
+    color: white;
+    border-radius: 4px;
+    padding: 6px 10px;
+}
+
+.view-btn:hover {
+    color: #3498db;
+}
+
+.edit-btn:hover {
+    color: #f39c12;
+}
+
+.delete-btn:hover {
+    color: #e74c3c;
+}
+
+/* Search input */
+.search-input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+/* Loading and error messages */
+.loading-text,
+.error-text {
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #555;
+}
+
+/* ===================== */
+/* 🔘 Radio Buttons Area */
+/* ===================== */
+.radio-group {
+    margin-bottom: 15px;
+    display: flex;
+    gap: 20px;
+    font-size: 16px;
+    align-items: center;
+}
+
+.radio-group label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.radio-group input[type="radio"] {
+    accent-color: #2c3e50;
+    transform: scale(1.2);
+}
+/* Optional: Better spacing for radio filters */
+.table-container input[type="radio"] {
+    margin-right: 5px;
+}

@@ -1,0 +1,119 @@
+/* deliverynotes.css */
+
+/* General container styling */
+.delivery-notes-container {
+    padding: 30px;               /* more breathing room */
+    background-color: #f9f9f9;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    max-width: 95%;              /* expand width */
+    margin: auto;                /* center it */
+}
+
+/* Header styling */
+.delivery-notes-header {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+/* Form and dropdown section */
+.delivery-notes-form {
+    max-width: 85%;
+    /* background-color: #fff; */
+    padding: 15px;
+    border-radius: 12px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.delivery-notes-form label {
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+.delivery-notes-form select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+/* Orders list section */
+.orders-list {
+    background-color: #fff;
+    padding: 16px;
+    border-radius: 12px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.orders-list table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.orders-list th, .orders-list td {
+    text-align: center;
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+}
+
+.orders-list th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}
+
+.orders-list tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Checkbox styling */
+.orders-list input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+}
+
+/* Totals section */
+.totals-section {
+    margin-top: 20px;
+    text-align: right;
+}
+
+.totals-section h5 {
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+/* Buttons */
+.delivery-notes-btn {
+    margin-top: 20px;
+    padding: 10px 24px;
+    border-radius: 8px;
+    border: none;
+    background-color: #4caf50;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.delivery-notes-btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+/* Print styles */
+@media print {
+    body * {
+        visibility: hidden;
+    }
+    .printable-area, .printable-area * {
+        visibility: visible;
+    }
+    .printable-area {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+    }
+}

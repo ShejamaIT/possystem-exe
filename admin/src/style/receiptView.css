@@ -1,0 +1,135 @@
+/* Modal Overlay */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 2rem;
+    box-sizing: border-box;
+}
+
+/* Modal Content */
+.receipt-modal {
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 12px;
+    width: 80%;
+    max-width: 700px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    color: #000;
+    font-family: monospace;
+    overflow-y: auto;
+    max-height: 85vh;
+}
+
+/* Title */
+.receipt-title {
+    text-align: center;
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+h3.underline {
+    border-bottom: 1px solid #000;
+    padding-bottom: 3px;
+    margin-bottom: 6px;
+}
+
+h3, h5 {
+    text-align: center;
+    margin: 4px 0;
+}
+
+/* Paragraphs */
+p {
+    font-size: 1rem;
+    margin: 0.5rem 0;
+    color: #333;
+}
+
+/* Table Styles */
+.receipt-table {
+    width: 100%;
+    border: 1px solid #000;
+    border-collapse: collapse;
+    margin-bottom: 1.5rem;
+}
+
+.receipt-table th,
+.receipt-table td {
+    border: 1px solid #000;
+    padding: 0.5rem;
+    text-align: center;
+}
+
+/* Summary section */
+.receipt-summary {
+    margin-top: 1rem;
+    border-top: 1px dashed #000;
+    padding-top: 1rem;
+}
+
+.receipt-summary p {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1rem;
+    margin: 0.3rem 0;
+}
+
+/* Buttons */
+.modal-buttons {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    padding: 1rem 0;
+    width: 100%;
+    max-width: 700px;
+}
+
+.print-btn,
+.close-btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.print-btn {
+    background-color: #4caf50;
+    color: #fff;
+}
+
+.print-btn:hover {
+    background-color: #45a049;
+}
+
+.close-btn {
+    background-color: #f44336;
+    color: #fff;
+}
+
+.close-btn:hover {
+    background-color: #e53935;
+}
+
+/* Print-Specific */
+@media print {
+    body * { visibility: hidden !important; }
+    .receipt-modal, .receipt-modal * { visibility: visible !important; }
+    .receipt-modal { position: absolute; top: 0; left: 0; width: 80mm !important; padding: 0.5rem; font-size: 11px !important; font-family: monospace; box-shadow: none; border: none; }
+    .receipt-table th, .receipt-table td { border: 1px solid #000 !important; font-size: 11px !important; padding: 4px !important; }
+    .receipt-summary p, p { font-size: 11px !important; margin: 2px 0 !important; justify-content: space-between; }
+    h3, h5 { font-size: 12px !important; text-align: center; margin: 4px 0 !important; }
+    hr { border-top: 1px dashed #000 !important; margin: 6px 0 !important; }
+    .modal-buttons, .modal-overlay { display: none !important; }
+}

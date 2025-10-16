@@ -1,0 +1,5 @@
+.custom-table-header tr th {
+    background-color: black;
+    color: gold;
+    text-align: center;
+}

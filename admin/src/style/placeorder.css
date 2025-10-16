@@ -1,0 +1,382 @@
+.place-order-container {
+    max-width: 900px;
+    margin: auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+}
+
+.place-order-container h3 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 1.5rem;
+}
+
+.order-details {
+    background-color: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 10px;
+    font-size: 1.1rem;
+    line-height: 1.7;
+    box-shadow: 0px 2px 12px rgba(0,0,0,0.1);
+    width: 120%;     /* Take up 80% of container */
+    max-width: 1100px; /* Prevent too wide on big screens */
+}
+
+/* Make headings inside order-details larger */
+.order-details h2 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+.order-details h4 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.dropdown {
+    position: absolute;
+    width: 100%;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 10;
+}
+
+.dropdown-item {
+    padding: 8px;
+    cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.dropdown-item:hover {
+    background: #f8f9fa;
+}
+
+.selected-items-container {
+    margin-top: 15px;
+}
+
+.selected-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+.selected-item label {
+    flex: 1;
+    font-weight: 500;
+}
+
+.selected-item input {
+    width: 100px;
+    margin-left: 10px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.remove-btn {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    margin-left: 10px;
+}
+
+.remove-btn:hover {
+    background: #c82333;
+}
+
+.submit-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.submit-buttons button {
+    width: 48%;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.submit-buttons .submit-btn {
+    background: #007bff;
+    color: white;
+}
+
+.submit-buttons .submit-btn:hover {
+    background: #0056b3;
+}
+
+.submit-buttons .clear-btn {
+    background: #dc3545;
+    color: white;
+}
+
+.submit-buttons .clear-btn:hover {
+    background: #c82333;
+}
+
+.popup-content {
+    border-radius: 10px;
+    padding: 20px;
+    width: 400px;
+    background-color: #fff;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+.custom-info-value input {
+    text-align: right !important;
+}
+
+h5 {
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+h4 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    font-size: 1rem;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: 100%;
+}
+
+.form-group input[type="text"],
+.form-group input[type="number"] {
+    font-size: 1rem;
+    padding: 8px;
+}
+
+button {
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 4px;
+    padding: 12px;
+    border: none;
+    color: white;
+}
+
+button[type="submit"] {
+    background-color: #007bff;
+}
+
+button[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+button[type="button"].clear-btn {
+    background-color: #dc3545;
+}
+
+button[type="button"].clear-btn:hover {
+    background-color: #c82333;
+}
+.custom-order-details {
+    background-color: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    max-width: 400px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.custom-line-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.custom-line-item {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #d1d5db;
+    padding-bottom: 0.25rem;
+    font-size: 1rem;
+    color: #374151;
+}
+
+.custom-label {
+    flex: 1;
+    text-align: left;
+}
+
+.custom-value {
+    flex: 1;
+    text-align: right;
+}
+
+.custom-total {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #111827;
+    border-top: 2px solid #d1d5db;
+    padding-top: 0.75rem;
+    margin-top: 0.75rem;
+}
+.custom-info-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1rem;
+    color: #374151; /* Tailwind's gray-700 */
+    padding: 0.4rem 0;
+}
+
+.custom-info-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.custom-info-label {
+  font-weight: 500;
+  flex: 1;
+}
+
+.custom-info-value {
+  text-align: right;
+  flex: 1;
+}
+.item-entry-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: flex-end;
+    margin-bottom: 1rem;
+    width: 100%;
+}
+
+.item-entry-field {
+    flex: 1;
+    min-width: 150px;
+}
+
+.item-entry-field label {
+    font-weight: 500;
+    font-size: 0.95rem;
+    margin-bottom: 4px;
+    display: block;
+    color: #374151;
+}
+
+.item-entry-field input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+}
+
+.item-entry-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.item-entry-actions button {
+    padding: 10px 14px;
+    font-size: 0.9rem;
+    border-radius: 6px;
+    white-space: nowrap;
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+
+.item-entry-actions .remove-btn {
+    background-color: #dc3545;
+}
+
+.item-entry-actions .remove-btn:hover {
+    background-color: #c82333;
+}
+
+.item-entry-actions .add-btn {
+    background-color: #28a745;
+}
+
+.item-entry-actions .add-btn:hover {
+    background-color: #218838;
+}
+
+/* Make container more full-view */
+.place-order-container {
+    max-width: 100%;
+    padding: 30px;
+    margin: 0 auto;
+}
+
+
+
+
+@media (max-width: 767px) {
+    .place-order-container {
+        padding: 15px;
+    }
+
+    .form-group {
+        margin-bottom: 10px;
+    }
+
+    .submit-buttons {
+        flex-direction: column;
+    }
+
+    .submit-buttons button {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .dropdown {
+        width: 100%;
+    }
+}
+
+@media (max-width: 576px) {
+    .place-order-container h3 {
+        font-size: 1.25rem;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        font-size: 0.9rem;
+        padding: 8px;
+    }
+}

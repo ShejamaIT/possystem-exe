@@ -1,0 +1,145 @@
+/* order-management.css */
+
+/* General container styles */
+#orders {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+h1, h2 {
+    color: #333;
+    font-weight: bold;
+}
+
+h1 {
+    font-size: 1.5rem;
+}
+
+h2 {
+    font-size: 1.25rem;
+    margin-bottom: 15px;
+}
+
+label {
+    font-size: 0.875rem;
+    font-weight: medium;
+    color: #4A5568;
+}
+
+/* Input fields */
+input[type="text"],
+input[type="date"],
+input[type="number"],
+select {
+    padding: 10px;
+    border: 1px solid #E2E8F0;
+    border-radius: 5px;
+    width: 100%;
+    margin-top: 6px;
+    font-size: 1rem;
+}
+
+input[disabled] {
+    background-color: #F7FAFC;
+}
+
+select {
+    background-color: #FFF;
+}
+
+/* Order details section */
+.flex {
+    display: flex;
+    gap: 1rem;
+}
+
+.flex > div {
+    flex: 1;
+}
+
+.mb-4 {
+    margin-bottom: 1rem;
+}
+
+.mx-2 {
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+}
+
+.mt-2 {
+    margin-top: 8px;
+}
+
+/* Buttons */
+button {
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+button.bg-blue-500 {
+    background-color: #3182CE;
+    color: white;
+}
+
+button.bg-green-500 {
+    background-color: #48BB78;
+    color: white;
+}
+
+/* Table styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #E2E8F0;
+}
+
+th {
+    background-color: #3182CE;
+    color: white;
+}
+
+tbody tr:hover {
+    background-color: #F7FAFC;
+}
+
+/* Payment Method Sections */
+.hidden {
+    display: none;
+}
+
+/* Adjusting payment details */
+#cashDetails,
+#cardDetails {
+    background-color: #F7FAFC;
+    padding: 20px;
+    border-radius: 10px;
+    margin-top: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+#cashDetails input,
+#cardDetails input {
+    margin-bottom: 12px;
+}
+
+#cashDetails .mb-4,
+#cardDetails .mb-4 {
+    margin-bottom: 1rem;
+}
+
+#cashDetails label,
+#cardDetails label {
+    font-size: 0.875rem;
+    color: #4A5568;
+}
+
+/* Add spacing and other customizations as needed */

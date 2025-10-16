@@ -1,0 +1,61 @@
+.order-section {
+  background-color: #f9f9f9;
+  padding: 30px 0;
+}
+
+.order-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.order-subtitle {
+  font-size: 1.25rem;
+  color: #666;
+}
+
+.order-wrapper {
+  margin-top: 20px;
+}
+
+.order-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.order-card h5 {
+  font-size: 1.25rem;
+  color: #444;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 5px;
+}
+
+.item-line {
+  padding: 5px 0;
+  border-bottom: 1px dashed #ccc;
+}
+
+.item-line:last-child {
+  border-bottom: none;
+}
+
+.text-center.mt-3 button {
+  min-width: 150px;
+}
+
+.order-table th,
+.order-table td {
+  background-color: #fff;
+  color: #333;
+}
+
+
+.order-table td:first-child {
+  background-color: #fff !important;
+  color: #333 !important; /* ensure readable text */
+}

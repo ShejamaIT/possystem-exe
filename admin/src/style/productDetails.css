@@ -1,0 +1,26 @@
+/* productDetails.css */
+
+.product-details {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.product-image {
+    max-width: 300px;
+    margin-right: 20px;
+}
+
+.product-info {
+    flex: 1;
+}
+
+.product-info p {
+    margin-bottom: 10px;
+}
+
+.product-info strong {
+    font-weight: bold;
+}
+
+/* Add more styles as needed for your specific design */

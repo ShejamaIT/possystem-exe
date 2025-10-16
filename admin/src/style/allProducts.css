@@ -1,0 +1,23 @@
+.all-products{
+    padding: 60px 0px;
+}
+.table tbody tr td img{
+    width: 80px !important;
+    height: 80px !important;
+    object-fit: cover;
+}
+td i{
+    cursor: pointer;
+}
+td,th{
+    color: var(--primary-color);
+}
+.add-product{
+    margin-bottom: 20px;
+    margin-left: 90%;
+}
+.custom-table-header th {
+    background-color: black;
+    color: gold;
+    text-align: center;
+}

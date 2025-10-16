@@ -1,0 +1,117 @@
+.table-price-list-container {
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    min-height: 700px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Title */
+.table-price-list-container .table-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+/* Search input */
+.table-price-list-container .search-input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+/* Table wrapper - fill remaining space and scroll when needed */
+.table-price-list-container .table-wrapper {
+    flex: 1;
+    overflow-y: auto;
+}
+
+/* Table styling */
+.table-price-list-container .styled-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+/* Sticky table header */
+.table-price-list-container .styled-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: var(--heading-text-color, #f4f4f4);
+}
+
+/* Table rows and alignment */
+.table-price-list-container .styled-table tr {
+    border-bottom: 1px solid #eee;
+}
+
+.table-price-list-container .styled-table td,
+.table-price-list-container .styled-table th {
+    vertical-align: middle;
+    text-align: center;
+    padding: 12px;
+    font-size: 14px;
+    word-wrap: break-word;
+}
+
+/* Fixed column widths */
+.table-price-list-container .styled-table th:nth-child(1),
+.table-price-list-container .styled-table td:nth-child(1) {
+    width: 60px; /* Image */
+}
+
+.table-price-list-container .styled-table th:nth-child(2),
+.table-price-list-container .styled-table td:nth-child(2) {
+    width: 100px; /* Item ID */
+}
+
+.table-price-list-container .styled-table th:nth-child(3),
+.table-price-list-container .styled-table td:nth-child(3) {
+    width: 200px; /* Item Name */
+}
+
+.table-price-list-container .styled-table th:nth-child(4),
+.table-price-list-container .styled-table td:nth-child(4) {
+    width: 100px; /* Price */
+}
+
+.table-price-list-container .styled-table th:nth-child(5),
+.table-price-list-container .styled-table td:nth-child(5) {
+    width: 120px; /* Available QTY */
+}
+
+.table-price-list-container .styled-table th:nth-child(6),
+.table-price-list-container .styled-table td:nth-child(6) {
+    width: 120px; /* Optional 6th column */
+}
+
+/* Image styling */
+.table-price-list-container .product-image {
+    height: 40px;
+    width: 40px;
+    object-fit: cover;
+    margin-right: 10px;
+    border-radius: 5px;
+}
+
+/* Error and messages */
+.table-price-list-container .error-message {
+    text-align: center;
+    color: red;
+    font-size: 1rem;
+}
+
+.table-price-list-container .loading-message,
+.table-price-list-container .no-data-message {
+    text-align: center;
+    padding: 15px;
+    font-size: 1rem;
+    color: #888;
+}

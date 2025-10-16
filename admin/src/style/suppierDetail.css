@@ -1,0 +1,71 @@
+/*.supplier-details {*/
+/*    margin-top: 30px;*/
+/*}*/
+/*h5{*/
+/*    margin-bottom: 15px;*/
+/*}*/
+/*.supplier-card, .supplier-order-card {*/
+/*    margin-bottom: 10px;*/
+/*    border: 1px solid #ddd;*/
+/*    border-radius: 8px;*/
+/*    padding: 15px;*/
+/*}*/
+
+/*.supplier-card:hover {*/
+/*    transform: scale(1.05);*/
+/*    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);*/
+/*}*/
+
+/*.supplier-form-section, .item-detail-section {*/
+/*    margin-top: 30px;*/
+/*}*/
+
+/*.supplier-card .btn {*/
+/*    margin-top: 10px;*/
+/*}*/
+
+/*form {*/
+/*    margin-top: 30px;*/
+/*}*/
+
+/*form .form-group {*/
+/*    margin-bottom: 15px;*/
+/*}*/
+
+/*form .btn {*/
+/*    margin-top: 20px;*/
+/*}*/
+
+/*@media (max-width: 768px) {*/
+/*    .supplier-card, .supplier-order-card {*/
+/*        margin-bottom: 15px;*/
+/*    }*/
+/*}*/
+
+
+/* SupplierDetails CSS */
+
+.item-search-results {
+    margin-top: 10px;
+}
+
+.item-search-results ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.item-search-results li {
+    cursor: pointer;
+    background-color: #f1f1f1;
+    margin: 5px 0;
+    padding: 8px;
+    border-radius: 4px;
+}
+
+.item-search-results li:hover {
+    background-color: #ddd;
+}
+
+.table {
+    margin-top: 20px;
+}
