@@ -8,6 +8,14 @@ const moment = require('moment');
 const PDFDocument = require("pdfkit");
 
 const router = express.Router();
+
+const formatDateForDB = (dateInput) => {
+  const date = new Date(dateInput);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
 // Save  new item
 router.post("/add-item", async (req, res) => {
     try {
@@ -465,6 +473,9 @@ router.post("/orders", async (req, res) => {
         combinedCreditPayment={},combinedTransferPayment={},
     } = req.body;
 
+    const ordate = formatDateForDB(orderDate);
+    const exDate = formatDateForDB(expectedDate);
+
     if (!items || !Array.isArray(items) || items.length === 0) {
         return res.status(400).json({ success: false, message: "Invalid or missing items." });
     }
@@ -540,7 +551,6 @@ router.post("/orders", async (req, res) => {
             }
         }
 
-
         const advance1 = parseFloat(advance) || 0;
         const newTotalOrder = parseFloat(totalItemPrice) - parseFloat(discountAmount);
         const customerBalance = parseFloat(finalCustomerBalance);
@@ -595,10 +605,10 @@ router.post("/orders", async (req, res) => {
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?,?)`;
 
         const orderParams = [
-            orderId, orderDate, Cust_id, orderStatus, dvStatus,
+            orderId, ordate, Cust_id, orderStatus, dvStatus,
             parseFloat(deliveryPrice) || 0,parseFloat(discountAmount) || 0,parseFloat(itemdiscountAmount) || 0,parseFloat(specialdiscountAmount) || 0,
             parseFloat(totalItemPrice) || 0,parseFloat(billPrice) || 0,
-            stID, expectedDate, specialNote,billNumber, orderType, parseFloat(paymentAmount), billBalance ,payStatus
+            stID, exDate, specialNote,billNumber, orderType, parseFloat(paymentAmount), billBalance ,payStatus
         ];
 
         await db.query(orderQuery, orderParams);
@@ -667,7 +677,7 @@ router.post("/orders", async (req, res) => {
                 VALUES (?, ?, ?, ?, ?, 'Pending', ?, ?, 0)`;
 
             const addressToUse = isAddressChanged ? newAddress : address;
-            await db.query(deliveryQuery, [dvID, orderId, addressToUse, district, Cust_id, expectedDate, dvtype]);
+            await db.query(deliveryQuery, [dvID, orderId, addressToUse, district, Cust_id, exDate, dvtype]);
         }
         if (dvStatus === "Courier") {
             const charge = parseFloat(courierCharge);
@@ -675,7 +685,7 @@ router.post("/orders", async (req, res) => {
                 INSERT INTO ord_courier (orID,expectedDate,charge)
                 VALUES (?,?,?)`;
 
-            await db.query(corierQuery, [orderId,expectedDate,charge]);
+            await db.query(corierQuery, [orderId,exDate,charge]);
             await db.query(
                 `UPDATE Orders SET delPrice = ? WHERE orID = ?`,
                 [charge, orderId]
@@ -757,7 +767,7 @@ router.post("/orders", async (req, res) => {
                     );
                     await db.query(
                         `INSERT INTO deposit_withdrawals (acnID, type, amount, dwdate,remark) VALUES (?, ?, ?, NOW(),?)`,
-                        [tranferPayment.acnID, 'Deposit', advance1,orID]
+                        [tranferPayment.acnID, 'Deposit', advance1,orderId]
                     );
                 } else {
                     await db.query(
@@ -878,7 +888,7 @@ router.post("/orders", async (req, res) => {
         return res.status(201).json({
             success: true,
             message: "Order placed successfully",
-            data: { orderId: orderId,  orderDate, expectedDate }
+            data: { orderId: orderId,  orderDate, exDate }
         });
 
     } catch (error) {
@@ -909,6 +919,8 @@ router.post("/later-order", async (req, res) => {
         let insertedNewCustomer = false;
         let Occupation = "-", WorkPlace = "-", tType = "-";
         let stID = null;
+        const ordate = formatDateForDB(orderDate);
+        const exDate = formatDateForDB(expectedDate);
 
         if (type === 'Walking' || type === 'On site') {
             Occupation = occupation;
@@ -1027,10 +1039,10 @@ router.post("/later-order", async (req, res) => {
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)`;
 
         const orderParams = [
-            orderId, orderDate, Cust_id, orderStatus, dvStatus,parseFloat(deliveryPrice) || 0,parseFloat(discountAmount) || 0,
+            orderId, ordate, Cust_id, orderStatus, dvStatus,parseFloat(deliveryPrice) || 0,parseFloat(discountAmount) || 0,
             parseFloat(itemdiscountAmount) || 0,
             parseFloat(specialdiscountAmount) || 0,parseFloat(totalItemPrice) || 0,parseFloat(billPrice) || 0,
-            stID, expectedDate, specialNote,billNumber , orderType, parseFloat(paymentAmount), billBalance,payStatus
+            stID, exDate, specialNote,billNumber , orderType, parseFloat(paymentAmount), billBalance,payStatus
         ];
 
         await db.query(orderQuery, orderParams);
@@ -1237,7 +1249,7 @@ router.post("/later-order", async (req, res) => {
                 VALUES (?, ?, ?, ?, ?, 'Pending', ?, ?, 0)`;
 
             const addressToUse = isAddressChanged ? newAddress : address;
-            await db.query(deliveryQuery, [dvID, orderId, addressToUse, district, Cust_id, expectedDate, dvtype]);
+            await db.query(deliveryQuery, [dvID, orderId, addressToUse, district, Cust_id, exDate, dvtype]);
         }
         if (dvStatus === "Courier") {
             const charge = parseFloat(courierCharge);
@@ -1245,7 +1257,7 @@ router.post("/later-order", async (req, res) => {
                 INSERT INTO ord_courier (orID,expectedDate,charge)
                 VALUES (?,?,?)`;
 
-            await db.query(corierQuery, [orderId,expectedDate,charge]);
+            await db.query(corierQuery, [orderId,exDate,charge]);
             await db.query(
                 `UPDATE Orders SET delPrice = ? WHERE orID = ?`,
                 [charge, orderId]
@@ -1427,7 +1439,7 @@ router.post("/later-order", async (req, res) => {
                     );
                     await db.query(
                         `INSERT INTO deposit_withdrawals (acnID, type, amount, dwdate,remark) VALUES (?, ?, ?, NOW(),?)`,
-                        [combinedTransferPayment.acnID, 'Deposit', combinedTransferPayment.transferAmount,orID]
+                        [combinedTransferPayment.acnID, 'Deposit', combinedTransferPayment.transferAmount,orderId]
                     );
                     await updateOrderPayment(advance1);
                 }
@@ -1465,7 +1477,7 @@ router.post("/later-order", async (req, res) => {
         return res.status(201).json({
             success: true,
             message: "Order placed successfully",
-            data: { orderId: orderId, orderDate, expectedDate }
+            data: { orderId: orderId, orderDate, exDate }
         });
 
     } catch (error) {
@@ -1970,7 +1982,7 @@ router.post("/add-courier-pass", async (req, res) => {
         }
 
         // 2️⃣ Format dates properly for MySQL
-        const formattedHandOverDate = parseDate1(handOverDate);
+        const formattedHandOverDate = formatDateForDB(handOverDate);
 
         if (!formattedHandOverDate) {
             return res.status(400).json({ message: "Invalid handover date format." });
@@ -2171,17 +2183,6 @@ router.get("/customer-details&orders", async (req, res) => {
         return res.status(500).json({ message: "Error fetching customer details" });
     }
 });
-
-// Get customer payments and balance summary
-const groupByDate = (records, dateField) => {
-    const map = {};
-    for (const record of records) {
-        const date = new Date(record[dateField]).toISOString().split("T")[0];
-        if (!map[date]) map[date] = [];
-        map[date].push(record);
-    }
-    return map;
-};
 
 router.get("/customer-ledger", async (req, res) => {
     try {
@@ -2385,7 +2386,6 @@ router.get("/customer-ledger", async (req, res) => {
         });
     }
 });
-
 
 // Check if customer exists by phone number
 router.get("/customer/check-customer", async (req, res) => {
@@ -10359,7 +10359,7 @@ router.post("/issued-items-Later", async (req, res) => {
     }
 
     try {
-        
+        const exDate = formatDateForDB(expectedDate);
         // 1. Update Orders table only if it's a Delivery
         if (deliveryStatus === "Delivery") {
             await db.query(
@@ -10381,13 +10381,13 @@ router.post("/issued-items-Later", async (req, res) => {
                 `UPDATE p_i_detail
                  SET status = ?, orID = ?, datetime = ?, price = ?
                  WHERE pid_Id = ?`,
-                [itemStatus, orID, expectedDate, item.price, item.pid_Id]
+                [itemStatus, orID, exDate, item.price, item.pid_Id]
             );
 
             await db.query(
                 `INSERT INTO issued_items (orID, pid_Id, status, date)
                  VALUES (?, ?, ?, ?)`,
-                [orID, item.pid_Id, itemStatus, expectedDate]
+                [orID, item.pid_Id, itemStatus, exDate]
             );
         }
 
@@ -10488,6 +10488,7 @@ router.post("/issued-items-Now", async (req, res) => {
     }
 
     try {
+        const exDate = formatDateForDB(expectedDate);
         // 1. Update Orders table only if it's a Delivery
         if (deliveryStatus === "Delivery") {
             await db.query(
@@ -10509,13 +10510,13 @@ router.post("/issued-items-Now", async (req, res) => {
                 `UPDATE p_i_detail
                  SET status = ?, orID = ?, datetime = ?, price = ?
                  WHERE pid_Id = ?`,
-                [itemStatus, orID,expectedDate, item.price, item.pid_Id]
+                [itemStatus, orID,exDate, item.price, item.pid_Id]
             );
 
             await db.query(
                 `INSERT INTO issued_items (orID, pid_Id, status, date)
                  VALUES (?, ?, ?, ?)`,
-                [orID, item.pid_Id, itemStatus,expectedDate]
+                [orID, item.pid_Id, itemStatus,exDate]
             );
         }
 

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../../style/Navbar.css';
 import { BiMenu } from 'react-icons/bi';
 import userIcon from '../../assets/images/user-icon.png';
@@ -9,6 +10,7 @@ const Navbar = () => {
     const [pendingRequests, setPendingRequests] = useState([]);
     const [pendingOrders, setPendingOrders] = useState([]);
     const [dropdownOpen, setDropdownOpen] = useState(false);
+    const navigate = useNavigate();
 
     const totalNotifications =
         appliedLeaves.length + pendingRequests.length + pendingOrders.length;
@@ -63,7 +65,9 @@ const Navbar = () => {
         <nav className="navbar">
             <div className="sidebar-button">
                 <BiMenu className="sidebarBtn" />
-                <span className="dashboard">Dashboard</span>
+                {/* <span className="dashboard" onClick={() => navigate(-1)}>
+                    Dashboard
+                </span> */}
             </div>
 
             <div className="profile-details">

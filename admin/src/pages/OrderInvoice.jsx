@@ -453,6 +453,7 @@ const OrderInvoice = ({ onPlaceOrder }) => {
     }, [formData.payment, formData.subPayment, formData.cashAmount,cardPayment, totalBillPrice,cheques,grossAmount,combinedCardBalance,combinedTransferBalance,combinedChequeBalance, creditAmount, ChequeBalance,transferPortion ]);
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
+        console.log(name, value);
 
         setFormData((prev) => {
             let updatedForm = {
@@ -503,6 +504,9 @@ const OrderInvoice = ({ onPlaceOrder }) => {
         }
         // If entering Direct delivery charge manually
         if (name === "deliveryCharge" && formData.dvtype === "Direct") {
+            setDeliveryPrice(value);
+        }
+        if (name === "courierCharge") {
             setDeliveryPrice(value);
         }
         // Check delivery availability for Direct
@@ -857,7 +861,7 @@ const OrderInvoice = ({ onPlaceOrder }) => {
             }
         });
     };
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e) => { 
         e.preventDefault();
 
         // Basic validation
@@ -1153,6 +1157,13 @@ const OrderInvoice = ({ onPlaceOrder }) => {
         const receiptId = await fetchRecepitID();  // Wait for ID
         const invoiceId = await fetchInvoiceID();
         console.log(receiptId,invoiceId);
+        const delprice =
+        formData.dvStatus === 'Courier'
+            ? formData.courierCharge
+            : formData.dvStatus === 'Delivery'
+            ? deliveryPrice
+            : 0;
+
         const items = selectedItems.map(item => {
             const unitPrice = parseFloat(item.originalPrice || item.price || 0);
             const discount = parseFloat(item.discount || 0);
@@ -1184,7 +1195,7 @@ const OrderInvoice = ({ onPlaceOrder }) => {
                 address: formData.address || '',
                 balance: parseFloat(order.balance),
                 delStatus: formData.dvStatus || '', 
-                delPrice: parseFloat(deliveryPrice || 0),
+                delPrice: parseFloat(delprice || 0),
                 deliveryStatus: formData.dvStatus || '',
                 couponediscount: parseFloat(discountAmount || 0),
                 specialdiscount : parseFloat(specialdiscountAmount ||0),
@@ -1218,7 +1229,7 @@ const OrderInvoice = ({ onPlaceOrder }) => {
                 Address: formData.address,
                 payStatus: formData.advance > 0 ? 'Advanced' : 'Pending',
                 deliveryStatus: formData.dvStatus,
-                deliveryCharge: deliveryPrice,
+                deliveryCharge: parseFloat(delprice || 0),
                 couponediscount: discountAmount,
                 ItemDiscount: itemdiscountAmount,
                 specialDiscount: specialdiscountAmount,
