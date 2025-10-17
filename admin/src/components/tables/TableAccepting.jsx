@@ -49,6 +49,7 @@ const TableAccepting = ({ refreshKey }) => {
 
             const response = await fetch(endpoint);
             const data = await response.json();
+            console.log(data);
 
             if (!response.ok || !data?.data?.bookedOrders) {
                 throw new Error(data.message || "Failed to fetch orders");
@@ -213,7 +214,7 @@ const TableAccepting = ({ refreshKey }) => {
                                     <td>{order.billNumber}</td>
                                     <td>{order.dvStatus}</td>
                                     <td>Rs.{order.totPrice.toFixed(2)}</td>
-                                    {userType === "ADMIN" && <td>{order.sT_ID || "N/A"}</td>}
+                                    {userType === "ADMIN" && <td>{order.stID || "N/A"}</td>}
                                     <td className="action-buttons">
                                         <button
                                             className="view-btn"

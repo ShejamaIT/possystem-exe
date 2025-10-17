@@ -194,7 +194,7 @@ const TableAll = ({ refreshKey }) => {
                                         <td>{formatDate(order.expectedDeliveryDate)}</td>
                                         <td>{order.billNumber}</td>
                                         <td>Rs.{order.totPrice.toFixed(2)}</td>
-                                        {userType === "ADMIN" && <td>{order.stID || "N/A"}</td>}
+                                        {userType === "ADMIN" && <td>{order.stID || "N/A"}-{order.employeeName || "N/A"}</td>}
                                         <td>{order.orStatus}</td>
                                         {/* <td>
                                             <button
