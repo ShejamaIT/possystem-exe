@@ -170,7 +170,7 @@ const TableCanceled = ({ refreshKey }) => {
                                         </span>
                                     </td>
                                     <td>{order.dvStatus}</td>
-                                    <td>Rs.{order.totalPrice.toFixed(2)}</td>
+                                    <td>Rs.{order.totPrice.toFixed(2)}</td>
                                     {userType === "ADMIN" && <td>{order.stID || "N/A"}</td>}
                                     <td className="action-buttons">
                                         <button className="view-btn" onClick={() => handleViewOrder(order.OrID)}>

@@ -156,7 +156,7 @@
 
 // export default SaleTeamGraphs;
 
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, CardBody, Nav, NavItem, NavLink, TabContent, TabPane, FormGroup, Label, Input, Button } from 'reactstrap';
 import {
   LineChart, Line, BarChart, Bar, LabelList,
@@ -165,11 +165,13 @@ import {
 import classnames from 'classnames';
 import '../../style/HomeContent.css';
 
+// Base color palette (used as primary set)
+// Updated color palette: 1 blue, no purple, no duplicate green
 const COLORS = [
-  '#8884d8', '#82ca9d', '#ffc658', '#FF8042',
-  '#00C49F', '#FFBB28', '#A28FD0', '#4BA3C3',
-  '#FF6F91', '#6DD47E'
+  '#1E90FF', '#00C49F', '#FF8042', '#FFBB28',
+  '#FF6F91', '#F98404', '#A28FD0' , '#6DD47E'
 ];
+
 
 const labelsMonthly = [
   'January', 'February', 'March', 'April', 'May', 'June',
@@ -178,7 +180,7 @@ const labelsMonthly = [
 
 const SaleTeamGraphs = () => {
   const [mainTab, setMainTab] = useState("total");
-  const [chartType, setChartType] = useState("line"); 
+  const [chartType, setChartType] = useState("line");
   const [graphData, setGraphData] = useState({
     onsite: { in: [], out: [] },
     walking: { in: [], out: [] },
@@ -198,7 +200,7 @@ const SaleTeamGraphs = () => {
       })
       .catch(err => console.error("Error loading data:", err));
 
-    // handle print events
+    // Handle print events
     const beforePrint = () => setIsPrinting(true);
     const afterPrint = () => setIsPrinting(false);
 
@@ -211,11 +213,22 @@ const SaleTeamGraphs = () => {
     };
   }, []);
 
+  // --- Generate color dynamically based on number of members ---
+  const generateColor = (index, total) => {
+    const hue = (index / total) * 360; // evenly spaced hues
+    return `hsl(${hue}, 70%, 50%)`;
+  };
+
+  // --- Assign colors to each team member dynamically ---
   const assignColors = (summary) => {
+    const numMembers = summary.length;
     const map = {};
+
     summary.forEach((member, idx) => {
-      map[member.employeeName] = COLORS[idx % COLORS.length];
+      // Use base color if available, otherwise generate one
+      map[member.employeeName] = COLORS[idx] || generateColor(idx, numMembers);
     });
+
     setColorMap(map);
   };
 
@@ -249,7 +262,7 @@ const SaleTeamGraphs = () => {
           strokeWidth={2}
           dot={false}
         >
-          {isPrinting && (   // show values only in print
+          {isPrinting && (
             <LabelList dataKey={key} position="top" formatter={(v) => `Rs.${v}`} />
           )}
         </Line>
@@ -383,7 +396,6 @@ const SaleTeamGraphs = () => {
 };
 
 export default SaleTeamGraphs;
-
 
 
 
