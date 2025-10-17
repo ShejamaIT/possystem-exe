@@ -165,13 +165,11 @@ import {
 import classnames from 'classnames';
 import '../../style/HomeContent.css';
 
-// Base color palette (used as primary set)
 // Updated color palette: 1 blue, no purple, no duplicate green
 const COLORS = [
   '#1E90FF', '#00C49F', '#FF8042', '#FFBB28',
   '#FF6F91', '#F98404', '#A28FD0' , '#6DD47E'
 ];
-
 
 const labelsMonthly = [
   'January', 'February', 'March', 'April', 'May', 'June',
