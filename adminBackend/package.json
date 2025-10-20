@@ -1,7 +1,7 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "Express backend with React frontend hosted separately and pkg support",
+  "description": "Express backend with React build and pkg support",
   "main": "server.cjs",
   "bin": "server.cjs",
   "type": "commonjs",
@@ -35,6 +35,7 @@
       "Routes/**/*.js",
       "middlewares/**/*.js",
       "utils/**/*.js",
+      "admin/build/**/*",
       "uploads/**/*",
       ".env",
       "node_modules/pdfkit/js/data/**/*"
@@ -47,6 +48,7 @@
   "keywords": [
     "express",
     "backend",
+    "react",
     "pkg",
     "nodejs"
   ],
