@@ -6,6 +6,7 @@
   "bin": "server.cjs",
   "type": "commonjs",
   "scripts": {
+    "postinstall": "cd adminFrontend && npm install && npm run build",
     "start": "node server.cjs",
     "start:dev": "NODE_ENV=development node server.cjs",
     "build:exe": "pkg . --targets node18-win-x64 --out-path dist"
@@ -35,7 +36,7 @@
       "Routes/**/*.js",
       "middlewares/**/*.js",
       "utils/**/*.js",
-      "admin/build/**/*",
+      "adminFrontend/build/**/*",
       "uploads/**/*",
       ".env",
       "node_modules/pdfkit/js/data/**/*"

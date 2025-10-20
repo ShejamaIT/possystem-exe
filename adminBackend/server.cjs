@@ -1,3 +1,4 @@
+
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
@@ -36,9 +37,14 @@ app.use(bodyParser.json({ limit: '20mb' }));
 app.use(bodyParser.urlencoded({ limit: '20mb', extended: true }));
 app.use('/uploads', express.static(path.resolve('uploads')));
 
+// const frontendBuildPath = process.pkg
+//   ? path.resolve(path.dirname(process.execPath), 'build') // exe: inside dist/build
+//   : path.join(__dirname, 'build'); // dev: adminBackend/build
+
 const frontendBuildPath = process.pkg
-  ? path.resolve(path.dirname(process.execPath), 'build') // exe: inside dist/build
-  : path.join(__dirname, 'build'); // dev: adminBackend/build
+  ? path.resolve(path.dirname(process.execPath), 'build')
+  : path.join(__dirname, 'adminFrontend', 'build');
+
 
 if (fs.existsSync(frontendBuildPath)) {
   console.log('✅ Frontend build folder found at:', frontendBuildPath);
