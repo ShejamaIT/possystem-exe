@@ -1,17 +1,15 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "Express backend with React build and pkg support",
+  "description": "Express backend with React frontend hosted separately and pkg support",
   "main": "server.cjs",
   "bin": "server.cjs",
   "type": "commonjs",
   "scripts": {
-  "postinstall": "cd ../adminFrontend && npm install && npm run build",
-  "start": "node server.cjs",
-  "start:dev": "NODE_ENV=development node server.cjs",
-  "build:exe": "pkg . --targets node18-win-x64 --out-path dist"
-},
-
+    "start": "node server.cjs",
+    "start:dev": "NODE_ENV=development node server.cjs",
+    "build:exe": "pkg . --targets node18-win-x64 --out-path dist"
+  },
   "engines": {
     "node": ">=18.x"
   },
@@ -37,7 +35,6 @@
       "Routes/**/*.js",
       "middlewares/**/*.js",
       "utils/**/*.js",
-      "adminFrontend/build/**/*",
       "uploads/**/*",
       ".env",
       "node_modules/pdfkit/js/data/**/*"
@@ -50,7 +47,6 @@
   "keywords": [
     "express",
     "backend",
-    "react",
     "pkg",
     "nodejs"
   ],
