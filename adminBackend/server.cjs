@@ -1,8 +1,3 @@
-// -------------------------------
-// Node.js Backend for Shop Management System
-// Fully CommonJS, ready for pkg/exe
-// -------------------------------
-
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
@@ -18,10 +13,6 @@ global.TextDecoder = function (encoding, options) {
   if (encoding && encoding.toLowerCase() === 'ascii') encoding = 'utf-8';
   return new origTextDecoder(encoding, options);
 };
-
-// -------------------------------
-// Load .env (works in pkg exe as well)
-// -------------------------------
 const envPath = path.join(
   process.pkg ? path.dirname(process.execPath) : __dirname,
   '.env'
@@ -34,28 +25,17 @@ if (fs.existsSync(envPath)) {
   console.warn('⚠️ .env file not found at:', envPath);
 }
 
-// -------------------------------
-// Routes
-// -------------------------------
 const mainRoutes = require('./Routes/mainRoutes');
 const auth = require('./Routes/auth');
 
 const app = express();
 const PORT = process.env.PORT || 5001;
 
-// -------------------------------
-// Middleware
-// -------------------------------
 app.use(cors());
 app.use(bodyParser.json({ limit: '20mb' }));
 app.use(bodyParser.urlencoded({ limit: '20mb', extended: true }));
 app.use('/uploads', express.static(path.resolve('uploads')));
 
-// -------------------------------
-// Serve frontend build (pkg-safe)
-// -------------------------------
-
-// Since your frontend build is in adminBackend/build
 const frontendBuildPath = process.pkg
   ? path.resolve(path.dirname(process.execPath), 'build') // exe: inside dist/build
   : path.join(__dirname, 'build'); // dev: adminBackend/build
@@ -67,9 +47,6 @@ if (fs.existsSync(frontendBuildPath)) {
   console.warn('⚠️ Frontend build folder not found at:', frontendBuildPath);
 }
 
-// -------------------------------
-// API routes
-// -------------------------------
 app.use('/api/admin/main', mainRoutes);
 app.use('/api/auth', auth);
 
@@ -83,9 +60,6 @@ app.get('*', (req, res) => {
   }
 });
 
-// -------------------------------
-// Start server
-// -------------------------------
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`✅ Server is running on http://localhost:${PORT}`);
 });

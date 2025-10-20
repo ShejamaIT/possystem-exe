@@ -1,11 +1,17 @@
 {
   "name": "backend",
   "version": "1.0.0",
+  "description": "Express backend with React build and pkg support",
   "main": "server.cjs",
   "bin": "server.cjs",
+  "type": "commonjs",
   "scripts": {
     "start": "node server.cjs",
+    "start:dev": "NODE_ENV=development node server.cjs",
     "build:exe": "pkg . --targets node18-win-x64 --out-path dist"
+  },
+  "engines": {
+    "node": ">=18.x"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
@@ -19,7 +25,9 @@
     "moment": "^2.30.1",
     "multer": "^1.4.5-lts.1",
     "mysql2": "^3.12.0",
-    "pdfkit": "^0.17.1",
+    "pdfkit": "^0.17.1"
+  },
+  "devDependencies": {
     "pkg": "^5.8.1"
   },
   "pkg": {
@@ -36,5 +44,14 @@
       "node18-win-x64"
     ],
     "outputPath": "dist"
-  }
+  },
+  "keywords": [
+    "express",
+    "backend",
+    "react",
+    "pkg",
+    "nodejs"
+  ],
+  "author": "Shaili Manamperi",
+  "license": "MIT"
 }
