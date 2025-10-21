@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect, useMemo } from "react";
 import "../style/receiptView.css";
 
 const ReceiptView = ({ receiptData, setShowReceiptView }) => {
+  console.log(receiptData);
   const receiptRef = useRef(null);
   const fullInvoiceRef = useRef(null);
   const [empName, setEmpName] = useState('');
@@ -416,6 +417,7 @@ const ReceiptView = ({ receiptData, setShowReceiptView }) => {
                 <th>Item</th>
                 <th>Rate</th>
                 <th>Discount</th>
+                <th>Sell Price</th>
                 <th>Total</th>
               </tr>
             </thead>
@@ -426,6 +428,7 @@ const ReceiptView = ({ receiptData, setShowReceiptView }) => {
                   <td>{item.itemName}</td>
                   <td>{item.unitPrice.toFixed(2)}</td>
                   <td>{item.discount.toFixed(2)}</td>
+                  <td>{(item.unitPrice - item.discount).toFixed(2)}</td>
                   <td>{(item.quantity * (item.unitPrice - item.discount)).toFixed(2)}</td>
                 </tr>
               ))}
@@ -500,6 +503,7 @@ const ReceiptView = ({ receiptData, setShowReceiptView }) => {
                 <th>Description</th>
                 <th>Rate (Rs.)</th>
                 <th>Discount (Rs.)</th>
+                <th>Sell price (Rs.)</th>
                 <th>Amount (Rs.)</th>
               </tr>
             </thead>
@@ -510,12 +514,14 @@ const ReceiptView = ({ receiptData, setShowReceiptView }) => {
                   <td style={{ fontSize: "10px" }}>{item.itemName}</td>
                   <td style={{ fontSize: "10px" , textAlign: "center"}}>{item.unitPrice.toFixed(2)}</td>
                   <td style={{ fontSize: "10px" , textAlign: "center"}}>{item.discount.toFixed(2)}</td>
-                  <td style={{ fontSize: "10px", textAlign: "right"}}>{(item.quantity * item.unitPrice).toFixed(2)}</td>
+                  <td style={{ fontSize: "10px" , textAlign: "center"}}>{(item.unitPrice-item.discount).toFixed(2)}</td>
+                  <td style={{ fontSize: "10px", textAlign: "right"}}>{(item.quantity * (item.unitPrice - item.discount)).toFixed(2)}</td>
                 </tr>
               ))}
 
               {/* Totals section: border only for col 4 and 5 */}
               <tr>
+                <td style={{ border: "none" }}></td>
                 <td style={{ border: "none" }}></td>
                 <td style={{ border: "none" }}></td>
                 <td style={{ border: "none" }}></td>
@@ -531,6 +537,7 @@ const ReceiptView = ({ receiptData, setShowReceiptView }) => {
                 <td style={{ border: "none" }}></td>
                 <td style={{ border: "none" }}></td>
                 <td style={{ border: "none" }}></td>
+                <td style={{ border: "none" }}></td>
                 <td style={{ border: "1px solid #999", textAlign: "right", fontSize: "10px" }}>
                   <strong>Delivery Price</strong>
                 </td>
@@ -540,6 +547,7 @@ const ReceiptView = ({ receiptData, setShowReceiptView }) => {
               </tr>
 
               <tr>
+                <td style={{ border: "none" }}></td>
                 <td style={{ border: "none" }}></td>
                 <td style={{ border: "none" }}></td>
                 <td style={{ border: "none" }}></td>
@@ -555,6 +563,7 @@ const ReceiptView = ({ receiptData, setShowReceiptView }) => {
                 <td style={{ border: "none" }}></td>
                 <td style={{ border: "none" }}></td>
                 <td style={{ border: "none" }}></td>
+                <td style={{ border: "none" }}></td>
                 <td style={{ border: "1px solid #999", textAlign: "right", fontSize: "10px" }}>
                   <strong>Coupon Discount</strong>
                 </td>
@@ -564,6 +573,7 @@ const ReceiptView = ({ receiptData, setShowReceiptView }) => {
               </tr>
 
               <tr>
+                <td style={{ border: "none" }}></td>
                 <td style={{ border: "none" }}></td>
                 <td style={{ border: "none" }}></td>
                 <td style={{ border: "none" }}></td>
@@ -579,6 +589,7 @@ const ReceiptView = ({ receiptData, setShowReceiptView }) => {
                 <td style={{ border: "none" }}></td>
                 <td style={{ border: "none" }}></td>
                 <td style={{ border: "none" }}></td>
+                <td style={{ border: "none" }}></td>
                 <td style={{ border: "1px solid #999", textAlign: "right", fontSize: "10px" }}>
                   <strong>Payment</strong>
                 </td>
@@ -588,6 +599,7 @@ const ReceiptView = ({ receiptData, setShowReceiptView }) => {
               </tr>
 
               <tr>
+                <td style={{ border: "none" }}></td>
                 <td style={{ border: "none" }}></td>
                 <td style={{ border: "none" }}></td>
                 <td style={{ border: "none" }}></td>

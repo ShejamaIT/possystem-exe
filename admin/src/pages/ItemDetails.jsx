@@ -752,7 +752,6 @@ const ItemDetails = () => {
                                             <div className="supplier-card">
                                             <h3>{supplier.name}</h3>
                                             <p><strong>Supplier ID:</strong> {supplier.s_ID}</p>
-                                            <p><strong>Contact:</strong> {supplier.contact}</p>
 
                                             <FormGroup>
                                                 {!isEditing ? (
