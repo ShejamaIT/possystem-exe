@@ -1530,7 +1530,7 @@ router.get("/orders", async (req, res) => {
 // Get all items
 router.get("/allitems", async (req, res) => {
     try {
-        // Fetch all items along with any related active (booked) order details
+        // Fetch all items along with related booked order details
         const [items] = await db.query(`
             SELECT 
                 i.I_Id,
@@ -1540,17 +1540,25 @@ router.get("/allitems", async (req, res) => {
                 i.price,
                 i.stockQty,
                 i.availableQty,
-                i.warrantyPeriod,
+                i.reservedQty,
                 i.bookedQty,
+                i.warrantyPeriod,
                 i.color,
                 o.OrID,
                 o.billnumber,
-                e.name AS sales_member_name
+                e.name AS sales_member_name,
+                CASE 
+                    WHEN sr.orID IS NOT NULL THEN 'yes'
+                    ELSE 'no'
+                END AS special_reserved
             FROM Item i
             LEFT JOIN Order_Detail od ON i.I_Id = od.I_Id
-            LEFT JOIN Orders o ON od.orID = o.OrID AND o.orStatus NOT IN ('issued', 'delivered')
+            LEFT JOIN Orders o 
+                ON od.orID = o.OrID 
+                AND o.orStatus NOT IN ('issued', 'delivered')
             LEFT JOIN Sales_Team st ON o.stID = st.stID
             LEFT JOIN Employee e ON st.E_Id = e.E_Id
+            LEFT JOIN special_reservation sr ON sr.orID = o.OrID
             ORDER BY i.I_Id;
         `);
 
@@ -1571,9 +1579,9 @@ router.get("/allitems", async (req, res) => {
                         stockQty: row.stockQty,
                         availableQty: row.availableQty,
                         warrantyPeriod: row.warrantyPeriod,
-                        bookedQty: row.bookedQty,
+                        bookedQty: row.bookedQty + row.reservedQty,
                         color: row.color,
-                        bookedOrders: [] // store booked orders
+                        bookedOrders: []
                     };
                 }
 
@@ -1582,7 +1590,8 @@ router.get("/allitems", async (req, res) => {
                     acc[row.I_Id].bookedOrders.push({
                         OrID: row.OrID,
                         billnumber: row.billnumber,
-                        sales_member_name: row.sales_member_name
+                        sales_member_name: row.sales_member_name,
+                        special_reserved: row.special_reserved
                     });
                 }
 
@@ -1596,7 +1605,6 @@ router.get("/allitems", async (req, res) => {
         res.status(500).json({ message: "Error fetching items" });
     }
 });
-
 
 // Get all purchase notes
 router.get("/purchase-notes/unpaid", async (req, res) => {

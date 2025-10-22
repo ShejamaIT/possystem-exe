@@ -29,6 +29,7 @@ const TableAllItem = () => {
         try {
             const response = await fetch("http://localhost:5001/api/admin/main/allitems");
             const data = await response.json();
+            console.log(data);
             if (Array.isArray(data) && data.length > 0) {
                 setItems(data);
                 setFilteredItems(data);
@@ -187,6 +188,7 @@ const TableAllItem = () => {
                                     <th>Order ID</th>
                                     <th>Bill Number</th>
                                     <th>Sales Member</th>
+                                    <th>Special Reservation</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -195,6 +197,7 @@ const TableAllItem = () => {
                                         <td>{order.OrID}</td>
                                         <td>{order.billnumber}</td>
                                         <td>{order.sales_member_name || "N/A"}</td>
+                                        <td>{order.special_reserved}</td>
                                     </tr>
                                 ))}
                             </tbody>
