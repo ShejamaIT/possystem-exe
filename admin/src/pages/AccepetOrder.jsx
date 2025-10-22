@@ -28,6 +28,7 @@ const OrderDetails = () => {
     const [items, setItems] = useState([]); // State to store supplier data
     const [filteredItems, setFilteredItems] = useState([]);
     const [selectedItems, setSelectedItems] = useState([]);
+    const [selectedItems1, setSelectedItems1] = useState([]);
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [itemdetails, setItemDetails] = useState([]);
     const [selectedItemForReserve, setSelectedItemForReserve] = useState(null);
@@ -85,6 +86,7 @@ const OrderDetails = () => {
             try {
                 const response = await fetch("http://localhost:5001/api/admin/main/allitems");
                 const data = await response.json();
+                console.log(data);
                 setItems(data || []);
                 setFilteredItems(data || []);
             } catch (error) {
@@ -113,6 +115,7 @@ const OrderDetails = () => {
 
             const data = await response.json();
             const data1 = response1.ok ? await response1.json() : { data: [] }; // fallback if request fails
+            console.log(data);
 
             // Set special reserved items safely
             setSpecialReservedItems(Array.isArray(data1.data) ? data1.data : []);
@@ -169,7 +172,6 @@ const OrderDetails = () => {
     const calculateItemTotal = () => {
         return formData?.items && Array.isArray(formData.items)
             ? formData.items.reduce((total, item) => {
-                // Calculate price after discount per item
                 const priceAfterDiscount = (item.quantity * item.unitPrice) - item.totalDiscountAmount;
                 return total + (priceAfterDiscount || 0);
             }, 0)
@@ -509,15 +511,20 @@ const OrderDetails = () => {
         if (!order || !order.orderId) {
             return;
         }
+        const reservedItems = selectedItems.map(item => ({
+            I_Id: item.I_Id,
+            pid_Id: item.pid_Id,
+        }));
 
         try {
             const requestData = {
                 orID: order.orderId,  // Order ID from your data
-                selectedItems: selectedItems,  // The selected items to be reserved
+                selectedItems: reservedItems,  // The selected items to be reserved
                 Oid : selectedItemForReserve.id
             };
+            console.log(requestData);
 
-            // Call the API to reserve items
+            //Call the API to reserve items
             const response = await fetch("http://localhost:5001/api/admin/main/special-reserved", {
                 method: "POST",
                 headers: {

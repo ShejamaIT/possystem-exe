@@ -2630,6 +2630,7 @@ router.get("/accept-order-details", async (req, res) => {
         // ✅ Group items by I_Id
         const groupedItemsMap = new Map();
         for (const item of itemsResult) {
+            const id = item.id;
             const key = item.I_Id;
             const qty = item.qty;
             const unitPrice = item.unitPrice;
@@ -2647,6 +2648,7 @@ router.get("/accept-order-details", async (req, res) => {
                 existing.bookedQuantity += item.bookedQty;
             } else {
                 groupedItemsMap.set(key, {
+                    id:item.id,
                     itemId: item.I_Id,
                     itemName: item.I_name,
                     color: item.color,
@@ -2813,7 +2815,7 @@ router.get("/issued-order-details", async (req, res) => {
         // 2️⃣ Fetch Ordered Items
         const itemsQuery = `
             SELECT
-                od.I_Id, i.I_name, i.color, od.qty, od.tprice,
+                od.id,od.I_Id, i.I_name, i.color, od.qty, od.tprice,
                 od.discount AS unitDiscount,
                 i.price AS unitPrice,
                 i.bookedQty, i.availableQty, i.stockQty
@@ -2842,6 +2844,7 @@ router.get("/issued-order-details", async (req, res) => {
                 existing.bookedQuantity += item.bookedQty;
             } else {
                 groupedItemsMap.set(item.I_Id, {
+                    id:item.id,
                     itemId: item.I_Id,
                     itemName: item.I_name,
                     color: item.color,
@@ -3046,7 +3049,7 @@ router.get("/returned-order-details", async (req, res) => {
         // 2️⃣ Ordered Items
         const itemsQuery = `
             SELECT
-                od.I_Id, i.I_name, i.color, od.qty, od.tprice,
+                od.id,od.I_Id, i.I_name, i.color, od.qty, od.tprice,
                 od.discount AS unitDiscount,
                 i.price AS unitPrice,
                 i.bookedQty, i.availableQty, i.stockQty
@@ -3101,6 +3104,7 @@ router.get("/returned-order-details", async (req, res) => {
                 const amountBeforeDiscount = item.unitPrice * item.qty;
                 const totalDiscountAmount = item.unitDiscount * item.qty;
                 return {
+                    id:item.id,
                     itemId: item.I_Id,
                     itemName: item.I_name,
                     color: item.color,
@@ -3203,7 +3207,7 @@ router.get("/cancel-order-details", async (req, res) => {
         // 2️⃣ Ordered Items
         const itemsQuery = `
             SELECT
-                od.I_Id, i.I_name, i.color, od.qty, od.tprice,
+                od.id,od.I_Id, i.I_name, i.color, od.qty, od.tprice,
                 od.discount AS unitDiscount,
                 i.price AS unitPrice,
                 i.bookedQty, i.availableQty, i.stockQty
@@ -3258,6 +3262,7 @@ router.get("/cancel-order-details", async (req, res) => {
                 const amountBeforeDiscount = item.unitPrice * item.qty;
                 const totalDiscountAmount = item.unitDiscount * item.qty;
                 return {
+                    id:item.id,
                     itemId: item.I_Id,
                     itemName: item.I_name,
                     color: item.color,
@@ -4283,6 +4288,7 @@ router.get("/order-details", async (req, res) => {
                 existing.bookedQuantity += item.bookedQty;
             } else {
                 groupedItemsMap.set(key, {
+                    id:item.id,
                     itemId: item.I_Id,
                     itemName: item.I_name,
                     color: item.color,
@@ -10225,7 +10231,7 @@ router.post("/special-reserved", async (req, res) => {
             // ✅ Update p_i_detail status to 'Reserved' and set orID
             await db.query(
                 `UPDATE p_i_detail
-                 SET status = 'Reserved', orID = ?, datetime = NOW()
+                 SET status = 'Reserved', orID = ?
                  WHERE pid_Id = ?`,
                 [orID, item.pid_Id]
             );

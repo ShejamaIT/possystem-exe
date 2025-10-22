@@ -581,11 +581,15 @@ const CompleteOrderDetails = () => {
         if (!order || !order.orderId) {
             return;
         }
+        const reservedItems = selectedItems.map(item => ({
+            I_Id: item.I_Id,
+            pid_Id: item.pid_Id,
+        }));
 
         try {
             const requestData = {
                 orID: order.orderId,  // Order ID from your data
-                selectedItems: selectedItems,  // The selected items to be reserved
+                selectedItems: reservedItems,  // The selected items to be reserved
                 Oid : selectedItemForReserve.id
             };
 
