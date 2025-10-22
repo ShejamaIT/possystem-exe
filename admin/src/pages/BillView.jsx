@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect, useMemo } from "react";
 import "../style/receiptView.css";
 
-const ReceiptView = ({ receiptData, setShowReceiptView }) => {
+const BillView = ({ receiptData, setShowReceiptView }) => {
   const receiptRef = useRef(null);
   const fullInvoiceRef = useRef(null);
   const [empName, setEmpName] = useState('');
@@ -427,8 +427,8 @@ const ReceiptView = ({ receiptData, setShowReceiptView }) => {
                   <td>{item.itemName}</td>
                   <td>{item.unitPrice.toFixed(2)}</td>
                   {/* <td>{item.discount.toFixed(2)}</td> */}
-                  <td>{(item.unitPrice - item.discount).toFixed(2)}</td>
-                  <td>{(item.quantity * (item.unitPrice - item.discount)).toFixed(2)}</td>
+                  <td>{item.price.toFixed(2)}</td>
+                  <td>{(item.quantity * (item.price)).toFixed(2)}</td>
                 </tr>
               ))}
             </tbody>
@@ -631,4 +631,4 @@ const ReceiptView = ({ receiptData, setShowReceiptView }) => {
   );
 };
 
-export default ReceiptView;
+export default BillView;

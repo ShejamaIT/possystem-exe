@@ -13,6 +13,7 @@ import Swal from "sweetalert2";
 import FinalInvoice1 from "./FinalInvoice1";
 import MakeDeliveryNoteNow from "./MakeDeliveryNoteNow";
 import ReceiptView from "./ReceiptView";
+import BillView from "./BillView";
 import DeliveryNoteViewNow from "./DeliveryNoteViewNow";
 import { v4 as uuidv4 } from 'uuid';
 import MakeGatePassNow from "./MakeGatePassNow";
@@ -277,7 +278,7 @@ const OrderInvoice = ({ onPlaceOrder }) => {
 
         // Total price before discount
         const totalBeforeDiscount = selectedItems.reduce((total, item) => {
-            const unitPrice = item.originalPrice ?? item.price;
+            const unitPrice = item.originalPrice;
             return total + unitPrice * item.qty;
         }, 0);
         setTotalItemPricebeforeDiscount(totalBeforeDiscount);
@@ -291,9 +292,9 @@ const OrderInvoice = ({ onPlaceOrder }) => {
 
         // Total price after discount
         const itemTotal = selectedItems.reduce((total, item) => {
-            const unitPrice = item.originalPrice ?? item.price;
+            const unitPrice = item.originalPrice;
             const specialDiscount = item.discount || 0;
-            const discountedPrice = unitPrice - specialDiscount;
+            const discountedPrice = item.price;
             return total + discountedPrice * item.qty;
         }, 0);
         setTotalItemPrice(itemTotal);
@@ -625,6 +626,7 @@ const OrderInvoice = ({ onPlaceOrder }) => {
         const updatedItems = await fetchItems();  // Wait for the updated items list
 
         if (!selectedItem) return;
+        console.log(selectedItem);
 
         // Use `updatedItems` to find the selected item
         const updatedSelectedItem = updatedItems.find(item => item.I_Id === selectedItem.I_Id);
@@ -650,7 +652,9 @@ const OrderInvoice = ({ onPlaceOrder }) => {
 
         // Calculate discount and price
         const specialDiscount = parseFloat(discount) || 0;
+        const sellPrice = parseFloat(sellingPrice);
         const discountedPrice = updatedSelectedItem.price - specialDiscount;
+        console.log(sellPrice,specialDiscount,discountedPrice);
 
         // Update `selectedItems` array
         const existingIndex = selectedItems.findIndex(item => item.I_Id === updatedSelectedItem.I_Id);
@@ -659,14 +663,14 @@ const OrderInvoice = ({ onPlaceOrder }) => {
         if (existingIndex !== -1) {
             updatedSelectedItems[existingIndex].qty += quantity;
             updatedSelectedItems[existingIndex].discount = specialDiscount;
-            updatedSelectedItems[existingIndex].price = discountedPrice;
+            updatedSelectedItems[existingIndex].price = sellPrice;
             updatedSelectedItems[existingIndex].originalPrice = updatedSelectedItem.price;
         } else {
             updatedSelectedItems.push({
                 ...updatedSelectedItem,
                 qty: quantity,
                 discount: specialDiscount,
-                price: discountedPrice,
+                price: sellPrice,
                 originalPrice: updatedSelectedItem.price,
                 itemName: updatedSelectedItem.I_name,
                 unitPrice: updatedSelectedItem.price,
@@ -674,6 +678,7 @@ const OrderInvoice = ({ onPlaceOrder }) => {
         }
 
         setSelectedItems(updatedSelectedItems);
+        console.log(updatedSelectedItems);
 
         // Generate new items (1 per quantity)
         const newFlatItems = Array.from({ length: quantity }, () => ({
@@ -681,7 +686,7 @@ const OrderInvoice = ({ onPlaceOrder }) => {
             uid: uuidv4(),
             qty: 1,
             discount: specialDiscount,
-            price: discountedPrice,
+            price: sellPrice,
             originalPrice: updatedSelectedItem.price,
             itemName: updatedSelectedItem.I_name,
             unitPrice: updatedSelectedItem.price,
@@ -1138,9 +1143,9 @@ const OrderInvoice = ({ onPlaceOrder }) => {
             : 0;
 
         const items = selectedItems.map(item => {
-            const unitPrice = parseFloat(item.originalPrice || item.price || 0);
+            const unitPrice = parseFloat(item.originalPrice|| 0);
             const discount = parseFloat(item.discount || 0);
-            const grossPrice = unitPrice - discount;
+            const grossPrice = parseFloat(item.price);
             const netPrice = grossPrice * item.qty;
 
             return {
@@ -1155,6 +1160,7 @@ const OrderInvoice = ({ onPlaceOrder }) => {
                 
             };
         });
+        console.log(items);
         if(formData.issuable === 'Later'){
             const updatedData = {
                 recepitId: receiptId,
@@ -1187,6 +1193,7 @@ const OrderInvoice = ({ onPlaceOrder }) => {
                 specialNote: formData.specialNote,
                 billNumber: formData.billNumber || '-',
             };
+            console.log(updatedData);
             setReceiptData(updatedData);
             setShowReceiptView(true);
         }else{
@@ -2149,21 +2156,34 @@ const OrderInvoice = ({ onPlaceOrder }) => {
                                             setSellingPrice(value);
 
                                             if (selectedItem && value !== "") {
-                                            const discountValue = (
-                                                selectedItem.price - parseFloat(value)
-                                            ).toFixed(2);
+                                                const selling = parseFloat(value);
+                                                const itemPrice = parseFloat(selectedItem.price);
 
-                                            setDiscount(discountValue > 0 ? discountValue : "");
+                                                if (isNaN(itemPrice) || isNaN(selling)) {
+                                                setDiscount("");
+                                                return;
+                                                }
+
+                                                if (selling > itemPrice) {
+                                                // Selling price can't exceed base price → no discount
+                                                setDiscount("0");
+                                                } else {
+                                                // Calculate discount difference
+                                                const discountValue = (itemPrice - selling).toFixed(2);
+                                                setDiscount(discountValue);
+                                                }
                                             } else {
-                                            setDiscount("");
+                                                // Empty input → reset discount
+                                                setDiscount("");
                                             }
                                         }
+
                                         }}
                                     />
                                 </div>
 
                                 {/* Item Discount */}
-                                <div className="item-entry-field">
+                                {/* <div className="item-entry-field">
                                     <label>Item Discount</label>
                                     <input
                                         type="text"
@@ -2180,7 +2200,7 @@ const OrderInvoice = ({ onPlaceOrder }) => {
                                         }}
                                         placeholder="Enter discount"
                                     />
-                                </div>
+                                </div> */}
 
                                 {/* Qty */}
                                 <div className="item-entry-field">
@@ -2251,7 +2271,7 @@ const OrderInvoice = ({ onPlaceOrder }) => {
                                 <tr>
                                     <th>Product</th>
                                     <th>Unit Price</th>
-                                    <th>Special Discount</th>
+                                    {/* <th>Special Discount</th> */}
                                     <th>Gross Total</th>
                                     <th>Qty</th>
                                     <th>Net Total</th>
@@ -2261,16 +2281,16 @@ const OrderInvoice = ({ onPlaceOrder }) => {
                                 <tbody>
                                 {selectedItems.length > 0 ? (
                                     selectedItems.map((item, index) => {
-                                        const unitPrice = item.originalPrice || item.price;
+                                        const unitPrice = item.originalPrice;
                                         const discount = item.discount || 0;
-                                        const grossTotal = unitPrice - discount;
-                                        const netTotal = grossTotal * item.qty;
+                                        const grossTotal = item.price;
+                                        const netTotal = item.price * item.qty;
 
                                         return (
                                             <tr key={index}>
                                                 <td className="">{item.I_name}</td>
                                                 <td>Rs.{unitPrice.toFixed(2)}</td>
-                                                <td>Rs.{discount.toFixed(2)}</td>
+                                                {/* <td>Rs.{discount.toFixed(2)}</td> */}
                                                 <td>Rs.{grossTotal.toFixed(2)}</td>
                                                 <td>{item.qty}</td>
                                                 <td className="font-semibold text-green-700">Rs.{netTotal.toFixed(2)}</td>
@@ -2536,8 +2556,8 @@ const OrderInvoice = ({ onPlaceOrder }) => {
                     <div className="order-details mt-4 border rounded-lg p-4 bg-white shadow-sm w-full max-w-md">
                         <div className="custom-line-items space-y-2">
                             {[
-                                { label: 'Total Amount  ()', value: totalItemPricebeforeDiscount },
-                                { label: 'Item Discount  (➖)', value: itemdiscountAmount },
+                                // { label: 'Total Amount  ()', value: totalItemPricebeforeDiscount },
+                                // { label: 'Item Discount  (➖)', value: itemdiscountAmount },
                                 { label: 'Total Item Price  ()', value: totalItemPrice },
                                 { label: 'Coupon Discount   (➖)', value: discountAmount },
                                 { label: 'Special Discount   (➖)', value: specialdiscountAmount },
@@ -3424,7 +3444,7 @@ const OrderInvoice = ({ onPlaceOrder }) => {
                     />
                 )}
                 {showReceiptView && (
-                    <ReceiptView
+                    <BillView
                         receiptData={receiptData}
                         setShowReceiptView={setShowReceiptView}
                     />
