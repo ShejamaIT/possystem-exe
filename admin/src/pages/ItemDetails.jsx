@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import Helmet from "../components/Helmet/Helmet";
-import { Container, Row, Col, Button, Input, FormGroup, Label, Modal, ModalHeader, ModalBody, ModalFooter,Nav, NavItem, NavLink ,TabContent, TabPane } from "reactstrap";
+import { Container,Table, Row, Col, Button, Input, FormGroup, Label, Modal, ModalHeader, ModalBody, ModalFooter,Nav, NavItem, NavLink ,TabContent, TabPane } from "reactstrap";
 import classnames from "classnames";
 import { useParams } from "react-router-dom";
 import NavBar from "./NavBar/Navbar";
@@ -647,125 +647,171 @@ const ItemDetails = () => {
                                                 
                                             </Col>
                                         </Row>
-                                        <Row>
-                                            <Col>
-                                            {!isEditing ? (
-                                                    <p><strong>Stock Quantity:</strong> {item.stockQty}</p>
-                                                ) : (
-                                                    <FormGroup>
-                                                        <Label><strong>Stock Quantity:</strong></Label>
-                                                        <Input
-                                                            type="text"
-                                                            name="stockQty"
-                                                            value={formData.stockQty}
-                                                            onChange={handleChange}
-                                                        />
-                                                    </FormGroup>
-                                                )}
-                                                {!isEditing ? (
-                                                    <p><strong>Available Quantity:</strong> {item.availableQty}</p>
-                                                ) : (
-                                                    <FormGroup>
-                                                        <Label><strong>Available Quantity:</strong></Label>
-                                                        <Input
-                                                            type="text"
-                                                            name="availableQty"
-                                                            value={formData.availableQty}
-                                                            onChange={handleChange}
-                                                        />
-                                                    </FormGroup>
-                                                )}
-                                                {!isEditing ? (
-                                                    <p><strong>Booked Quantity:</strong> {item.bookedQty}</p>
-                                                ) : (
-                                                    <FormGroup>
-                                                        <Label><strong>Booked Quantity:</strong></Label>
-                                                        <Input
-                                                            type="text"
-                                                            name="bookedQty"
-                                                            value={formData.bookedQty}
-                                                            onChange={handleChange}
-                                                        />
-                                                    </FormGroup>
-                                                )}
-                                            </Col>
-                                        </Row>
-                                        <Row>
-                                            <Col>
-                                                {!isEditing ? (
-                                                    <p><strong>Damage Quantity:</strong> {item.damageQty}</p>
-                                                ) : (
-                                                    <FormGroup>
-                                                        <Label><strong>Damage Quantity:</strong></Label>
-                                                        <Input
-                                                            type="text"
-                                                            name="damageQty"
-                                                            value={formData.damageQty}
-                                                            onChange={handleChange}
-                                                        />
-                                                    </FormGroup>
-                                                )}
-                                                {!isEditing ? (
-                                                    <p><strong>Reserved Quantity:</strong> {item.reservedQty}</p>
-                                                ) : (
-                                                    <FormGroup>
-                                                        <Label><strong>Reserved Quantity:</strong></Label>
-                                                        <Input
-                                                            type="text"
-                                                            name="reservedQty"
-                                                            value={formData.reservedQty}
-                                                            onChange={handleChange}
-                                                        />
-                                                    </FormGroup>
-                                                )}
-                                                {!isEditing ? (
-                                                    <p><strong>Dispatched Quantity:</strong> {item.dispatchedQty}</p>
-                                                ) : (
-                                                    <FormGroup>
-                                                        <Label><strong>Dispatched Quantity:</strong></Label>
-                                                        <Input
-                                                            type="text"
-                                                            name="dispatchedQty"
-                                                            value={formData.dispatchedQty}
-                                                            onChange={handleChange}
-                                                        />
-                                                    </FormGroup>
-                                                )}
-                                            </Col>
-                                        </Row>
                                     </div>
                                 </div>
-                                {/* Supplier Details */}
-                                <div>
-                                    <h5 className="mt-4">Supplier List</h5>
+                                <div className="mt-4">
                                     <Row>
-                                        {suppliers.map((supplier) => (
-                                        <Col key={supplier.s_ID} lg="4" md="6" sm="12">
-                                            <div className="supplier-card">
-                                            <h3>{supplier.name}</h3>
-                                            <p><strong>Supplier ID:</strong> {supplier.s_ID}</p>
+                                        {/* ===== LEFT: STOCK INFO ===== */}
+                                        <Col lg="6" md="12">
+                                        <div className="p-3 border rounded bg-light shadow-sm">
+                                            <h5 className="mb-3">Stock Information</h5>
+                                            <Table bordered hover responsive className="align-middle">
+                                            <tbody>
+                                                <tr>
+                                                <td><strong>Stock Quantity</strong></td>
+                                                <td>
+                                                    {!isEditing ? (
+                                                    item.stockQty
+                                                    ) : (
+                                                    <Input
+                                                        type="text"
+                                                        name="stockQty"
+                                                        value={formData.stockQty}
+                                                        onChange={handleChange}
+                                                        bsSize="sm"
+                                                    />
+                                                    )}
+                                                </td>
+                                                <td><strong>Available Quantity</strong></td>
+                                                <td>
+                                                    {!isEditing ? (
+                                                    item.availableQty
+                                                    ) : (
+                                                    <Input
+                                                        type="text"
+                                                        name="availableQty"
+                                                        value={formData.availableQty}
+                                                        onChange={handleChange}
+                                                        bsSize="sm"
+                                                    />
+                                                    )}
+                                                </td>
+                                                </tr>
 
-                                            <FormGroup>
-                                                {!isEditing ? (
-                                                <p><strong>Cost:</strong> {supplier.unit_cost}</p>
-                                                ) : (
-                                                <Input
-                                                    type="text"
-                                                    name="unit_cost"
-                                                    value={supplier.unit_cost}
-                                                    onChange={(e) => handleChange(e, supplier.s_ID)}
-                                                />
-                                                )}
-                                            </FormGroup>
+                                                <tr>
+                                                <td><strong>Booked Quantity</strong></td>
+                                                <td>
+                                                    {!isEditing ? (
+                                                    item.bookedQty
+                                                    ) : (
+                                                    <Input
+                                                        type="text"
+                                                        name="bookedQty"
+                                                        value={formData.bookedQty}
+                                                        onChange={handleChange}
+                                                        bsSize="sm"
+                                                    />
+                                                    )}
+                                                </td>
+                                                <td><strong>Damage Quantity</strong></td>
+                                                <td>
+                                                    {!isEditing ? (
+                                                    item.damageQty
+                                                    ) : (
+                                                    <Input
+                                                        type="text"
+                                                        name="damageQty"
+                                                        value={formData.damageQty}
+                                                        onChange={handleChange}
+                                                        bsSize="sm"
+                                                    />
+                                                    )}
+                                                </td>
+                                                </tr>
 
-                                            <Button color="danger" onClick={() => handleRemoveSupplier(supplier.s_ID)}>
-                                               🗑️
-                                            </Button>
-                                            </div>
+                                                <tr>
+                                                <td><strong>Reserved Quantity</strong></td>
+                                                <td>
+                                                    {!isEditing ? (
+                                                    item.reservedQty
+                                                    ) : (
+                                                    <Input
+                                                        type="text"
+                                                        name="reservedQty"
+                                                        value={formData.reservedQty}
+                                                        onChange={handleChange}
+                                                        bsSize="sm"
+                                                    />
+                                                    )}
+                                                </td>
+                                                <td><strong>Dispatched Quantity</strong></td>
+                                                <td>
+                                                    {!isEditing ? (
+                                                    item.dispatchedQty
+                                                    ) : (
+                                                    <Input
+                                                        type="text"
+                                                        name="dispatchedQty"
+                                                        value={formData.dispatchedQty}
+                                                        onChange={handleChange}
+                                                        bsSize="sm"
+                                                    />
+                                                    )}
+                                                </td>
+                                                </tr>
+                                            </tbody>
+                                            </Table>
+                                        </div>
                                         </Col>
-                                        ))}
+
+                                        {/* ===== RIGHT: SUPPLIERS ===== */}
+                                        <Col lg="6" md="12">
+                                        <div className="p-3 border rounded bg-light shadow-sm">
+                                            <h5 className="mb-3">Supplier List</h5>
+                                            <Table bordered hover responsive className="align-middle">
+                                            <thead className="table-light">
+                                                <tr>
+                                                <th>Supplier ID</th>
+                                                <th>Name</th>
+                                                <th>Unit Cost</th>
+                                                <th style={{ width: "100px", textAlign: "center" }}>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {suppliers.length > 0 ? (
+                                                suppliers.map((supplier) => (
+                                                    <tr key={supplier.s_ID}>
+                                                    <td>{supplier.s_ID}</td>
+                                                    <td>{supplier.name}</td>
+                                                    <td>
+                                                        {!isEditing ? (
+                                                        supplier.unit_cost
+                                                        ) : (
+                                                        <Input
+                                                            type="text"
+                                                            name="unit_cost"
+                                                            value={supplier.unit_cost}
+                                                            onChange={(e) => handleChange(e, supplier.s_ID)}
+                                                            bsSize="sm"
+                                                        />
+                                                        )}
+                                                    </td>
+                                                    <td className="text-center">
+                                                        <Button
+                                                        color="danger"
+                                                        size="sm"
+                                                        onClick={() => handleRemoveSupplier(supplier.s_ID)}
+                                                        >
+                                                        🗑️
+                                                        </Button>
+                                                    </td>
+                                                    </tr>
+                                                ))
+                                                ) : (
+                                                <tr>
+                                                    <td colSpan="4" className="text-center text-muted">
+                                                    No suppliers found
+                                                    </td>
+                                                </tr>
+                                                )}
+                                            </tbody>
+                                            </Table>
+                                        </div>
+                                        </Col>
                                     </Row>
                                     </div>
+
+
                                 {/* Buttons */}
                                 <div className="text-center mt-4">
                                     {!isEditing ? (

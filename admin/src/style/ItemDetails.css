@@ -64,13 +64,14 @@
 
 /* Style for text view */
 .item-general p {
-    margin: 5px 15px;
+    margin: 8px 35px;
     font-size: 16px;
     color: #2c3e50;
 }
 
 /* Style for editable form groups */
 .item-general .form-group {
+    margin: 8px 35px;
     margin-bottom: 20px;
     width: 100%; /* Ensures full width for better alignment */
 }
@@ -86,7 +87,8 @@
 .item-general .form-group input,
 .item-general .form-group textarea,
 .item-general .form-group select {
-    padding: 8px 12px;
+    margin: 8px 35px;
+    /* padding: 8px 12px; */
     font-size: 15px;
 }
 

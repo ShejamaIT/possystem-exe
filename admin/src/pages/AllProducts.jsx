@@ -7,6 +7,7 @@ import Tableforproduction from "../components/tables/Tableforproduction";
 import TableInProduction from "../components/tables/TableInProduction";
 import AddProduct from "./AddProducts";
 import AddOtherDetails from "./AddOtherDetails";
+import DamageStock from "./DamageStock";
 import PurchaseDetails from "./purchaseitem";
 import SupplierPayment from "./SupplierPayments";
 import classnames from "classnames";
@@ -93,6 +94,13 @@ const AllProducts = () => {
                             <Row>
                                 <Col>
                                     <TableInProduction />
+                                </Col>
+                            </Row>
+                        </TabPane>
+                        <TabPane tabId="Damage Stock">
+                            <Row>
+                                <Col>
+                                    <DamageStock />
                                 </Col>
                             </Row>
                         </TabPane>

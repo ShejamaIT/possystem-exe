@@ -422,6 +422,50 @@ router.post("/delete-more-stock/delete-multiple", async (req, res) => {
     });
 });
 
+// Get Damage item stock 
+router.get("/damaged-items", async (req, res) => {
+  try {
+    const [damagedItems] = await db.query(`
+      SELECT 
+          pid.pid_Id,
+          pid.stock_Id,
+          pid.pc_Id,
+          i.I_name AS item_name,
+          s.name AS supplier_name,
+          DATE(pid.datetime) AS damage_date
+      FROM p_i_detail pid
+      JOIN item i ON pid.I_Id = i.I_Id
+      JOIN purchase p ON pid.pc_Id = p.pc_Id
+      JOIN supplier s ON p.s_ID = s.s_ID
+      WHERE pid.status = 'Damage'
+      ORDER BY pid.datetime DESC;
+    `);
+
+    if (damagedItems.length === 0) {
+      return res.status(404).json({ success: false, message: "No damaged items found" });
+    }
+
+    res.status(200).json({
+      success: true,
+      count: damagedItems.length,
+      damagedItems: damagedItems.map(item => ({
+        pid_Id: item.pid_Id,
+        stock_Id: item.stock_Id,
+        purchase_note: item.pc_Id,
+        supplier_name: item.supplier_name,
+        item_name: item.item_name,
+        damage_date: item.damage_date // now just "YYYY-MM-DD"
+      }))
+    });
+
+  } catch (error) {
+    console.error("❌ Error fetching damaged items:", error);
+    res.status(500).json({ success: false, message: "Server error", error: error.message });
+  }
+});
+
+
+
 // Assuming you are using mysql2/promise with db.query
 router.get("/orders/new-id", async (req, res) => {
   try {
