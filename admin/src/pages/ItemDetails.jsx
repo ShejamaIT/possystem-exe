@@ -382,7 +382,7 @@ const ItemDetails = () => {
             const response = await fetch(`http://localhost:5001/api/admin/main/item-details?I_Id=${id}`);
             if (!response.ok) throw new Error("Failed to fetch item details.");
             const data = await response.json();
-
+            console.log(data);
             const response1 = await fetch(`http://localhost:5001/api/admin/main/orders/by-item/${id}`);
             const data1 = await response1.json();
             setItem(data.item);
@@ -971,6 +971,7 @@ const ItemDetails = () => {
                                                 <th>Stock ID</th>
                                                 <th>Batch ID</th>
                                                 <th>Status</th>
+                                                <th>Order Ref</th>
                                                 <th>Action</th>
                                             </tr>
                                             </thead>
@@ -1013,9 +1014,11 @@ const ItemDetails = () => {
                                                             className="form-control"
                                                         >
                                                             <option value="Available">Available</option>
+                                                            <option value="Reserved">Reserved</option>
                                                             <option value="Damage">Damage</option>
                                                         </select>
                                                     </td>
+                                                    <td>{stockItem.orderRef}</td>
                                                     <td>
                                                         <Row>
                                                             <Col lg={6}>

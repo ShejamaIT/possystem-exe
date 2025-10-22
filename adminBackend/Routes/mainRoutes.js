@@ -4419,7 +4419,8 @@ router.get("/item-details", async (req, res) => {
         // ✅ Fetch item details from Item table
         const itemQuery = `
             SELECT
-                I.I_Id, I.I_name, I.descrip, I.price, I.stockQty, I.bookedQty, I.availableQty, I.minQTY, I.damageQty , I.reservedQty ,  I.dispatchedQty,
+                I.I_Id, I.I_name, I.descrip, I.price, I.stockQty, I.bookedQty, I.availableQty, 
+                I.minQTY, I.damageQty, I.reservedQty, I.dispatchedQty,
                 I.warrantyPeriod, I.color, I.material
             FROM Item I
             WHERE I.I_Id = ?`;
@@ -4436,7 +4437,7 @@ router.get("/item-details", async (req, res) => {
         const supplierQuery = `
             SELECT S.s_ID, S.name, S.contact, ISUP.unit_cost
             FROM Supplier S
-                     JOIN item_supplier ISUP ON S.s_ID = ISUP.s_ID
+            JOIN item_supplier ISUP ON S.s_ID = ISUP.s_ID
             WHERE ISUP.I_Id = ?`;
 
         const [suppliersResult] = await db.query(supplierQuery, [I_Id]);
@@ -4449,8 +4450,18 @@ router.get("/item-details", async (req, res) => {
         }));
 
         // ✅ Fetch stock details from `p_i_detail` table
+        // Include conditional logic for order ID display
         const stockQuery = `
-            SELECT pid_Id, stock_Id, pc_Id, status, orID, datetime
+            SELECT 
+                pid_Id, 
+                stock_Id, 
+                pc_Id, 
+                status,
+                CASE 
+                    WHEN status = 'Reserved' THEN orID
+                    ELSE '-'
+                END AS orderRef,
+                datetime
             FROM p_i_detail
             WHERE I_Id = ?
               AND status IN ('Available', 'Damage', 'Reserved')
@@ -4463,7 +4474,7 @@ router.get("/item-details", async (req, res) => {
             stock_Id: stock.stock_Id,
             pc_Id: stock.pc_Id,
             status: stock.status,
-            orID: stock.orID,
+            orderRef: stock.orderRef, // '-' if available/damage, orderId if reserved
             datetime: stock.datetime
         }));
 
@@ -4480,13 +4491,13 @@ router.get("/item-details", async (req, res) => {
                 stockQty: itemData.stockQty,
                 availableQty: itemData.availableQty,
                 bookedQty: itemData.bookedQty,
-                dispatchedQty : itemData.dispatchedQty,
+                dispatchedQty: itemData.dispatchedQty,
                 reservedQty: itemData.reservedQty,
                 damageQty: itemData.damageQty,
                 warrantyPeriod: itemData.warrantyPeriod,
                 minQTY: itemData.minQTY,
                 suppliers: suppliers,
-                stockDetails: stockDetails // Only 'Available', 'Reserved', 'Damage'
+                stockDetails: stockDetails
             }
         };
 
@@ -4497,6 +4508,7 @@ router.get("/item-details", async (req, res) => {
         return res.status(500).json({ success: false, message: "Server error", error: error.message });
     }
 });
+
 
 // Get all orders (with customer contact info)
 router.get("/ordersAll", async (req, res) => {
