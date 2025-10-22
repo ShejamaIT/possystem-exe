@@ -88,7 +88,6 @@ const SupplierDetails = ({ supplier }) => {
                 const data = await response.json();
 
                 if (response.ok) {
-                    console.log("Fetched items:", data.items); // Good for debugging
                     setItemsList(data.items || []); // Always set items list (even if empty)
                 } else {
                     console.error("Failed to load supplier items:", data.message);

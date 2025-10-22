@@ -62,7 +62,6 @@ const AdvancePayment = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        console.log(name, value );
         setFormData((prev) => ({
             ...prev,
             [name]: name === "advance" ? parseFloat(value) || "" : value,

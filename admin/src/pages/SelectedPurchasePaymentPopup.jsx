@@ -10,7 +10,6 @@ const SelectedPurchasePaymentPopup = ({
   onSubmit,
   loading = false,
 }) => {
-  console.log(selectedOrders);
   const [ordersState, setOrdersState] = useState([]);
   const [payRows, setPayRows] = useState({});
   const [formData, setFormData] = useState({ payment: "", subPayment: "" });
@@ -187,8 +186,6 @@ const SelectedPurchasePaymentPopup = ({
       },
       purchases: payload, // ✅ use "purchases" instead of "orders"
     };
-
-    console.log("Sending request to backend:", requestBody);
 
     try {
       const response = await fetch("http://localhost:5001/api/admin/main/purchase/settle-payments", {

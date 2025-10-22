@@ -5,7 +5,6 @@ import { toast } from "react-toastify";
 const MakeDeliveryNoteNow = ({ selectedOrders, setShowModal, handleDeliveryUpdate }) => {
     // Ensure selectedOrders is a single object (in case passed as array)
     const order = Array.isArray(selectedOrders) ? selectedOrders[0] : selectedOrders;
-    console.log(order);
     const [vehicleId, setVehicleId] = useState("");
     const [driverName, setDriverName] = useState("");
     const [driverId, setDriverId] = useState("");
@@ -19,7 +18,6 @@ const MakeDeliveryNoteNow = ({ selectedOrders, setShowModal, handleDeliveryUpdat
     const [filteredVehicle, setFilteredVehicle] = useState([]);
 
     useEffect(() => {
-        console.log(order);
         setBalanceToCollect(order.totalPrice - order.advance);
     }, [order]);
 
@@ -102,7 +100,6 @@ const MakeDeliveryNoteNow = ({ selectedOrders, setShowModal, handleDeliveryUpdat
     };
 
    const handleSelectVehicle = (vehicle) => {
-        console.log(vehicle);
         setVehicle(vehicle.registration_no); // for displaying in input
         setVehicleId(vehicle.registration_no); // for saving actual value
         setFilteredVehicle([]);

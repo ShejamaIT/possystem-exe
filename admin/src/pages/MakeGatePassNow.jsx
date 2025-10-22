@@ -3,9 +3,7 @@ import "../style/deleiverynote.css";
 import { toast } from "react-toastify";
 
 const MakeGatePassNow = ({ selectedOrders, setShowModal, handleGatepassUpdate }) => {
-    console.log(selectedOrders);
     const order = Array.isArray(selectedOrders) ? selectedOrders[0] : selectedOrders;
-    console.log(order);
     const [vehicleId, setVehicleId] = useState("");
 
     const handlePrintAndSubmit = () => {

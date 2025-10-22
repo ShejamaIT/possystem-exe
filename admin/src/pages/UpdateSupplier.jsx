@@ -55,7 +55,6 @@ const UpdateSupplier = () => {
     const handleSelectChange = async (e) => {
         const id = e.target.value;
         setSelectedId(id);
-        console.log(id);
         if (id) {
             await fetchSupplierDetails(id);
             await fetchSupplierItems(id);

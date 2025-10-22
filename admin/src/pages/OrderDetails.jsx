@@ -99,7 +99,6 @@ const OrderDetails = () => {
             if (!response.ok) throw new Error("Failed to fetch order details.");
 
             const data = await response.json();
-            console.log(data);
             const data1 = response1.ok ? await response1.json() : { data: [] };
             setSpecialReservedItems(Array.isArray(data1.data) ? data1.data : []);
 
@@ -247,11 +246,9 @@ const OrderDetails = () => {
         };
 
         let updatedGeneralOrder = null;
-        console.log(updatedData);
 
         try {
             if (hasGeneralDetailsChanged(updatedData)) {
-                console.log("pass");
                 const generalResponse = await fetch(`http://localhost:5001/api/admin/main/update-order-details`, {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
@@ -267,7 +264,6 @@ const OrderDetails = () => {
             }
 
             if (hasItemsChanged(updatedData)) {
-                console.log("pass 1");
                 const itemsResponse = await fetch(`http://localhost:5001/api/admin/main/update-order-items`, {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
@@ -462,7 +458,6 @@ const OrderDetails = () => {
             billNumber: order.billNumber || '-',
         };
 
-        console.log(updatedData);
         setReceiptData(updatedData);
         setShowReceiptView(true);
     };

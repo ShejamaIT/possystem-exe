@@ -140,8 +140,6 @@ const UpdateEmployee = () => {
             } : null,
         };
 
-        console.log("Updated Form Data:", updatedFormData); // Log updated data to check the structure
-
         try {
             const response = await fetch(`http://localhost:5001/api/admin/main/employees/${selectedId}`, {
                 method: "PUT",
@@ -161,7 +159,6 @@ const UpdateEmployee = () => {
         }
     };
     const handleDelete = async () => {
-        console.log(selectedId);
             if (!selectedId) return;
             if (!window.confirm("Are you sure you want to delete this user?")) return;
     

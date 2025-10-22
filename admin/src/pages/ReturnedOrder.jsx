@@ -65,7 +65,6 @@ const ReturnedOrderDetails = () => {
         return dateStr; // already in correct format
     };
     const fetchOrder = async () => {
-        console.log(id);
         try {
             const response = await fetch(`http://localhost:5001/api/admin/main/returned-order-details?orID=${id}`);
             if (!response.ok) throw new Error("Failed to fetch order details.");
@@ -111,7 +110,6 @@ const ReturnedOrderDetails = () => {
                 orderStatus: formData.orderStatus,
                 deliveryStatus: formData.deliveryStatus
             };
-            console.log(updatedData);
             const response = await fetch(`http://localhost:5001/api/admin/main/updateReturnOrder`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },

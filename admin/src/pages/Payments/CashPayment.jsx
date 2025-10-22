@@ -38,9 +38,6 @@ const CashBalanceInput = () => {
       ...formData,
       amount: parseFloat(formData.amount),
     };
-    console.log(payload);
-    console.log(JSON.stringify(payload));
-
     try {
       const res = await fetch("http://localhost:5001/api/admin/main/cash-balance", {
         method: "POST",

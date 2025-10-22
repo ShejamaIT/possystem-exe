@@ -201,7 +201,6 @@ const IssuedOrderDetails = () => {
             issuable: 'Later',
         };
 
-        console.log(order);
         setReceiptData(updatedData);
         setShowReceiptView(true);
     };

@@ -2,7 +2,6 @@ import React, { useRef, useEffect } from "react";
 import "../style/receiptView.css";
 
 const PaymentReceiptView = ({ receiptData, setShowReceiptView }) => {
-    console.log(receiptData);
   const receiptRef = useRef(null);
   const currentDateTime = new Date().toLocaleString();
 

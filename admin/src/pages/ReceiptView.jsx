@@ -2,7 +2,6 @@ import React, { useRef, useState, useEffect, useMemo } from "react";
 import "../style/receiptView.css";
 
 const ReceiptView = ({ receiptData, setShowReceiptView }) => {
-  console.log(receiptData);
   const receiptRef = useRef(null);
   const fullInvoiceRef = useRef(null);
   const [empName, setEmpName] = useState('');

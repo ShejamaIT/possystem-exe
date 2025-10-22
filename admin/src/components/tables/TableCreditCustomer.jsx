@@ -20,7 +20,6 @@ const TableCreditCustomer = ({ filter, title }) => {
     try {
         const response = await fetch('http://localhost:5001/api/admin/main/allcreditcustomers');
         const data = await response.json();
-        console.log(data);
 
         const customersArray = Array.isArray(data) ? data : [];
 

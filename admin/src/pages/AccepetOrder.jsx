@@ -661,7 +661,6 @@ const OrderDetails = () => {
             billNumber: order.billNumber || '-',
             issuable: 'Later',
         };
-        console.log(updatedData);
         setReceiptData(updatedData);
         setShowReceiptView(true);
     };

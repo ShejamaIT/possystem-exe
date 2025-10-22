@@ -3,7 +3,6 @@ import "../style/receiptView.css";
 import { useState } from "react";
 
 const PaymentReceiptView = ({ receiptData, setShowReceiptView }) => {
-    console.log(receiptData);
     const currentDateTime = new Date().toLocaleString();
     const receiptRef = useRef(null);
     const fullInvoiceRef = useRef(null);

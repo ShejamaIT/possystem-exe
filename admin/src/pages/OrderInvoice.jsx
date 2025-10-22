@@ -453,7 +453,6 @@ const OrderInvoice = ({ onPlaceOrder }) => {
     }, [formData.payment, formData.subPayment, formData.cashAmount,cardPayment, totalBillPrice,cheques,grossAmount,combinedCardBalance,combinedTransferBalance,combinedChequeBalance, creditAmount, ChequeBalance,transferPortion ]);
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
-        console.log(name, value);
 
         setFormData((prev) => {
             let updatedForm = {
@@ -582,12 +581,10 @@ const OrderInvoice = ({ onPlaceOrder }) => {
     const handleSearchChange = async (e) => {
         const value = e.target.value.toLowerCase();
         setSearchTerm(value);
-        console.log(value);
 
         // ✅ If search just started (and not yet fetched), fetch fresh data once
         if (value.trim() && !fetchedForSearch) {
             const latestItems = await fetchItems();
-            console.log(latestItems);
             setFetchedForSearch(true); // only once per session
             setFilteredItems(filterItems(latestItems, value));
         } else {
@@ -706,8 +703,6 @@ const OrderInvoice = ({ onPlaceOrder }) => {
             }));
 
             setProcessedItems(prev => [...prev, ...bookedItems]);
-
-            console.log("✅ Booked Items Auto Added:", bookedItems);
         }
 
         // Reset form states
@@ -746,13 +741,6 @@ const OrderInvoice = ({ onPlaceOrder }) => {
             setSelectedItemForProduction(updatedItem);
             setShowStockModal2(true);
         }
-
-        setTimeout(() => {
-            console.log("📦 All Processed Items:", processedItems);
-            console.log("🔒 Reserved:", processedItems.filter(i => i.status === "Reserved"));
-            console.log("🏭 Production:", processedItems.filter(i => i.status === "Production"));
-            console.log("📦 Booked:", processedItems.filter(i => i.status === "Booked"));
-        }, 200);
     };
     const handleRemoveItem = (index) => {
         const updatedItems = [...selectedItems];
@@ -1045,15 +1033,11 @@ const OrderInvoice = ({ onPlaceOrder }) => {
         // ✅ Calculate totalItemPrice and totalBillPrice from selectedItems
         const totalItemPrice = itemList.reduce((sum, item) => sum + parseFloat(item.price), 0);
         let totalBillPrice =0;
-        console.log(formData.dvStatus);
         if(formData.dvStatus === "Delivery"){
-            console.log(totalItemPrice,deliveryPrice,discountAmount,specialdiscountAmount);
             totalBillPrice = totalItemPrice + parseFloat(deliveryPrice || 0) - parseFloat(discountAmount || 0) - parseFloat(specialdiscountAmount || 0);
         }else if(formData.dvStatus === "Courier"){
-            console.log(totalItemPrice,formData.courierCharge,discountAmount,specialdiscountAmount);
             totalBillPrice = totalItemPrice + parseFloat(formData.courierCharge || 0) - parseFloat(discountAmount || 0) - parseFloat(specialdiscountAmount || 0);
         }else if(formData.dvStatus === "Pickup"){
-            console.log(totalItemPrice,discountAmount,specialdiscountAmount);
             totalBillPrice = totalItemPrice - parseFloat(discountAmount || 0) - parseFloat(specialdiscountAmount || 0);
         }
         const orderData = {
@@ -1077,7 +1061,6 @@ const OrderInvoice = ({ onPlaceOrder }) => {
             ...orderData,
             processedItems,
         };
-        console.log(fullOrderData);
         const advance1 = parseFloat(advance) || 0;
         const balance1 = parseFloat(balance) || 0;
         const newTotalOrder = parseFloat(totalItemPrice) - parseFloat(discountAmount);
@@ -1093,7 +1076,6 @@ const OrderInvoice = ({ onPlaceOrder }) => {
             billBalance = billPrice - payAmount;
         }
 
-        console.log("📝 Sending Full Order Data:", fullOrderData);
         try {
             if (formData.issuable === 'Later') {
                 try {
@@ -1101,9 +1083,6 @@ const OrderInvoice = ({ onPlaceOrder }) => {
                         ...orderData,
                         processedItems,
                     };
-
-                    console.log("📝 Sending Full Order Data:", fullOrderData);
-
                     const response = await fetch("http://localhost:5001/api/admin/main/later-order", {
                         method: "POST",
                         headers: {
@@ -1111,10 +1090,7 @@ const OrderInvoice = ({ onPlaceOrder }) => {
                         },
                         body: JSON.stringify(fullOrderData),
                     });
-
-                    const result = await response.json();
-                    console.log("📝 API Response:", result); // Log the response to check its structure
-                    
+                    const result = await response.json();                    
                     if (response.ok && result.success && result.data) {
                         toast.success(`Order placed successfully! Order ID: ${orderId}`); 
                         setOrder(fullOrderData);
@@ -1137,8 +1113,6 @@ const OrderInvoice = ({ onPlaceOrder }) => {
                 });
 
                 const result = await response.json();
-                console.log("📝 API Response:", result); // Log the response to check its structure
-
                 if (response.ok && result.success && result.data) {
                     const { orderId } = result.data;
                     toast.success("Order placed successfully!");
@@ -1156,7 +1130,6 @@ const OrderInvoice = ({ onPlaceOrder }) => {
     const generateBill = async () => {
         const receiptId = await fetchRecepitID();  // Wait for ID
         const invoiceId = await fetchInvoiceID();
-        console.log(receiptId,invoiceId);
         const delprice =
         formData.dvStatus === 'Courier'
             ? formData.courierCharge
@@ -1214,7 +1187,6 @@ const OrderInvoice = ({ onPlaceOrder }) => {
                 specialNote: formData.specialNote,
                 billNumber: formData.billNumber || '-',
             };
-            console.log(updatedData);
             setReceiptData(updatedData);
             setShowReceiptView(true);
         }else{
@@ -1255,7 +1227,6 @@ const OrderInvoice = ({ onPlaceOrder }) => {
     const handleSubmit3 = async (formData) => {
          const receiptId = await fetchRecepitID();
          const invoiceId = await fetchInvoiceID();
-        console.log(formData,receiptId,invoiceId);
         // Optional: Clean or format the items if needed
         const filteredSelectedItems = (formData.selectedItems || []).map(item => ({
             I_Id: item.I_Id,
@@ -1298,7 +1269,6 @@ const OrderInvoice = ({ onPlaceOrder }) => {
             billNumber: formData.billNumber || '-',
             expectedDate: formData.expectedDate || '',
         };
-        console.log(updatedData);
          try {
                 // Make API request to the /isssued-order endpoint
                 const response = await fetch('http://localhost:5001/api/admin/main/issued-items-Now', {
@@ -1346,8 +1316,6 @@ const OrderInvoice = ({ onPlaceOrder }) => {
             selectedDeliveryDate: formData.expectedDate, // Default to today's date if empty
             district: formData.district || "Unknown",
         };
-        console.log(formData1);
-        console.log(updatedReceiptData);
         try {
             // Prepare the data for the API request
             const deliveryNoteData = {
@@ -1407,7 +1375,6 @@ const OrderInvoice = ({ onPlaceOrder }) => {
             },
             vehicleId: formData1.vehicleId,
         };
-        console.log(updatedReceiptData);
         try {
             // Prepare the data for the API request
             const gatepassData = {
@@ -1423,7 +1390,6 @@ const OrderInvoice = ({ onPlaceOrder }) => {
                 },
                 vehicleId: formData1.vehicleId,
             };
-            console.log(gatepassData);
             //Make the API call
             const response = await fetch("http://localhost:5001/api/admin/main/create-gate-pass-now", {
                 method: "POST",
@@ -1564,7 +1530,6 @@ const OrderInvoice = ({ onPlaceOrder }) => {
         }
     };
     const handleAddItem = async (newItem) => {
-        console.log(newItem);
         try {
             // 1️⃣ Validate required fields
             const requiredFields = ["I_Id", "I_name", "price", "cost", "s_Id", "minQty", "startStock"];

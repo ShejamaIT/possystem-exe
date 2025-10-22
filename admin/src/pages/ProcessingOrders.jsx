@@ -134,7 +134,6 @@ const ProdutionOrderDetails = () => {
         if (!response.ok) throw new Error("Failed to fetch main order details.");
 
         const data = await response.json();
-        console.log(data);
 
         // Safely handle optional special reserved items
         let specialItems = [];
@@ -514,7 +513,6 @@ const ProdutionOrderDetails = () => {
                     specialNote: order.specialNote,
                     billNumber: order.billNumber,
                 };
-                console.log(updatedData);
                 setShowModal1(false); // Close the modal if it's open
                 setReceiptData(updatedData);  // Set data for receipt
                 setShowReceiptView1(true);
@@ -649,7 +647,6 @@ const ProdutionOrderDetails = () => {
         }, 500);
     };
     const fetchStockDetails = async (itemId) => {
-        console.log(itemId);
         if (!itemId) {
             setItemDetails([]);
             return;
@@ -668,7 +665,6 @@ const ProdutionOrderDetails = () => {
             }
 
             const data = await response.json();
-            console.log(data.stockDetails);
             setItemDetails(data.stockDetails || []);
             if (!data.stockDetails?.length) {
                 toast.error("No stock details found.");

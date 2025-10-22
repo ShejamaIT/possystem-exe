@@ -24,8 +24,6 @@ const AddItem = () => {
         try {
             const response = await fetch("http://localhost:5001/api/admin/main/suppliers");
             const data = await response.json();
-            console.log("Fetched suppliers:", data);
-
             if (data.success) {
                 setSuppliers(data.suppliers.length > 0 ? data.suppliers : []);
             } else {
@@ -96,7 +94,6 @@ const AddItem = () => {
             }]
         };
 
-        console.log("Submitting item:", itemPayload);
 
         // Step 1: Submit item
         const itemRes = await fetch("http://localhost:5001/api/admin/main/add-item", {

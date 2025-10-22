@@ -46,7 +46,6 @@ const SupplierPayment = () => {
             }
 
             const data = await response.json();
-            console.log(data.purchaseNotes);
 
             if (!data.purchaseNotes || data.purchaseNotes.length === 0) {
                 throw new Error("No unpaid purchase notes found for this supplier.");
@@ -122,7 +121,6 @@ const SupplierPayment = () => {
     const handleSubmitSelectedPayments = async (payload) => {
         try {
             setPayLoading(true);
-            console.log("Submitting payment payload:", payload);
             toast.success("Payment submitted!");
             fetchOrder();
         } catch (e) {

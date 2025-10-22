@@ -21,7 +21,6 @@ const ReceivedCheques = () => {
     try {
         const response = await fetch("http://localhost:5001/api/admin/main/cheques/received");
         const data = await response.json();
-        console.log(data);
 
         if (data.success) {
             // Combine the two sets of data (ord_Cheque_Pay and ords_cheque_pay)

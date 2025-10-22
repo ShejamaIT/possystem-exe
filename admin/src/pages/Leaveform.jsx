@@ -51,9 +51,6 @@ const Leaveform = () => {
             toast.error("Please fill out all required details.");
             return;
         }
-
-        console.log(formData);
-
         try {
             const response = await fetch("http://localhost:5001/api/admin/main/add-leave", {
                 method: "POST",

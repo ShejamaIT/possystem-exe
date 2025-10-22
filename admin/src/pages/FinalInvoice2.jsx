@@ -167,7 +167,6 @@ const FinalInvoice2 = ({ selectedOrder, setShowModal2, handlePaymentUpdate }) =>
         };
     
     const handleSelectItem = (item) => {
-        console.log(item);
         const orderedItem = selectedOrder.items.find(orderItem => orderItem.itemId === item.I_Id);
 
         if (!orderedItem) {

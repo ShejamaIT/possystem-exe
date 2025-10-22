@@ -29,8 +29,6 @@ const TableAllItem = () => {
         try {
             const response = await fetch("http://localhost:5001/api/admin/main/allitems");
             const data = await response.json();
-            console.log(data);
-
             if (Array.isArray(data) && data.length > 0) {
                 setItems(data);
                 setFilteredItems(data);

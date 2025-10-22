@@ -81,11 +81,7 @@ const DeliveryNotes = () => {
                     delivery : order.deliveryCharge,
                     billNumber: order.billNumber,
                 })),
-            };
-            console.log(updatedReceiptData);
-            console.log(deliveryNoteData);
-            // Uncomment to activate API call
-            
+            };            
             const response = await fetch("http://localhost:5001/api/admin/main/create-delivery-note", {
                 method: "POST",
                 headers: {
@@ -211,7 +207,6 @@ const DeliveryNotes = () => {
     };
 
     const handleOrderSelection = (order) => {
-        console.log(order);
         const updatedOrders = selectedOrders.includes(order)
             ? selectedOrders.filter(o => o !== order)
             : [...selectedOrders, order];
@@ -314,7 +309,6 @@ const DeliveryNotes = () => {
                     : order
             )
         );
-        console.log(updatedData);
 
         try {
             const response = await fetch('http://localhost:5001/api/admin/main/issued-items-Later', {

@@ -120,8 +120,6 @@ const SelectedOrdersPaymentPopup = ({  isOpen,  toggle,  selectedOrders,selecetd
 
   const totalReturn = returnItems.reduce((sum, item) => sum + item.returnValue, 0);
 
-  console.log("Return Items: ", returnItems, "Total Return:", totalReturn);
-
   // Save return details for this order
   setReturnNotes((prev) => ({
     ...prev,
@@ -246,7 +244,6 @@ const SelectedOrdersPaymentPopup = ({  isOpen,  toggle,  selectedOrders,selecetd
         orders: payload,
         customerData: selecetdCustomer,
       });
-      console.log(receiptData);
 
       setReceiptView(true); // ✅ Trigger receipt modal or view
 

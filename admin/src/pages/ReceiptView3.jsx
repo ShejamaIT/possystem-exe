@@ -91,7 +91,6 @@ const RegenarateReceiptView = ({ receiptData, setShowReceiptView }) => {
 
     const renderBalanceLine = () => {
         const balance1 = Number(receiptData.total) - Number(receiptData.paymentAmount);
-        console.log(balance1);
         if (balance1 < 0) {
             return <p style={{ color: 'green' }}><strong>Advance/Credit:</strong> Rs. +{Math.abs(balance1).toFixed(2)}</p>;
         } else if (balance1 > 0) {
@@ -141,7 +140,6 @@ const RegenarateReceiptView = ({ receiptData, setShowReceiptView }) => {
                     repstatus: "Payment"
                 }),
             });
-            console.log(response);
             if (response.ok) {
                 printContentInWindow(receiptRef.current.innerHTML, "", `Receipt - ${receiptData.orID}`);
             } else {
@@ -160,7 +158,6 @@ const RegenarateReceiptView = ({ receiptData, setShowReceiptView }) => {
                     admin: adminId
                 }),
             });
-            console.log(response);
             if (response.ok) {
                 printContentInWindow(receiptRef.current.innerHTML, "", `Receipt Reprint - ${receiptData.orID}`);
             } else {
@@ -183,7 +180,6 @@ const RegenarateReceiptView = ({ receiptData, setShowReceiptView }) => {
                     status: "Payment"
                 }),
             });
-            console.log(response);
             if (response.ok) {
                 printContentInWindow(fullInvoiceRef.current.innerHTML, "", `Invoice - ${receiptData.orID}`);
             } else {

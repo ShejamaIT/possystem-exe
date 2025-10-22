@@ -114,8 +114,6 @@ const LoanPayment = () => {
                 months: formData.months,
                 installment: formData.installment,
             };
-
-            console.log(employeeData);
             const response = await fetch("http://localhost:5001/api/admin/main/save-loan", {
                 method: "POST",
                 headers: {

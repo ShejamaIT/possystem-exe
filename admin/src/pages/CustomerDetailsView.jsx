@@ -88,7 +88,6 @@ const CustomerDetailsView = () => {
                 `http://localhost:5001/api/admin/main/customer-ledger?c_ID=${c_ID}&startDate=${startDate}&endDate=${endDate}`
             );
             const result = await response.json();
-            console.log(result);
             if (!result.success) throw new Error(result.message);
 
             setLedger(result.data);
@@ -112,7 +111,6 @@ const CustomerDetailsView = () => {
     };
 
     const handleSave = async () => {
-        console.log(formData);
         try {
             const response = await fetch(
                 `http://localhost:5001/api/admin/main/customer/${c_ID}`,  // <-- FIXED

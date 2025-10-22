@@ -33,8 +33,6 @@ const BankDeposits = () => {
 
             const accountData = await accountRes.json();
             const transferData = await transferRes.json();
-            console.log(transferData);
-
             const flattenedAccounts = accountData.map(bank =>
                 bank.accountNumbers.map(account => ({
                     acnID: account.acnID,

@@ -2,7 +2,6 @@ import React, { useRef } from "react";
 import "../style/receiptView.css"; // Use same style for modal overlay/background
 
 const PaySheetView = ({ formData, setShowPaySheet }) => {
-    console.log(formData);
     const receiptRef = useRef(null);
     const currentDateTime = new Date().toLocaleString();
 

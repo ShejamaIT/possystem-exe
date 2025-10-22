@@ -139,13 +139,10 @@ const GatePass = () => {
     };
 
     const fetchOrders = async (date) => {
-        console.log(date);
         try {
             let url = `http://localhost:5001/api/admin/main/find-completed-orders-by-date-pickup?date=${date}`;
-            console.log(url);
             const response = await fetch(url);
             const data = await response.json();
-            console.log(data.orders);
             setOrders(data.orders || []);
         } catch (error) {
             toast.error("Error fetching orders.");
@@ -165,7 +162,6 @@ const GatePass = () => {
 
 
     const handleEditClick1 = (order) => {
-        console.log(order);
         if (!order) return;
         setSelectedOrder(order);
         setShowModal1(true);
@@ -179,13 +175,10 @@ const GatePass = () => {
     const handleSubmit3 = async (formData) => {
         const receiptId = await fetchRecepitID();
         const invoiceId = await fetchInvoiceID();
-        console.log(formData);
         const enrichedOrder = {
             ...selectedOrder,
             selectedItems: formData.selectedItems, // Inject selected items
         };
-
-        console.log(formatDateForInput(enrichedOrder.orderDate));
         const updatedData = {
             recepitId: receiptId,
             invoiceId :invoiceId,
@@ -217,8 +210,6 @@ const GatePass = () => {
             specialNote: enrichedOrder.specialNote,
             billNumber: enrichedOrder.billNumber || '-',
         };
-
-        console.log("Updated data being sent:", updatedData);
 
         selectedItem2Ref.current = formData.selectedItems || [];
 

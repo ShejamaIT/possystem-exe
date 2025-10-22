@@ -99,8 +99,6 @@ const SalarySheet = () => {
             advance: totalAdvance.toFixed(2),
             loan: totalLoan.toFixed(2),
         };
-        console.log(updatedData);
-
         if (loanPayments?.date) updatedData.loanDate = loanPayments.date;
         if (formData.job === "Driver") {
             Object.assign(updatedData, {
@@ -142,21 +140,17 @@ const SalarySheet = () => {
     const handleEmployeeSelect = async (e) => {
         const selectedId = e.target.value;
         const selectedEmployee = employees.find(emp => emp.E_Id === selectedId);
-        console.log(selectedEmployee);
 
         if (selectedEmployee) {
             const [advanceList, loanData] = await fetchSalaryPayments(selectedId);
             const leaveData = await fetchLeaveCount(selectedId);
-            console.log(leaveData);
 
             const totalAdvance = advanceList.reduce((sum, a) => sum + parseFloat(a.amount || 0), 0);
             const totalLoan = loanData ? parseFloat(loanData.installment || 0) : 0;
             const leaveDeduction = parseFloat(leaveData.attendanceDeduction || 0);
             const basic = selectedEmployee.basic || 0;
-            console.log(leaveDeduction);
 
             const attendanceBonus = leaveData.totalLeave > 4 ? 0: Math.max(0, 4000 - leaveDeduction);
-            console.log(attendanceBonus);
 
                 
             setFormData({
@@ -174,7 +168,6 @@ const SalarySheet = () => {
                 otherpay: "",
                 total: ""
             });
-            console.log(formData);
 
             if (selectedEmployee.job === 'Driver') {
                 fetchDriverHireSummary(selectedId);
@@ -183,12 +176,7 @@ const SalarySheet = () => {
                 fetchSaleTeamOrderSummary(selectedId);
             }
         }
-        console.log("Form data updated:", formData);
     };
-    useEffect(() => {
-        console.log("Form data updated:", formData);
-    }, [formData]);
-
     const fetchSalaryPayments = async (eid) => {
         try {
             const response = await fetch(`http://localhost:5001/api/admin/main/advance&loan?eid=${eid}`);
@@ -226,7 +214,6 @@ const SalarySheet = () => {
             const response = await fetch(`http://localhost:5001/api/admin/main/leave-count?eid=${eid}`);
             if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
             const data = await response.json();
-            console.log(data);
             if (!data.success) throw new Error("API returned success = false");
 
             const {
@@ -344,8 +331,6 @@ const SalarySheet = () => {
             });
 
             const data = await response.json();
-            console.log("Salary API response:", data);
-
             if (data.success === false && data.message.includes("already paid")) {
             // Salary already exists → ask confirmation via toast
             showConfirmToast(

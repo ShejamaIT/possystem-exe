@@ -54,7 +54,6 @@ const OrderPayment = () => {
             const data = await response.json();
             if (!data.order) throw new Error("Order not found.");
             setOrder(data.order);
-            console.log(data.order);
             setSelectedOrder(data.order);
         } catch (err) {
             console.error("Error fetching order details:", err);

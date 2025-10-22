@@ -108,7 +108,6 @@ const CourierPass = () => {
                 },
                 vehicleId: formData.vehicleId,
             };
-            console.log(gatepassData);
             //Make the API call
             const response = await fetch("http://localhost:5001/api/admin/main/create-gate-pass-now", {
                 method: "POST",
@@ -142,13 +141,10 @@ const CourierPass = () => {
     };
 
     const fetchOrders = async (date) => {
-        console.log(date);
         try {
             let url = `http://localhost:5001/api/admin/main/find-completed-orders-by-date-courier?date=${date}`;
-            console.log(url);
             const response = await fetch(url);
             const data = await response.json();
-            console.log(data.orders);
             setOrders(data.orders || []);
         } catch (error) {
             toast.error("Error fetching orders.");
@@ -167,7 +163,6 @@ const CourierPass = () => {
     };
 
     const handleEditClick1 = (order) => {
-        console.log(order);
         if (!order) return;
         setSelectedOrder(order);
         setShowModal1(true);
@@ -181,7 +176,6 @@ const CourierPass = () => {
     const handleSubmit3 = async (formData) => {
         const receiptId = await fetchRecepitID();
         const invoiceId = await fetchInvoiceID();
-        console.log(formData);
         const enrichedOrder = {
             ...selectedOrder,
             selectedItems: formData.selectedItems, // Inject selected items
@@ -260,7 +254,6 @@ const CourierPass = () => {
             selectedCourier: selectedCourier,
             handOverDate: handoverDate,
             };
-            console.log(updateData);
             const response = await fetch("http://localhost:5001/api/admin/main/add-courier-pass", {
             method: "POST",
             headers: {
@@ -274,7 +267,6 @@ const CourierPass = () => {
             }
 
             const data = await response.json();
-            console.log("Courier pass saved:", data);
             toast.success("Courier pass created successfully!");
                 setTimeout(() => {
                 window.location.reload();

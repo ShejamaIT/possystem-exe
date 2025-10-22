@@ -12,7 +12,6 @@ const MonthlySummaryView = () => {
       try {
         const response = await fetch("http://localhost:5001/api/admin/main/month-summary");
         const data = await response.json();
-        console.log("API Response:", data);
 
         if (data.success) {
           const s = data.summary || {};

@@ -85,7 +85,6 @@ const ItemDetails = () => {
     const handleSupplierChange1 = async (e) => {
         const supplierId = e.target.value;
         setSelectedSupplier(supplierId);
-        console.log(supplierId);
 
         const res = await fetch(`http://localhost:5001/api/admin/main/find-cost?s_ID=${supplierId}&I_Id=${id}`);
         const data = await res.json();
@@ -120,7 +119,6 @@ const ItemDetails = () => {
                 }
             ],
         };
-        console.log(stockData);
         onAddStock(stockData);
         setShowStockModal(false);
     };
@@ -199,7 +197,6 @@ const ItemDetails = () => {
     };
 
     const updateStatus = async (pid_Id, newStatus) => {
-        console.log(pid_Id, newStatus);
         if (!pid_Id || !newStatus) {
             toast.error("❌ Missing Stock ID or Status.");
             return;
@@ -326,8 +323,6 @@ const ItemDetails = () => {
                 payload.suppliers = JSON.stringify(payload.suppliers);
             }
 
-            console.log("📤 Payload to Send:", payload);
-
             // Send PUT request as JSON
             const updateResponse = await fetch("http://localhost:5001/api/admin/main/update-item", {
                 method: "PUT",
@@ -390,9 +385,6 @@ const ItemDetails = () => {
 
             const response1 = await fetch(`http://localhost:5001/api/admin/main/orders/by-item/${id}`);
             const data1 = await response1.json();
-
-            console.log(data1); // Active orders
-
             setItem(data.item);
             setSuppliers(data.item.suppliers || []);
             setStock(data.item.stockDetails || []);

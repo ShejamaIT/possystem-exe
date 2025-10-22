@@ -95,7 +95,6 @@ const PurchaseDetails = () => {
             const response = await fetch(`http://localhost:5001/api/admin/main/supplier-items?s_Id=${supplierId}`);
             const data = await response.json();
             if (data.success) {
-                console.log(data.items);
                 setSupplierItems(data.items);
             } else {
                 setSupplierItems([]);
@@ -178,7 +177,6 @@ const PurchaseDetails = () => {
         const payload = {
             purchaseNotes: purchaseNotes // Include the array of notes here
         };
-        console.log(JSON.stringify(payload));
         try {
             // Send data to the backend
             const response = await fetch("http://localhost:5001/api/admin/main/addStock", {
@@ -200,7 +198,6 @@ const PurchaseDetails = () => {
                 }, 1000);
             } else {
                 toast.error(result.message || "Failed to save purchase.");
-                console.log(result.error);
 
             }
         } catch (err) {
@@ -237,7 +234,6 @@ const PurchaseDetails = () => {
 
         setPurchaseNotes(prevNotes => [...prevNotes, note]);
         setSelectedItems([]);
-        console.log(purchaseNotes);
         // Manually increment purchase ID
         const newId = generateNextPurchaseId(PurchaseId);
         setPurchaseId(newId);

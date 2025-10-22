@@ -21,7 +21,6 @@ const envPath = path.join(
 
 if (fs.existsSync(envPath)) {
   dotenv.config({ path: envPath });
-  console.log('✅ .env loaded from:', envPath);
 } else {
   console.warn('⚠️ .env file not found at:', envPath);
 }
@@ -47,7 +46,6 @@ const frontendBuildPath = process.pkg
 
 
 if (fs.existsSync(frontendBuildPath)) {
-  console.log('✅ Frontend build folder found at:', frontendBuildPath);
   app.use(express.static(frontendBuildPath));
 } else {
   console.warn('⚠️ Frontend build folder not found at:', frontendBuildPath);

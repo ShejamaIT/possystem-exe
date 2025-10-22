@@ -21,8 +21,6 @@ const TableAllCustomer = () => {
         try {
             const response = await fetch("http://localhost:5001/api/admin/main/allcustomers");
             const data = await response.json();
-            console.log(data);
-
             if (response.ok) {
                 setCustomers(data); // Store fetched customers
                 setFilteredCustomers(data); // Initialize filtered list

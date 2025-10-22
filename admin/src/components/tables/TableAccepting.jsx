@@ -49,7 +49,6 @@ const TableAccepting = ({ refreshKey }) => {
 
             const response = await fetch(endpoint);
             const data = await response.json();
-            console.log(data);
 
             if (!response.ok || !data?.data?.bookedOrders) {
                 throw new Error(data.message || "Failed to fetch orders");

@@ -48,7 +48,6 @@ const DeliveryNoteDetails = () => {
             }
 
             const data = await response.json();
-            console.log(data);
             setDeliveryNote(data.details);
             fetchDeliveryDates(data.details.district);
 
@@ -363,8 +362,6 @@ const DeliveryNoteDetails = () => {
                         return { itemId, stockId, status: selectedItemStatus?.[itemKey] || "Available" };
                     }) || [] : []
             };
-            console.log(updatedOrder); 
-
             const response = await fetch(`http://localhost:5001/api/admin/main/delivery-update`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },

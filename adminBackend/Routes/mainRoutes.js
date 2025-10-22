@@ -563,8 +563,6 @@ router.post("/orders", async (req, res) => {
         } else if (billPrice > payAmount) {
             billBalance = billPrice - payAmount;
         }
-        console.log(billPrice,billBalance);
-
         let payStatus = null;
 
         if (payAmount === 0) {
@@ -1717,7 +1715,6 @@ router.get("/allcreditcustomers", async (req, res) => {
         `;
 
         const [customers] = await db.query(query);
-        console.log(customers);
 
         // If no customers found
         if (customers.length === 0) {
@@ -2237,11 +2234,7 @@ router.get("/customer-ledger", async (req, res) => {
         const formattedStartDate = `${startDate} 00:00:00`;
         const formattedEndDate = `${endDate} 23:59:59`;
 
-        console.log("Date Range:", formattedStartDate, formattedEndDate);
 
-        // ---------------------------
-        // 1. Bills from Orders
-        // ---------------------------
         const [billRecords] = await db.query(
             `SELECT o.orID, o.orDate AS billDate, o.netTotal, o.balance
              FROM Orders o
@@ -2250,9 +2243,6 @@ router.get("/customer-ledger", async (req, res) => {
             [c_ID, formattedStartDate, formattedEndDate]
         );
 
-        // ---------------------------
-        // 2. Payments from order_payment table
-        // ---------------------------
         const [orderPayments] = await db.query(
             `SELECT op.op_ID, op.orID, op.dateTime AS paymentDate,
                     op.amount AS paidAmount, op.balance, op.netTotal,
@@ -2398,7 +2388,6 @@ router.get("/customer-ledger", async (req, res) => {
 
         const groupedBills = groupByDate(billRecords, "billDate");
         const groupedPayments = groupByDate(paymentRecords, "paymentDate");
-        console.log(groupedPayments);
 
         const allDates = Array.from(
             new Set([...Object.keys(groupedBills), ...Object.keys(groupedPayments)])
@@ -3366,8 +3355,6 @@ router.get("/cancel-order-details", async (req, res) => {
 router.get("/sendid-order-details", async (req, res) => {
     try {
         const { orID, billNumber } = req.query;
-        console.log(req.query);
-
         // Require at least one of them
         if (!orID && !billNumber) {
             return res.status(400).json({ success: false, message: "Order ID or Bill Number is required" });
@@ -3395,7 +3382,6 @@ router.get("/sendid-order-details", async (req, res) => {
             return res.status(404).json({ success: false, message: "Order not found" });
         }
         const orderData = orderResult[0];
-        console.log(orderData);
 
         // 2️⃣ Fetch Ordered Items
         const itemsQuery = `
@@ -3409,7 +3395,6 @@ router.get("/sendid-order-details", async (req, res) => {
             WHERE od.orID = ?
         `;
         const [itemsResult] = await db.query(itemsQuery, [orderData.OrID]);
-        console.log(itemsResult);
 
         // ✅ Grouping items by I_Id
         const groupedItemsMap = new Map();
@@ -3445,7 +3430,6 @@ router.get("/sendid-order-details", async (req, res) => {
                 });
             }
         }
-        console.log(Array.from(groupedItemsMap.values()));
 
         // 3️⃣ Fetch Order Payment History
         const paymentHistoryQuery = `
@@ -4347,7 +4331,6 @@ router.get("/order-details", async (req, res) => {
             salesTeam: orderData.salesEmployeeName ? { employeeName: orderData.salesEmployeeName } : null,
             items: Array.from(groupedItemsMap.values())
         };
-        console.log(formatDate(orderData.orDate),formatDate(orderData.expectedDate));
 
         // 5️⃣ Fetch Delivery Info if it's a delivery order
         if (orderData.delStatus === "Delivery") {
@@ -4835,10 +4818,7 @@ router.get("/orders-accepting", async (req, res) => {
                 data: []
             });
         }
-        console.log(orders);
-
         const { bookedOrders, unbookedOrders } = categorizeOrders(orders);
-        console.log(bookedOrders);
 
         return res.status(200).json({
             message: "Accepted orders found.",
@@ -6442,7 +6422,6 @@ router.get("/unpaid-stock-details", async (req, res) => {
 
         const [itemsResult] = await db.query(query, [s_Id]);
         const [[totalResult]] = await db.query(totalQuery, [s_Id]);
-        console.log(itemsResult);
 
         // Always return 200 with array and total (even if empty or 0)
         return res.status(200).json({
@@ -6567,7 +6546,6 @@ router.get("/employee-details", async (req, res) => {
 // Update employee detail
 router.put("/employees/:id", async (req, res) => {
     const E_Id = req.params.id;
-    console.log(E_Id);
     const {
         name,address,nic,dob,contact,job, basic,type,driver, sales} = req.body;
 
@@ -7331,21 +7309,16 @@ router.put("/update-order-details", async (req, res) => {
       expectedDeliveryDate, specialNote, reason
     } = req.body;
 
-    console.log("[1] Received update request for orderId:", orderId);
-
     // Check if order exists
     const [orderResult] = await db.query(`SELECT * FROM orders WHERE OrID = ?`, [orderId]);
     if (orderResult.length === 0) {
-      console.log("[2] Order not found:", orderId);
       return res.status(404).json({ success: false, message: "Order not found" });
     }
-    console.log("[3] Order found:", orderResult[0]);
 
     const previousOrderStatus = orderResult[0].orStatus;
 
     // Validate advance if status is "Advanced"
     if (advance === 0 && payStatus === 'Advanced') {
-      console.log("[4] Invalid advance for 'Advanced' payStatus");
       return res.status(400).json({
         success: false,
         message: "Payment status cannot be changed to 'Advanced' when advance is 0"
@@ -7364,7 +7337,6 @@ router.put("/update-order-details", async (req, res) => {
           totalPrice, advance, balance, specialNote, netTotal, itemDiscount, specialdiscount, orderId
         ]
       );
-      console.log("[5] Orders table updated for orderId:", orderId);
     } catch (error) {
       console.error("[ERROR] Updating orders table failed:", error);
       throw error;
@@ -7380,7 +7352,6 @@ router.put("/update-order-details", async (req, res) => {
           [customerId]
         );
         if (customerResult.length === 0) {
-          console.log("[6] Customer not found for customerId:", customerId);
           return res.status(404).json({ success: false, message: "Customer not found" });
         }
         const customerDetails = customerResult[0];
@@ -7405,7 +7376,6 @@ router.put("/update-order-details", async (req, res) => {
               orderId
             ]
           );
-          console.log("[7] Delivery updated for orderId:", orderId, "dvID:", dvID);
         } else {
           dvID = `DLV_${Date.now()}`;
           await db.query(
@@ -7421,7 +7391,6 @@ router.put("/update-order-details", async (req, res) => {
               "Delivery"
             ]
           );
-          console.log("[8] New delivery inserted for orderId:", orderId, "dvID:", dvID);
         }
       } catch (error) {
         console.error("[ERROR] Delivery update/insert failed:", error);
@@ -7433,7 +7402,6 @@ router.put("/update-order-details", async (req, res) => {
       try {
         await db.query(`DELETE FROM delivery WHERE orID = ?`, [orderId]);
         await db.query(`UPDATE orders SET delPrice = 0 WHERE orID = ?`, [orderId]);
-        console.log("[9] Delivery record deleted for Pick Up orderId:", orderId);
       } catch (error) {
         console.error("[ERROR] Deleting delivery for Pick Up failed:", error);
         throw error;
@@ -7455,7 +7423,6 @@ router.put("/update-order-details", async (req, res) => {
             `UPDATE p_i_detail SET status = 'Available', orID = NULL WHERE pid_Id IN (?)`,
             [pidIds]
           );
-          console.log("[10] Special reservations cleared for cancelled order:", orderId);
         }
 
         const [existingCancel] = await db.query(
@@ -7468,7 +7435,6 @@ router.put("/update-order-details", async (req, res) => {
             `INSERT INTO canceled_orders (OrID, detail) VALUES (?, ?)`,
             [orderId, reason]
           );
-          console.log("[11] Cancelled order reason inserted for orderId:", orderId);
         }
       } catch (error) {
         console.error("[ERROR] Cancelled order handling failed:", error);
@@ -7480,7 +7446,6 @@ router.put("/update-order-details", async (req, res) => {
     if (previousOrderStatus === 'Cancelled' && orderStatus !== 'Cancelled') {
       try {
         await db.query(`DELETE FROM canceled_orders WHERE OrID = ?`, [orderId]);
-        console.log("[12] Removed cancellation record for orderId:", orderId);
       } catch (error) {
         console.error("[ERROR] Removing cancellation record failed:", error);
         throw error;
@@ -7719,8 +7684,6 @@ router.delete('/item-suppliers/:itemId/:supplierId', async (req, res) => {
       'DELETE FROM item_supplier WHERE I_Id = ? AND s_ID = ?',
       [itemId, supplierId]
     );
-
-    console.log(`Delete item_supplier result for itemId=${itemId}, supplierId=${supplierId}:`, result);
 
     if (result.affectedRows > 0) {
       return res.status(200).json({
@@ -8171,8 +8134,6 @@ router.get("/drivers/details", async (req, res) => {
               AND YEAR(dateTime) = YEAR(CURDATE());
         `;
         const [advanceDetails] = await db.execute(advanceQuery, [employeeId]);
-        console.log(advanceDetails);
-
         const totalAdvance = advanceDetails.reduce((sum, a) => sum + a.amount, 0);
 
         // 6. Loan Info
@@ -8391,21 +8352,18 @@ router.post('/add-item-supplier', async (req, res) => {
 
     try {
         const [itemExists] = await db.query('SELECT * FROM Item WHERE I_Id = ?', [I_Id]);
-        console.log("Item Exists Check:", itemExists);
 
         if (itemExists.length === 0) {
             return res.status(404).json({ success: false, message: 'Item not found' });
         }
 
         const [supplierExists] = await db.query('SELECT * FROM Supplier WHERE s_ID = ?', [s_ID]);
-        console.log("Supplier Exists Check:", supplierExists);
 
         if (supplierExists.length === 0) {
             return res.status(404).json({ success: false, message: 'Supplier not found' });
         }
 
         const insertQuery = 'INSERT INTO item_supplier (I_Id, s_ID, unit_cost) VALUES (?, ?, ?)';
-        console.log("Insert Query:", insertQuery, [I_Id, s_ID, cost]);
 
         const [result] = await db.query(insertQuery, [I_Id, s_ID, cost]);
 
@@ -10521,7 +10479,6 @@ router.post("/issued-items", async (req, res) => {
             );
     
             for (const item of orderItems) {
-                console.log(item);
                 await db.query(
                     `UPDATE Item
                      SET bookedQty = bookedQty - ?, dispatchedQty = dispatchedQty + ?
@@ -10763,7 +10720,6 @@ router.post("/issued-items-Now", async (req, res) => {
             );
     
             for (const item of orderItems) {
-                console.log(item);
                 await db.query(
                     `UPDATE Item
                      SET availableQty = availableQty - ?, dispatchedQty = dispatchedQty + ?
@@ -11061,11 +11017,9 @@ router.post("/create-delivery-note-now", async (req, res) => {
         }
 
         const { orderId, balance = 0 } = order;
-        console.log("Incoming balance:", balance);
 
         // Always positive balance
         const balance1 = Math.abs(balance);
-        console.log("Stored balance:", balance1);
 
         // Ensure balanceToCollect is also positive
         const positiveBalanceToCollect = Math.abs(balanceToCollect ?? 0);
@@ -11222,8 +11176,6 @@ router.post("/coupone", async (req, res) => {
 router.put("/sales-coupons/:oldCouponCode", async (req, res) => {
   const { oldCouponCode } = req.params; // existing coupon id (from URL)
   const { couponCode, saleteamCode, discount } = req.body;
-  console.log(oldCouponCode);
-  console.log(req.body);
 
   if (!couponCode || !saleteamCode || discount === undefined) {
     return res.status(400).json({
@@ -11644,8 +11596,6 @@ router.post("/delivery-payment", async (req, res) => {
     const CustBalance = Number(RPayment) || 0;
     const Loss = Number(profitOrLoss) || 0;
     const balance1 = Number(customerbalance);
-
-    console.log(customerbalance,CustBalance);
     try {
         /** ---------------- Fetch Order ---------------- */
         const [Orderpayment] = await db.query(
@@ -11672,7 +11622,6 @@ router.post("/delivery-payment", async (req, res) => {
         /** ---------------- Fetch Customer and Driver ---------------- */
         const [customerData] = await db.query("SELECT balance FROM Customer WHERE c_ID = ?", [c_ID]);
         let customerBalance = Number(customerData?.[0]?.balance || 0) + CustBalance;
-        console.log(customerData?.[0]?.balance,customerBalance);
         const [driverData] = await db.query("SELECT balance FROM Driver WHERE devID = ?", [driverId]);
         let driverNewBalance = Number(driverData?.[0]?.balance || 0) + DrivBalance;
 
@@ -11848,8 +11797,6 @@ router.post("/delivery-payment", async (req, res) => {
             await db.query("UPDATE Orders SET expectedDate = ? WHERE orID = ?", [rescheduledDate, orderId]);
             await db.query("UPDATE delivery SET schedule_Date = ? WHERE orID = ?", [rescheduledDate, orderId]);
         }
-
-        console.log("✅ Payment processed successfully for order:", orderId);
         res.json({ success: true, message: "Payment processed successfully.", data: { 
             customerBalance,driverbalance,totalAmount,discountAmount,previousAdvance,advance1,balance1
          } });
@@ -11960,7 +11907,6 @@ router.post("/delivery-update", async (req, res) => {
 
         /** ------------------- Update Order Status --------------------- */
         const newOrderStatus = (orderStatus === "Delivered") ? "Issued" : orderStatus;
-        console.log(newOrderStatus);
 
         await db.query(
             "UPDATE Orders SET orStatus = ?, delStatus = ? , payStatus=? WHERE OrID = ?",
@@ -12280,7 +12226,6 @@ router.post("/addReceipt", async (req, res) => {
              VALUES (?, NOW(), ?, ?, ?, ?)`,
             [repId, orID, repType, chashier, repstatus]
         );
-        console.log(result);
 
         return res.status(201).json({
             success: true,
@@ -12300,7 +12245,6 @@ router.post("/addReceipt", async (req, res) => {
 // Save new invoice log
 router.post("/addInvoice", async (req, res) => {
     const { invId, orID, repType, cashier } = req.body;
-    console.log(invId, orID, repType, cashier);
     if (!invId || !orID || !repType || !cashier ) {
         return res.status(400).json({
             success: false,
@@ -14111,7 +14055,6 @@ router.get("/sales-team-monthly-summary", async (req, res) => {
         `;
 
         const [rows] = await db.query(sql, [currentYear]);
-        console.log(rows);
 
         // Group results by sales team
         const result = {};
@@ -15298,7 +15241,7 @@ router.post("/cash-balance", async (req, res) => {
 });
 
 // 📌 Auto restock API
-// router.get("/auto-restock", async (req, res) => {
+// router.get("/auto-restock1", async (req, res) => {
 //     try {
 //         // 1. Set stockQty and availableQty to 0 for all items
 //         const [updateResult] = await db.query(`

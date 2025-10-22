@@ -3,7 +3,6 @@ import html2canvas from "html2canvas";
 import "../style/invoice.css"; // Make sure this file includes the print styles
 
 const BillInvoice = ({ selectedOrder, setShowModal1, handleSubmit }) => {
-    console.log(selectedOrder);
     const invoiceDate = new Date().toLocaleDateString();
     const [deliveryCharge, setDeliveryCharge] = useState(selectedOrder.deliveryCharge);
     const [previousDeliveryCharge, setPreviousDeliveryCharge] = useState(selectedOrder.deliveryCharge);

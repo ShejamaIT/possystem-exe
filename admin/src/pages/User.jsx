@@ -16,7 +16,6 @@ const User = () => {
             const response = await axios.get("http://localhost:4000/users", { withCredentials: true });
             setUsers(response.data.data);
         } catch (err) {
-            console.log(err);
         } finally {
             setLoading(false);
         }
@@ -33,7 +32,6 @@ const User = () => {
             setUsers(users.filter(user => user._id !== userId));
             toast.success('User deleted successfully.');
         } catch (err) {
-            console.log(err);
             toast.error('Failed to delete user.');
         }
     };
