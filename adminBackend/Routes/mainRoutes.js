@@ -1532,34 +1532,73 @@ router.get("/orders", async (req, res) => {
 // Get all items
 router.get("/allitems", async (req, res) => {
     try {
-        // Query the database to fetch all items
-        const [items] = await db.query("SELECT * FROM Item");
+        // Fetch all items along with any related active (booked) order details
+        const [items] = await db.query(`
+            SELECT 
+                i.I_Id,
+                i.I_name,
+                i.descrip,
+                i.material,
+                i.price,
+                i.stockQty,
+                i.availableQty,
+                i.warrantyPeriod,
+                i.bookedQty,
+                i.color,
+                o.OrID,
+                o.billnumber,
+                e.name AS sales_member_name
+            FROM Item i
+            LEFT JOIN Order_Detail od ON i.I_Id = od.I_Id
+            LEFT JOIN Orders o ON od.orID = o.OrID AND o.orStatus NOT IN ('issued', 'delivered')
+            LEFT JOIN Sales_Team st ON o.stID = st.stID
+            LEFT JOIN Employee e ON st.E_Id = e.E_Id
+            ORDER BY i.I_Id;
+        `);
 
-        // If no items found, return a 404 status
         if (items.length === 0) {
             return res.status(404).json({ message: "No items found" });
         }
 
-        // Format the items data
-        const formattedItems = items.map(item => ({
-            I_Id: item.I_Id, // Item ID
-            I_name: item.I_name, // Item name
-            descrip: item.descrip, // Item description
-            material:item.material, // Item material
-            price: item.price, // Price
-            stockQty: item.stockQty, // Quantity
-            availableQty : item.availableQty, // available stock
-            warrantyPeriod: item.warrantyPeriod,
-            color: item.color,
-        }));
+        // Group items and their related booked orders
+        const formattedItems = Object.values(
+            items.reduce((acc, row) => {
+                if (!acc[row.I_Id]) {
+                    acc[row.I_Id] = {
+                        I_Id: row.I_Id,
+                        I_name: row.I_name,
+                        descrip: row.descrip,
+                        material: row.material,
+                        price: row.price,
+                        stockQty: row.stockQty,
+                        availableQty: row.availableQty,
+                        warrantyPeriod: row.warrantyPeriod,
+                        bookedQty: row.bookedQty,
+                        color: row.color,
+                        bookedOrders: [] // store booked orders
+                    };
+                }
 
-        // Send the formatted items as a JSON response
-        return res.status(200).json(formattedItems);
+                // If there’s a booked order linked to this item, push it
+                if (row.OrID) {
+                    acc[row.I_Id].bookedOrders.push({
+                        OrID: row.OrID,
+                        billnumber: row.billnumber,
+                        sales_member_name: row.sales_member_name
+                    });
+                }
+
+                return acc;
+            }, {})
+        );
+
+        res.status(200).json(formattedItems);
     } catch (error) {
-        console.error("Error fetching items:", error.message);
-        return res.status(500).json({ message: "Error fetching items" });
+        console.error("Error fetching items:", error);
+        res.status(500).json({ message: "Error fetching items" });
     }
 });
+
 
 // Get all purchase notes
 router.get("/purchase-notes/unpaid", async (req, res) => {
@@ -9922,9 +9961,18 @@ router.get("/orders/by-item/:itemId", async (req, res) => {
 
     try {
         const [rows] = await db.query(
-            `SELECT o.*
+            `SELECT 
+                 o.OrID,
+                 o.billnumber,
+                 o.total,
+                 o.expectedDate,
+                 o.orStatus,
+                 o.stID,
+                 e.name AS sales_member_name
              FROM Orders o
              JOIN Order_Detail od ON o.OrID = od.orID
+             LEFT JOIN Sales_Team st ON o.stID = st.stID
+             LEFT JOIN Employee e ON st.E_Id = e.E_Id
              WHERE od.I_Id = ?
                AND o.orStatus NOT IN ('issued', 'delivered')`,
             [itemId]
@@ -9940,7 +9988,6 @@ router.get("/orders/by-item/:itemId", async (req, res) => {
         res.status(500).json({ message: "Server error" });
     }
 });
-
 
 // Fetch all coupons
 router.get("/coupon-details", async (req, res) => {
@@ -15256,7 +15303,7 @@ router.post("/cash-balance", async (req, res) => {
 //         // 1. Set stockQty and availableQty to 0 for all items
 //         const [updateResult] = await db.query(`
 //             UPDATE item 
-//             SET stockQty = 0, availableQty = 0
+//             SET stockQty = 0, availableQty = 0 , bookedQty = 0
 //         `);
 
 //         // 2. Delete all entries from p_i_detail where status is 'Available'

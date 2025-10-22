@@ -1076,7 +1076,7 @@ const ItemDetails = () => {
                                                     {orders.map((order) => (
                                                         <tr key={order.OrID}>
                                                             <td>{order.OrID}</td>
-                                                            <td>{order.billNumber}</td>
+                                                            <td>{order.billnumber}</td>
                                                             <td>{order.total}</td>
                                                             <td>
                                                                 {new Date(order.expectedDate).toLocaleDateString()}
