@@ -26,6 +26,7 @@ const AllProducts = () => {
         "All Products",
         "For Production",
         "In Production",
+        "Damage Stock",
         "Add Categories",
         "Item Purchase",
         "QrChecker",

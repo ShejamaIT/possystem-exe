@@ -63,7 +63,7 @@ const Navbar = () => {
     return (
         <nav className="navbar">
             <div className="sidebar-button">
-                <BiMenu className="sidebarBtn" />
+                {/* <BiMenu className="sidebarBtn" /> */}
                 <span className="dashboard" onClick={() => navigate(-1)}>
                     Dashboard
                 </span>

@@ -64,7 +64,7 @@ const DriverSidebar = ({ onNavigate }) => {
     return (
         <div className="sidebar">
             <div className="logo-details">
-                <span className="logo_name">Shejama - V1.0 </span>
+                <span className="logo_name">Shejama - V1.2</span>
             </div>
             <ul className="nav-links">
                 {menuItems.map(item => (
