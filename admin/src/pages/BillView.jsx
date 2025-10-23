@@ -34,7 +34,7 @@ const BillView = ({ receiptData, setShowReceiptView }) => {
   const calculatedSubtotal = useMemo(() => {
     if (!receiptData.items?.length) return 0;
     return receiptData.items.reduce((sum, item) => {
-      return sum + (item.unitPrice - (item.discount || 0)) * item.quantity;
+      return sum + (item.price) * item.quantity;
     }, 0);
   }, [receiptData.items]);
 
@@ -513,8 +513,8 @@ const BillView = ({ receiptData, setShowReceiptView }) => {
                   <td style={{ fontSize: "10px" }}>{item.itemName}</td>
                   <td style={{ fontSize: "10px" , textAlign: "center"}}>{item.unitPrice.toFixed(2)}</td>
                   {/* <td style={{ fontSize: "10px" , textAlign: "center"}}>{item.discount.toFixed(2)}</td> */}
-                  <td style={{ fontSize: "10px" , textAlign: "center"}}>{(item.unitPrice-item.discount).toFixed(2)}</td>
-                  <td style={{ fontSize: "10px", textAlign: "right"}}>{(item.quantity * (item.unitPrice - item.discount)).toFixed(2)}</td>
+                  <td style={{ fontSize: "10px" , textAlign: "center"}}>{(item.price).toFixed(2)}</td>
+                  <td style={{ fontSize: "10px", textAlign: "right"}}>{(item.quantity * (item.price)).toFixed(2)}</td>
                 </tr>
               ))}
 

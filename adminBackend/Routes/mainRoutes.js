@@ -1118,7 +1118,7 @@ router.post("/later-order", async (req, res) => {
         // Step 2: Loop and insert each item manually with generated ID
         for (const item of processedItems) {
             const qty = parseInt(item.qty) || 1;
-            const unitPrice = parseFloat(item.unitPrice || 0);
+            const unitPrice = parseFloat(item.price || 0);
             const discount = parseFloat(item.discount || 0);
             const material = item.material;
             const uid = item.uid;
@@ -1130,13 +1130,7 @@ router.post("/later-order", async (req, res) => {
             `;
 
             await db.query(insertQuery, [
-                nextId,           // Manually assigned ID
-                orderId,
-                item.I_Id,
-                qty,
-                unitPrice,
-                discount,
-                material
+                nextId,orderId,item.I_Id,qty,unitPrice,discount,material
             ]);
 
             // Store UID and manually assigned order detail ID

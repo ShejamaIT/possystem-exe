@@ -704,6 +704,7 @@ const OrderInvoice = ({ onPlaceOrder }) => {
                 uid: item.uid,
                 unitPrice: item.unitPrice,
                 discount: item.discount || 0,
+                price:item.price,
                 status: "Booked"
             }));
 
@@ -986,9 +987,9 @@ const OrderInvoice = ({ onPlaceOrder }) => {
 
         // ✅ Calculate totals correctly
         const itemList = selectedItems.map(item => {
-            const unitPrice = parseFloat(item.originalPrice || item.price || 0);
+            const unitPrice = parseFloat(item.originalPrice || 0);
             const discount = parseFloat(item.discount || 0);
-            const grossPrice = unitPrice - discount;
+            const grossPrice = parseFloat(item.price);
             const netPrice = grossPrice * item.qty;
 
             return {
@@ -1001,9 +1002,9 @@ const OrderInvoice = ({ onPlaceOrder }) => {
             };
         });
         const items = selectedItems.map(item => {
-            const unitPrice = parseFloat(item.originalPrice || item.price || 0);
+            const unitPrice = parseFloat(item.originalPrice || 0);
             const discount = parseFloat(item.discount || 0);
-            const grossPrice = unitPrice - discount;
+            const grossPrice = parseFloat(item.price);
             const netPrice = grossPrice * item.qty;
 
             return {
@@ -1021,7 +1022,7 @@ const OrderInvoice = ({ onPlaceOrder }) => {
         const items2 = selectedItems.map(item => {
             const unitPrice = parseFloat(item.originalPrice || item.price || 0);
             const discount = parseFloat(item.discount || 0);
-            const grossPrice = unitPrice - discount;
+            const grossPrice = parseFloat(item.price);
             const netPrice = grossPrice * item.qty;
 
             return {
@@ -1031,7 +1032,7 @@ const OrderInvoice = ({ onPlaceOrder }) => {
                 quantity: item.qty,
                 unitPrice: netPrice,
                 discount: discount,
-                price: item.unitPrice,
+                price: item.price,
             };
         });
 
@@ -1079,6 +1080,11 @@ const OrderInvoice = ({ onPlaceOrder }) => {
             billBalance = 0;
         } else if (billPrice > payAmount) {
             billBalance = billPrice - payAmount;
+        }
+        if (formData.issuable === 'Later') {
+            console.log(fullOrderData);
+        }else{
+            console.log(orderData);
         }
 
         try {
