@@ -8,6 +8,24 @@
     display: flex;
     flex-direction: column;
 }
+.category-select {
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    width: 180px;
+    font-size: 14px;
+    background-color: #fff;
+    cursor: pointer;
+    appearance: auto; /* Keep native dropdown arrow */
+}
+
+/* 🔹 Optional styling for consistent look */
+.category-select:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 3px rgba(0, 123, 255, 0.5);
+}
+
 
 /* Title */
 .table-title1 {

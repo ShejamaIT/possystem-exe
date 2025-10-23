@@ -20,7 +20,7 @@ const formatDateForDB = (dateInput) => {
 router.post("/add-item", async (req, res) => {
     try {
         const { 
-            I_Id, I_name, descrip, color, price, warrantyPeriod, cost, material, s_Id, minQty
+            I_Id, I_name, descrip, color, price, warrantyPeriod, cost, material, s_Id, minQty,type
         } = req.body;
 
         const parsedPrice = parseFloat(price) || 0;
@@ -31,20 +31,13 @@ router.post("/add-item", async (req, res) => {
             INSERT INTO Item (
                 I_Id, I_name, descrip, color, material, price,
                 stockQty, bookedQty, availableQty, reservedQty,
-                dispatchedQty, damageQty, minQTY, warrantyPeriod
+                dispatchedQty, damageQty, minQTY, warrantyPeriod,type
             )
-            VALUES (?, ?, ?, ?, ?, ?, 0, 0, 0, 0, 0, 0, ?, ?);
+            VALUES (?, ?, ?, ?, ?, ?, 0, 0, 0, 0, 0, 0, ?, ?,?);
         `;
 
         await db.query(itemSql, [
-            I_Id,
-            I_name,
-            descrip,
-            color,
-            material,
-            parsedPrice,
-            minQty,
-            warrantyPeriod
+            I_Id,I_name,descrip,color,material,parsedPrice,minQty,warrantyPeriod,type
         ]);
 
         // ✅ Insert into Item_supplier table

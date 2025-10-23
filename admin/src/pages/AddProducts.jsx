@@ -5,7 +5,7 @@ import "../style/addProduct.css"; // Import CSS
 
 const AddItem = () => {
     const [formData, setFormData] = useState({
-        I_Id: "", I_name: "", descrip: "", color: "", material: "", otherMaterial: "", price: "", warrantyPeriod: "", cost: "", s_Id: "", minQty: "",stockQty:""
+        I_Id: "", I_name: "", descrip: "", color: "", material: "", otherMaterial: "", price: "", warrantyPeriod: "", cost: "", s_Id: "", minQty: "",stockQty:"",type:""
     });
     const [categories, setCategories] = useState([]);
     const [suppliers, setSuppliers] = useState([]);
@@ -17,7 +17,7 @@ const AddItem = () => {
 
     // Fetch Categories
     useEffect(() => {
-        fetchSuppliers();fetchPurchaseID();
+        fetchSuppliers();fetchPurchaseID();fetchCategories();
     }, []);
 
     const fetchSuppliers = async () => {
@@ -48,97 +48,111 @@ const AddItem = () => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
+    const fetchCategories = async () => {
+        try {
+            const response = await fetch("http://localhost:5001/api/admin/main/categories");
+            const data = await response.json();
+            if (Array.isArray(data.data)) {
+                setCategories(data.data);
+            } else {
+                setCategories([]);
+            }
+        } catch (err) {
+            toast.error("Failed to load categories.");
+        }
+    };
 
     const handleSubmit = async (e) => {
-    e.preventDefault();
+        e.preventDefault();
 
-    try {
-        // Material fallback
-        const materialToSend = formData.material === "Other" ? formData.otherMaterial : formData.material;
+        try {
+            // Material fallback
+            const materialToSend = formData.material === "Other" ? formData.otherMaterial : formData.material;
 
-        // Prepare JSON payload for the item
-        const itemPayload = {
-            I_Id: formData.I_Id,
-            I_name: formData.I_name,
-            descrip: formData.descrip,
-            color: formData.color,
-            material: materialToSend,
-            price: formData.price,
-            warrantyPeriod: formData.warrantyPeriod,
-            cost: formData.cost,
-            s_Id: formData.s_Id,
-            minQty: formData.minQty
-        };
-
-        // Prepare order/purchase data
-        const cost = Number(formData.cost);
-        const quantity = Number(formData.stockQty);
-        const itemTotal = cost * quantity;
-
-        const orderData = {
-            purchase_id: PurchaseId,
-            supplier_id: formData.s_Id,
-            date: currentDate,
-            time: currentTime,
-            itemTotal,
-            delivery: 0,
-            invoice: "-",
-            items: [{
+            // Prepare JSON payload for the item
+            const itemPayload = {
                 I_Id: formData.I_Id,
+                I_name: formData.I_name,
+                descrip: formData.descrip,
+                color: formData.color,
                 material: materialToSend,
-                color: formData.color || "N/A",
-                unit_price: Number(formData.price),
-                price: cost,
-                quantity,
-                total_price: itemTotal.toFixed(2)
-            }]
-        };
+                price: formData.price,
+                warrantyPeriod: formData.warrantyPeriod,
+                cost: formData.cost,
+                s_Id: formData.s_Id,
+                minQty: formData.minQty,
+                type: formData.type,
+            };
+
+            // Prepare order/purchase data
+            const cost = Number(formData.cost);
+            const quantity = Number(formData.stockQty);
+            const itemTotal = cost * quantity;
+
+            const orderData = {
+                purchase_id: PurchaseId,
+                supplier_id: formData.s_Id,
+                date: currentDate,
+                time: currentTime,
+                itemTotal,
+                delivery: 0,
+                invoice: "-",
+                items: [{
+                    I_Id: formData.I_Id,
+                    material: materialToSend,
+                    color: formData.color || "N/A",
+                    unit_price: Number(formData.price),
+                    price: cost,
+                    quantity,
+                    total_price: itemTotal.toFixed(2)
+                }]
+            };
 
 
-        // Step 1: Submit item
-        const itemRes = await fetch("http://localhost:5001/api/admin/main/add-item", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(itemPayload)
-        });
-        const itemData = await itemRes.json();
-
-        if (!itemRes.ok) {
-            toast.error(itemData.message || "❌ Failed to add item.");
-            return;
-        }
-        toast.success("✅ Item added successfully!");
-
-        // Step 2: If stock quantity > 0, submit stock entry
-        if (quantity > 0) {
-            const stockRes = await fetch("http://localhost:5001/api/admin/main/addStock2", {
+            // Step 1: Submit item
+            const itemRes = await fetch("http://localhost:5001/api/admin/main/add-item", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(orderData)
+                body: JSON.stringify(itemPayload)
             });
+            const itemData = await itemRes.json();
 
-            const stockData = await stockRes.json();
-            if (!stockRes.ok) {
-                toast.error(stockData.message || "❌ Failed to save purchase.");
+            if (!itemRes.ok) {
+                toast.error(itemData.message || "❌ Failed to add item.");
                 return;
             }
-            toast.success("✅ Purchase saved successfully!");
+            toast.success("✅ Item added successfully!");
+
+            // Step 2: If stock quantity > 0, submit stock entry
+            if (quantity > 0) {
+                const stockRes = await fetch("http://localhost:5001/api/admin/main/addStock2", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(orderData)
+                });
+
+                const stockData = await stockRes.json();
+                if (!stockRes.ok) {
+                    toast.error(stockData.message || "❌ Failed to save purchase.");
+                    return;
+                }
+                toast.success("✅ Purchase saved successfully!");
+            }
+
+            // Reset form fields
+            setFormData({
+                I_Id: "", I_name: "", descrip: "", color: "", material: "", otherMaterial: "", 
+                price: "", warrantyPeriod: "", cost: "", s_Id: "", minQty: "", stockQty: ""
+            });
+
+            // Reload page to reflect new item
+            setTimeout(() => window.location.reload(), 1000);
+
+        } catch (error) {
+            console.error("❌ Error submitting form:", error);
+            toast.error("❌ An error occurred while adding the item.");
         }
-
-        // Reset form fields
-        setFormData({
-            I_Id: "", I_name: "", descrip: "", color: "", material: "", otherMaterial: "", 
-            price: "", warrantyPeriod: "", cost: "", s_Id: "", minQty: "", stockQty: ""
-        });
-
-        // Reload page to reflect new item
-        setTimeout(() => window.location.reload(), 1000);
-
-    } catch (error) {
-        console.error("❌ Error submitting form:", error);
-        toast.error("❌ An error occurred while adding the item.");
-    }
-};
+    };
 
     const handleClear = () => {
         setFormData({
@@ -197,6 +211,24 @@ const AddItem = () => {
                             </Input>
                         </FormGroup>
 
+                        <FormGroup>
+                            <Label for="type"><strong>Type</strong></Label>
+                            <Input
+                                type="select"
+                                name="type"
+                                id="type"
+                                value={formData.type || ""}
+                                onChange={handleChange}
+                                required
+                            >
+                                <option value="">Select Category</option>
+                                {categories.map((cat) => (
+                                    <option key={cat.id} value={cat.name}>
+                                        {cat.name}
+                                    </option>
+                                ))}
+                            </Input>
+                        </FormGroup>
                         <FormGroup>
                             <Label for="warrantyPeriod">Warranty Period</Label>
                             <Input type="text" name="warrantyPeriod" id="warrantyPeriod" value={formData.warrantyPeriod} onChange={handleChange} required />

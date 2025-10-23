@@ -191,13 +191,7 @@ const TableAllItem = () => {
                 <select
                     value={selectedCategory}
                     onChange={handleCategoryChange}
-                    style={{
-                        padding: "6px 10px",
-                        borderRadius: "6px",
-                        border: "1px solid #ccc",
-                        width: "180px",
-                        fontSize: "14px",
-                    }}
+                    className="category-select"
                 >
                     <option value="">All Categories</option>
                     {categories.map((cat) => (
@@ -252,6 +246,36 @@ const TableAllItem = () => {
                         </div>
                     </div>
                 </div>
+            )}
+            {showBookedOrdersModal && ( 
+                <div className="modal-overlay"> 
+                    <div className="receipt-modal" style={{ width: 500, padding: 20 }}> 
+                        <h3>Booked Orders for <span style={{ color: "#007bff" }}>{selectedItemName}</span></h3> 
+                        <table className="styled-table"> 
+                            <thead> 
+                                <tr> 
+                                    <th>Order ID</th> 
+                                    <th>Bill Number</th> 
+                                    <th>Sales Member</th> 
+                                    <th>Special Reservation</th> 
+                                </tr>
+                            </thead> 
+                            <tbody> 
+                                {selectedItemOrders.map((order, idx) => ( 
+                                    <tr key={idx}> 
+                                        <td>{order.OrID}</td> 
+                                        <td>{order.billnumber}</td> 
+                                        <td>{order.sales_member_name || "N/A"}</td> 
+                                        <td>{order.special_reserved}</td> 
+                                    </tr> 
+                                ))} 
+                            </tbody> 
+                        </table> 
+                        <div className="modal-buttons"> 
+                            <button onClick={() => setShowBookedOrdersModal(false)} className="close-btn">Close</button> 
+                        </div> 
+                    </div> 
+                </div> 
             )}
 
             {/* 🔹 Table */}
