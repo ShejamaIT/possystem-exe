@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "../../style/TableTwo.css";
+import "../../style/TableAllItem.css";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -130,6 +130,30 @@ const TableAllItem = () => {
         }
     };
 
+    {/* 🔹 Admin Modal */}
+    {showAdminModal && (
+        <div className="modal-overlay">
+            <div className="receipt-modal" style={{ width: 350, padding: 20 }}>
+                <h3>Admin Authentication Required</h3>
+                <input
+                    placeholder="Admin Contact"
+                    value={adminContact}
+                    onChange={(e) => setAdminContact(e.target.value)}
+                />
+                <input
+                    placeholder="Password"
+                    type="password"
+                    value={adminPassword}
+                    onChange={(e) => setAdminPassword(e.target.value)}
+                />
+                <div className="modal-buttons">
+                    <button onClick={handleAdminLogin} className="print-btn">Confirm</button>
+                    <button onClick={() => setShowAdminModal(false)} className="close-btn">Cancel</button>
+                </div>
+            </div>
+        </div>
+    )}
+
     const runAutoRestock = async () => {
         setRestockMessage("Processing auto restock...");
         try {
@@ -152,8 +176,8 @@ const TableAllItem = () => {
     };
 
     return (
-        <div className="table-container">
-            <h4 className="table-title">All Items</h4>
+        <div className="table-container1">
+            <h4 className="table-title1">All Items</h4>
 
             {/* 🔹 Filter Bar */}
             <div
@@ -197,18 +221,42 @@ const TableAllItem = () => {
                         fontSize: "14px",
                     }}
                 />
+
+                <div className="action-bar">
+                    <button className="restock-btn" onClick={handleAutoRestockClick}>
+                        🔄 Auto Restock
+                    </button>
+                    {restockMessage && <p className="restock-message">{restockMessage}</p>}
+                </div>
             </div>
 
-            <div className="action-bar">
-                <button className="restock-btn" onClick={handleAutoRestockClick}>
-                    🔄 Auto Restock
-                </button>
-                {restockMessage && <p className="restock-message">{restockMessage}</p>}
-            </div>
+            {/* ✅ Admin Login Modal — now inside return */}
+            {showAdminModal && (
+                <div className="modal-overlay">
+                    <div className="receipt-modal" style={{ width: 350, padding: 20 }}>
+                        <h3>Admin Authentication Required</h3>
+                        <input
+                            placeholder="Admin Contact"
+                            value={adminContact}
+                            onChange={(e) => setAdminContact(e.target.value)}
+                        />
+                        <input
+                            placeholder="Password"
+                            type="password"
+                            value={adminPassword}
+                            onChange={(e) => setAdminPassword(e.target.value)}
+                        />
+                        <div className="modal-buttons">
+                            <button onClick={handleAdminLogin} className="print-btn">Confirm</button>
+                            <button onClick={() => setShowAdminModal(false)} className="close-btn">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* 🔹 Table */}
-            <div className="table-wrapper">
-                <table className="styled-table">
+            <div className="table-wrapper1">
+                <table className="styled-table1">
                     <thead>
                         <tr>
                             <th>Item Id</th>
@@ -271,6 +319,7 @@ const TableAllItem = () => {
             </div>
         </div>
     );
+
 };
 
 export default TableAllItem;
