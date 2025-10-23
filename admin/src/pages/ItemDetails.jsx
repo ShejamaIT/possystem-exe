@@ -38,6 +38,7 @@ const ItemDetails = () => {
     const [totalCost, setTotalCost] = useState(0);
     const [PurchaseId, setPurchaseId] = useState("");
     const [activeTab, setActiveTab] = useState("1");
+    const [categories, setCategories] = useState([]);
 
     const toggle = (tab) => {
         if (activeTab !== tab) setActiveTab(tab);
@@ -55,19 +56,29 @@ const ItemDetails = () => {
         return dateStr; // already in correct format
     };
 
+    const fetchPurchaseID = async () => {
+        try {
+            const response = await fetch("http://localhost:5001/api/admin/main/newPurchasenoteID");
+            const data = await response.json();
+            setPurchaseId(data.PurchaseID);
+        } catch (err) {
+            toast.error("Failed to load Purchase ID.");
+        }
+    };
     useEffect(() => {
-        const fetchPurchaseID = async () => {
-            try {
-                const response = await fetch("http://localhost:5001/api/admin/main/newPurchasenoteID");
-                const data = await response.json();
-                setPurchaseId(data.PurchaseID);
-            } catch (err) {
-                toast.error("Failed to load Purchase ID.");
-            }
-        };
-
-        fetchPurchaseID();
+        fetchCategories();fetchPurchaseID();
     }, []);
+    
+    const fetchCategories = async () => {
+        try {
+            const response = await fetch("http://localhost:5001/api/admin/main/categories");
+            const data = await response.json();
+            console.log(data);
+            setCategories(data.data.length > 0 ? data.data : []);
+        } catch (err) {
+            toast.error("Failed to load categories.");
+        }
+    };
 
     // Fetch suppliers for this item
     useEffect(() => {
@@ -644,7 +655,29 @@ const ItemDetails = () => {
                                                         />
                                                     </FormGroup>
                                                 )}
-                                                
+                                                {!isEditing ? (
+                                                    <p>
+                                                        <strong>Category:</strong> {item.type ? item.type : "None"}
+                                                    </p>
+                                                ) : (
+                                                    <FormGroup>
+                                                        <Label><strong>Category:</strong></Label>
+                                                        <Input
+                                                            type="select"
+                                                            name="type"
+                                                            value={formData.type || ""}
+                                                            onChange={handleChange}
+                                                        >
+                                                            <option value="">Select Category</option>
+                                                            {categories.map((cat) => (
+                                                                <option key={cat.Ca_Id} value={cat.name}>
+                                                                    {cat.name}
+                                                                </option>
+                                                            ))}
+                                                        </Input>
+                                                    </FormGroup>
+                                                )}
+
                                             </Col>
                                         </Row>
                                     </div>

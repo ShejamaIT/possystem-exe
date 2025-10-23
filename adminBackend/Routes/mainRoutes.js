@@ -73,7 +73,7 @@ router.put("/update-item", async (req, res) => {
     try {
         const {
             previousId,I_Id,I_name,descrip,color,material,price,warrantyPeriod, stockQty,bookedQty,
-            availableQty,damageQty,dispatchedQty,reservedQty,suppliers,minQTY
+            availableQty,damageQty,dispatchedQty,reservedQty,suppliers,minQTY ,type
         } = req.body;
 
         if (!previousId) {
@@ -90,7 +90,7 @@ router.put("/update-item", async (req, res) => {
 
         // Prepare dynamic fields for Item update
         const fields = {
-            I_Id, I_name,descrip, color,material,price: parsedPrice,warrantyPeriod,stockQty,bookedQty, availableQty, damageQty,dispatchedQty,reservedQty,minQTY
+            I_Id, I_name,descrip, color,material,price: parsedPrice,warrantyPeriod,stockQty,bookedQty, availableQty, damageQty,dispatchedQty,reservedQty,minQTY,type
         };
 
         const updateFields = [];
@@ -1572,6 +1572,7 @@ router.get("/allitems", async (req, res) => {
                 i.descrip,
                 i.material,
                 i.price,
+                i.type,
                 i.stockQty,
                 i.availableQty,
                 i.reservedQty,
@@ -1615,6 +1616,7 @@ router.get("/allitems", async (req, res) => {
                         warrantyPeriod: row.warrantyPeriod,
                         bookedQty: row.bookedQty + row.reservedQty,
                         color: row.color,
+                        type: row.type,
                         bookedOrders: []
                     };
                 }
@@ -4454,11 +4456,12 @@ router.get("/item-details", async (req, res) => {
             SELECT
                 I.I_Id, I.I_name, I.descrip, I.price, I.stockQty, I.bookedQty, I.availableQty, 
                 I.minQTY, I.damageQty, I.reservedQty, I.dispatchedQty,
-                I.warrantyPeriod, I.color, I.material
+                I.warrantyPeriod, I.color, I.material , I.type
             FROM Item I
             WHERE I.I_Id = ?`;
 
         const [itemResult] = await db.query(itemQuery, [I_Id]);
+        console.log(itemResult);
 
         if (itemResult.length === 0) {
             return res.status(404).json({ success: false, message: "Item not found" });
@@ -4530,7 +4533,8 @@ router.get("/item-details", async (req, res) => {
                 warrantyPeriod: itemData.warrantyPeriod,
                 minQTY: itemData.minQTY,
                 suppliers: suppliers,
-                stockDetails: stockDetails
+                stockDetails: stockDetails,
+                type:itemData.type
             }
         };
 
@@ -4541,7 +4545,6 @@ router.get("/item-details", async (req, res) => {
         return res.status(500).json({ success: false, message: "Server error", error: error.message });
     }
 });
-
 
 // Get all orders (with customer contact info)
 router.get("/ordersAll", async (req, res) => {
@@ -8236,27 +8239,48 @@ router.get("/drivers/details", async (req, res) => {
 // Get all categories
 router.get("/categories", async (req, res) => {
     try {
-        // Query the database to fetch all categories
-        const [categories] = await db.query("SELECT * FROM Category");
+        // Fetch all categories and count of items per category
+        const [categories] = await db.query(`
+            SELECT 
+                c.Ca_Id AS id,
+                c.name AS name,
+                COALESCE(COUNT(i.I_Id), 0) AS itemCount
+            FROM Category c
+            LEFT JOIN Item i 
+                ON i.type = c.name AND i.type IS NOT NULL
+            GROUP BY c.Ca_Id, c.name
+            ORDER BY c.Ca_Id ASC
+        `);
 
-        // If no categories found, return a 404 status
+        // If no categories found
         if (categories.length === 0) {
-            return res.status(404).json({ message: "No categories found" });
+            return res.status(200).json({
+                success: true,
+                message: "No categories found",
+                data: [],
+            });
         }
 
-        // Map through categories to format the response
-        const formattedCategories = categories.map(category => ({
-            id: category.Ca_Id,  // Assuming you have a Ca_Id column for the category ID
-            name: category.name   // Assuming you have a name column for the category name
-        }));
-
-        // Send the formatted categories as a JSON response
-        return res.status(200).json(formattedCategories);
+        // Return formatted data
+        return res.status(200).json({
+            success: true,
+            message: "Categories fetched successfully",
+            data: categories.map(cat => ({
+                id: cat.id,
+                name: cat.name,
+                itemCount: cat.itemCount || 0, // ensure 0 fallback
+            })),
+        });
     } catch (error) {
         console.error("Error fetching categories:", error.message);
-        return res.status(500).json({ message: "Error fetching categories" });
+        return res.status(500).json({
+            success: false,
+            message: "Error fetching categories",
+            details: error.message,
+        });
     }
 });
+
 
 //API to Get All Sub Categories (sub_one and sub_two) by Category ID (Ca_Id):
 router.get("/subcategories", async (req, res) => {

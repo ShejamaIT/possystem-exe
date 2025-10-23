@@ -888,3 +888,4 @@ CREATE TABLE return_item_details (
         ON DELETE CASCADE ON UPDATE CASCADE 
 );
 ALTER TABLE `item` ADD `type` VARCHAR(25) NULL AFTER `minQTY`;
+ALTER TABLE `category` ADD `count` INT NOT NULL AFTER `name`;

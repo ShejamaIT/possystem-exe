@@ -23,6 +23,7 @@ const AddOtherDetails = () => {
         try {
             const response = await fetch("http://localhost:5001/api/admin/main/categories");
             const data = await response.json();
+            console.log(data);
             setCategories(data.length > 0 ? data : []);
         } catch (err) {
             toast.error("Failed to load categories.");
@@ -129,7 +130,6 @@ const AddOtherDetails = () => {
             toast.error("Category name cannot be empty!");
             return;
         }
-
         try {
             const response = await fetch("http://localhost:5001/api/admin/main/category", {
                 method: "POST",
@@ -174,8 +174,7 @@ const AddOtherDetails = () => {
                         </Button>
                     </div>
 
-                    {/* Add Sub-Category Section */}
-                    <div className="p-3 border rounded shadow-sm">
+                    {/* <div className="p-3 border rounded shadow-sm">
                         <Label className="fw-bold">Select Category</Label>
                         <Input
                             type="select"
@@ -210,7 +209,6 @@ const AddOtherDetails = () => {
                             ))}
                         </Input>
 
-                        {/* Show input field if "New" is selected */}
                         {selectedSubcategory === "New" && (
                             <Input
                                 type="text"
@@ -250,7 +248,7 @@ const AddOtherDetails = () => {
                         <Button color="success" onClick={handleSubmitSubCategory}>
                             Add Sub-Category
                         </Button>
-                    </div>
+                    </div> */}
                 </Col>
             </Row>
         </Container>

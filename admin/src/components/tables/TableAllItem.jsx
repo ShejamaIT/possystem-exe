@@ -1,27 +1,28 @@
 import React, { useState, useEffect } from "react";
 import "../../style/TableTwo.css";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const TableAllItem = () => {
     const [items, setItems] = useState([]);
     const [filteredItems, setFilteredItems] = useState([]);
     const [searchQuery, setSearchQuery] = useState("");
+    const [selectedCategory, setSelectedCategory] = useState("");
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [categories, setCategories] = useState([]);
     const [restockMessage, setRestockMessage] = useState("");
-
     const [showAdminModal, setShowAdminModal] = useState(false);
     const [adminContact, setAdminContact] = useState("");
     const [adminPassword, setAdminPassword] = useState("");
-
     const [showBookedOrdersModal, setShowBookedOrdersModal] = useState(false);
     const [selectedItemOrders, setSelectedItemOrders] = useState([]);
     const [selectedItemName, setSelectedItemName] = useState("");
-
     const navigate = useNavigate();
 
     useEffect(() => {
         fetchItems();
+        fetchCategories();
     }, []);
 
     const fetchItems = async () => {
@@ -29,7 +30,6 @@ const TableAllItem = () => {
         try {
             const response = await fetch("http://localhost:5001/api/admin/main/allitems");
             const data = await response.json();
-            console.log(data);
             if (Array.isArray(data) && data.length > 0) {
                 setItems(data);
                 setFilteredItems(data);
@@ -41,16 +41,36 @@ const TableAllItem = () => {
             }
         } catch (error) {
             console.error("Error fetching items:", error);
-            setItems([]);
-            setFilteredItems([]);
             setError("Error fetching items.");
         } finally {
             setLoading(false);
         }
     };
 
-    const handleViewItem = (itemId) => {
-        navigate(`/item-detail/${itemId}`);
+    const fetchCategories = async () => {
+        try {
+            const response = await fetch("http://localhost:5001/api/admin/main/categories");
+            const data = await response.json();
+            if (Array.isArray(data.data)) {
+                setCategories(data.data);
+            } else {
+                setCategories([]);
+            }
+        } catch (err) {
+            toast.error("Failed to load categories.");
+        }
+    };
+
+    const handleCategoryChange = (event) => {
+        const selected = event.target.value;
+        setSelectedCategory(selected);
+
+        if (selected === "") {
+            setFilteredItems(items);
+        } else {
+            const filtered = items.filter((item) => item.type === selected);
+            setFilteredItems(filtered);
+        }
     };
 
     const handleSearch = (event) => {
@@ -59,14 +79,18 @@ const TableAllItem = () => {
 
         const filteredData = items.filter(
             (item) =>
-                item.I_Id.toString().toLowerCase().includes(query) ||
-                item.I_name.toLowerCase().includes(query)
+                (item.I_Id?.toLowerCase().includes(query) ||
+                    item.I_name?.toLowerCase().includes(query)) &&
+                (selectedCategory ? item.type === selectedCategory : true)
         );
 
         setFilteredItems(filteredData);
     };
 
-    // 🔍 View booked orders popup
+    const handleViewItem = (itemId) => {
+        navigate(`/item-detail/${itemId}`);
+    };
+
     const handleViewBookedOrders = (item) => {
         if (item.bookedOrders && item.bookedOrders.length > 0) {
             setSelectedItemOrders(item.bookedOrders);
@@ -77,12 +101,10 @@ const TableAllItem = () => {
         }
     };
 
-    // 🔐 Show modal before restock
     const handleAutoRestockClick = () => {
         setShowAdminModal(true);
     };
 
-    // 🔒 Admin authentication then proceed to auto restock
     const handleAdminLogin = async () => {
         try {
             const res = await fetch("http://localhost:5001/api/admin/main/admin-pass", {
@@ -93,9 +115,7 @@ const TableAllItem = () => {
                     password: adminPassword,
                 }),
             });
-
             const data = await res.json();
-
             if (data.success) {
                 setShowAdminModal(false);
                 setAdminContact("");
@@ -110,7 +130,6 @@ const TableAllItem = () => {
         }
     };
 
-    // 🔄 Auto restock logic
     const runAutoRestock = async () => {
         setRestockMessage("Processing auto restock...");
         try {
@@ -136,16 +155,50 @@ const TableAllItem = () => {
         <div className="table-container">
             <h4 className="table-title">All Items</h4>
 
-            {/* 🔍 Search Box */}
-            <input
-                type="text"
-                placeholder="Search by Item ID or Name..."
-                value={searchQuery}
-                onChange={handleSearch}
-                className="search-input"
-            />
+            {/* 🔹 Filter Bar */}
+            <div
+                style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "10px",
+                    marginBottom: "15px",
+                }}
+            >
+                <select
+                    value={selectedCategory}
+                    onChange={handleCategoryChange}
+                    style={{
+                        padding: "6px 10px",
+                        borderRadius: "6px",
+                        border: "1px solid #ccc",
+                        width: "180px",
+                        fontSize: "14px",
+                    }}
+                >
+                    <option value="">All Categories</option>
+                    {categories.map((cat) => (
+                        <option key={cat.id} value={cat.name}>
+                            {cat.name} ({cat.itemCount})
+                        </option>
+                    ))}
+                </select>
 
-            {/* 🔄 Auto Restock Button */}
+                <input
+                    type="text"
+                    placeholder="Search by Item ID or Name..."
+                    value={searchQuery}
+                    onChange={handleSearch}
+                    className="search-input"
+                    style={{
+                        flex: 1,
+                        padding: "8px 12px",
+                        borderRadius: "6px",
+                        border: "1px solid #ccc",
+                        fontSize: "14px",
+                    }}
+                />
+            </div>
+
             <div className="action-bar">
                 <button className="restock-btn" onClick={handleAutoRestockClick}>
                     🔄 Auto Restock
@@ -153,63 +206,7 @@ const TableAllItem = () => {
                 {restockMessage && <p className="restock-message">{restockMessage}</p>}
             </div>
 
-            {/* 🔐 Admin Confirmation Modal */}
-            {showAdminModal && (
-                <div className="modal-overlay">
-                    <div className="receipt-modal" style={{ width: 350, padding: 20 }}>
-                        <h3>Admin Authentication Required</h3>
-                        <input
-                            placeholder="Admin Contact"
-                            value={adminContact}
-                            onChange={(e) => setAdminContact(e.target.value)}
-                        />
-                        <input
-                            placeholder="Password"
-                            type="password"
-                            value={adminPassword}
-                            onChange={(e) => setAdminPassword(e.target.value)}
-                        />
-                        <div className="modal-buttons">
-                            <button onClick={handleAdminLogin} className="print-btn">Confirm</button>
-                            <button onClick={() => setShowAdminModal(false)} className="close-btn">Cancel</button>
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            {/* 📦 Booked Orders Popup */}
-            {showBookedOrdersModal && (
-                <div className="modal-overlay">
-                    <div className="receipt-modal" style={{ width: 500, padding: 20 }}>
-                        <h3>Booked Orders for <span style={{ color: "#007bff" }}>{selectedItemName}</span></h3>
-                        <table className="styled-table">
-                            <thead>
-                                <tr>
-                                    <th>Order ID</th>
-                                    <th>Bill Number</th>
-                                    <th>Sales Member</th>
-                                    <th>Special Reservation</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {selectedItemOrders.map((order, idx) => (
-                                    <tr key={idx}>
-                                        <td>{order.OrID}</td>
-                                        <td>{order.billnumber}</td>
-                                        <td>{order.sales_member_name || "N/A"}</td>
-                                        <td>{order.special_reserved}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                        <div className="modal-buttons">
-                            <button onClick={() => setShowBookedOrdersModal(false)} className="close-btn">Close</button>
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            {/* 🧾 Items Table */}
+            {/* 🔹 Table */}
             <div className="table-wrapper">
                 <table className="styled-table">
                     <thead>
