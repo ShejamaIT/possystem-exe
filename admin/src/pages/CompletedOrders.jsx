@@ -125,7 +125,7 @@ const CompleteOrderDetails = () => {
         return formData?.items && Array.isArray(formData.items)
             ? formData.items.reduce((total, item) => {
                 // Calculate price after discount per item
-                const priceAfterDiscount = (item.quantity * item.unitPrice) - item.totalDiscountAmount;
+                const priceAfterDiscount = (item.quantity * item.amount);
                 return total + (priceAfterDiscount || 0);
             }, 0)
             : 0;
@@ -188,7 +188,7 @@ const CompleteOrderDetails = () => {
         const delivery = Number(formData.deliveryCharge || 0);
         const discount = Number(formData.discount || 0);
         const specialdic = Number(formData.specialdiscount ||0);
-        const total = (itemTotal + delivery) - (discount + specialdic);
+        const total = (itemTotal + delivery) - (specialdic);
         return total.toFixed(2);
     };
     const handleChange = (e, index) => {
@@ -982,11 +982,11 @@ const CompleteOrderDetails = () => {
                                             return (
                                                 <li key={index} style={{ position: 'relative', marginBottom: "1rem", padding: "1rem", border: "1px solid #ccc", borderRadius: "6px" }}>
                                                     <p><strong>Item:</strong> {item.itemName}</p>
-                                                    <p><strong>Color:</strong> {item.color}</p>
                                                     <p><strong>Unit Price:</strong> Rs. {item.unitPrice}</p>
+                                                    <p><strong>Sell Price:</strong> Rs. {item.amount}</p>
                                                     <p><strong>Discount:</strong> Rs. {item.discount}</p>
                                                     <p><strong>Requested Quantity:</strong> {item.quantity}</p>
-                                                    <p><strong>Amount:</strong> Rs. {(item.unitPrice - item.discount) * item.quantity}</p>
+                                                    <p><strong>Amount:</strong> Rs. {(item.amount) * item.quantity}</p>
                                                     <p><strong>Available Quantity:</strong> {item.availableQuantity}</p>
 
                                                     {isReserved && (

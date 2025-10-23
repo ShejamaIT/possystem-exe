@@ -464,8 +464,6 @@ router.get("/damaged-items", async (req, res) => {
   }
 });
 
-
-
 // Assuming you are using mysql2/promise with db.query
 router.get("/orders/new-id", async (req, res) => {
   try {
@@ -504,7 +502,6 @@ router.get("/orders/new-id", async (req, res) => {
   }
 });
  
-
 // Save a order
 router.post("/orders", async (req, res) => {
     const {
@@ -1076,7 +1073,6 @@ router.post("/later-order", async (req, res) => {
             orderStatus = hasProduction ? "Processing" : "Accepted";
         }
 
-    
         const orderQuery = `INSERT INTO Orders (OrID, orDate, c_ID, orStatus, delStatus, delPrice, couponeDiscount,itemDiscount, specialDiscount, netTotal, total, stID, expectedDate, specialNote,billNumber, ordertype, advance, balance, payStatus)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)`;
 
@@ -4377,7 +4373,6 @@ router.get("/order-details", async (req, res) => {
             payStatus: orderData.payStatus,
             customerId: orderData.c_ID,
             name: customerName,
-            address: orderData.address,
             expectedDeliveryDate: formatDate(orderData.expectedDate),
             specialNote: orderData.specialNote,
             salesTeam: orderData.salesEmployeeName ? { employeeName: orderData.salesEmployeeName } : null,
@@ -9365,6 +9360,7 @@ router.get("/find-completed-orders-by-date", async (req, res) => {
                             discount: 0,
                             bookedQuantity: item.bookedQty,
                             availableQuantity: item.availableQty,
+                            amount:item.tprice,
                         };
                     }
                     acc[item.I_Id].quantity += item.qty;
@@ -9373,8 +9369,9 @@ router.get("/find-completed-orders-by-date", async (req, res) => {
                 }, {})
             ).map(item => ({
                 ...item,
-                price: (item.unitPrice * item.quantity) - item.discount,
+                price: (item.amount * item.quantity) - item.discount,
             }));
+            console.log(aggregatedItems);
 
             return {
                 orderId: order.orId,
@@ -9606,7 +9603,8 @@ router.get("/find-completed-orders-by-date-pickup", async (req, res) => {
                                 quantity: 0,
                                 unitPrice: item.unitPrice,
                                 price: 0,
-                                discount: 0, // Initialize to 0
+                                discount: 0, 
+                                amount: item.tprice,
                                 bookedQuantity: item.bookedQty,
                                 availableQuantity: item.availableQty
                             };
@@ -9721,6 +9719,7 @@ router.get("/find-completed-orders-by-date-courier", async (req, res) => {
                                 unitPrice: item.unitPrice,
                                 price: 0,
                                 discount: 0, // Initialize to 0
+                                amount: item.tprice,
                                 bookedQuantity: item.bookedQty,
                                 availableQuantity: item.availableQty
                             };

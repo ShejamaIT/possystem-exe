@@ -137,7 +137,7 @@ const OrderDetails = () => {
         const delivery = Number(formData.deliveryCharge || 0);
         const discount = Number(formData.discount || 0);
         const specialdic = Number(formData.specialdiscount ||0);
-        const total = (itemTotal + delivery) - (discount + specialdic);
+        const total = (itemTotal + delivery) - (specialdic);
         return total.toFixed(2);
     };
 
@@ -148,7 +148,7 @@ const OrderDetails = () => {
         return formData?.items && Array.isArray(formData.items)
             ? formData.items.reduce((total, item) => {
                 // Calculate price after discount per item
-                const priceAfterDiscount = (item.quantity * item.unitPrice) - item.totalDiscountAmount;
+                const priceAfterDiscount = (item.quantity * item.amount);
                 return total + (priceAfterDiscount || 0);
             }, 0)
             : 0;
@@ -246,7 +246,7 @@ const OrderDetails = () => {
         };
 
         let updatedGeneralOrder = null;
-
+        console.log(updatedData);
         try {
             if (hasGeneralDetailsChanged(updatedData)) {
                 const generalResponse = await fetch(`http://localhost:5001/api/admin/main/update-order-details`, {
@@ -438,7 +438,7 @@ const OrderDetails = () => {
             customerName: order.name,
             contact1: order.phoneNumber || '',
             contact2: order.optionalNumber || '',
-            address: order.deliveryInfo?.address || '',
+            address: order.address || '',
             balance: parseFloat(balance),
             delStatus: typeof order.deliveryInfo === 'object' && order.deliveryInfo !== null ? 'Delivery' : 'Pickup',
             delPrice: parseFloat(order.deliveryCharge || formData.deliveryCharge),
@@ -457,6 +457,7 @@ const OrderDetails = () => {
             specialNote: order.specialNote,
             billNumber: order.billNumber || '-',
         };
+        console.log(updatedData);
 
         setReceiptData(updatedData);
         setShowReceiptView(true);
@@ -723,11 +724,11 @@ const OrderDetails = () => {
                                             return (
                                                 <li key={index} style={{ position: 'relative', marginBottom: "1rem", padding: "1rem", border: "1px solid #ccc", borderRadius: "6px" }}>
                                                     <p><strong>Item:</strong> {item.itemName}</p>
-                                                    <p><strong>Color:</strong> {item.color}</p>
                                                     <p><strong>Unit Price:</strong> Rs. {item.unitPrice}</p>
+                                                    <p><strong>Sell Price:</strong> Rs. {item.amount}</p>
                                                     <p><strong>Discount:</strong> Rs. {item.discount}</p>
                                                     <p><strong>Requested Quantity:</strong> {item.quantity}</p>
-                                                    <p><strong>Amount:</strong> Rs. {(item.unitPrice - item.discount) * item.quantity}</p>
+                                                    <p><strong>Amount:</strong> Rs. {(item.amount) * item.quantity}</p>
                                                     <p><strong>Available Quantity:</strong> {item.availableQuantity}</p>
 
                                                     {/* 🔴 Red check icon for special reserved */}

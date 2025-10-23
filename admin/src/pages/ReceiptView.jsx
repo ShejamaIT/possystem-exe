@@ -34,7 +34,7 @@ const ReceiptView = ({ receiptData, setShowReceiptView }) => {
   const calculatedSubtotal = useMemo(() => {
     if (!receiptData.items?.length) return 0;
     return receiptData.items.reduce((sum, item) => {
-      return sum + (item.unitPrice - (item.discount || 0)) * item.quantity;
+      return sum + (item.amount) * item.quantity;
     }, 0);
   }, [receiptData.items]);
 
@@ -427,8 +427,8 @@ const ReceiptView = ({ receiptData, setShowReceiptView }) => {
                   <td>{item.itemName}</td>
                   <td>{item.unitPrice.toFixed(2)}</td>
                   {/* <td>{item.discount.toFixed(2)}</td> */}
-                  <td>{(item.unitPrice - item.discount).toFixed(2)}</td>
-                  <td>{(item.quantity * (item.unitPrice - item.discount)).toFixed(2)}</td>
+                  <td>{(item.amount).toFixed(2)}</td>
+                  <td>{(item.quantity * (item.amount)).toFixed(2)}</td>
                 </tr>
               ))}
             </tbody>
@@ -500,7 +500,7 @@ const ReceiptView = ({ receiptData, setShowReceiptView }) => {
               <tr>
                 <th>Qty</th>
                 <th>Description</th>
-                <th>Rate (Rs.)</th>
+                {/* <th>Rate (Rs.)</th> */}
                 {/* <th>Discount (Rs.)</th> */}
                 <th>Sell price (Rs.)</th>
                 <th>Amount (Rs.)</th>
@@ -511,10 +511,10 @@ const ReceiptView = ({ receiptData, setShowReceiptView }) => {
                 <tr key={index}>
                   <td style={{ fontSize: "10px" }}>{item.quantity}</td>
                   <td style={{ fontSize: "10px" }}>{item.itemName}</td>
-                  <td style={{ fontSize: "10px" , textAlign: "center"}}>{item.unitPrice.toFixed(2)}</td>
+                  {/* <td style={{ fontSize: "10px" , textAlign: "center"}}>{item.unitPrice.toFixed(2)}</td> */}
                   {/* <td style={{ fontSize: "10px" , textAlign: "center"}}>{item.discount.toFixed(2)}</td> */}
-                  <td style={{ fontSize: "10px" , textAlign: "center"}}>{(item.unitPrice-item.discount).toFixed(2)}</td>
-                  <td style={{ fontSize: "10px", textAlign: "right"}}>{(item.quantity * (item.unitPrice - item.discount)).toFixed(2)}</td>
+                  <td style={{ fontSize: "10px" , textAlign: "center"}}>{(item.amount).toFixed(2)}</td>
+                  <td style={{ fontSize: "10px", textAlign: "right"}}>{(item.quantity * (item.amount)).toFixed(2)}</td>
                 </tr>
               ))}
 
@@ -522,20 +522,20 @@ const ReceiptView = ({ receiptData, setShowReceiptView }) => {
               <tr>
                 <td style={{ border: "none" }}></td>
                 <td style={{ border: "none" }}></td>
-                <td style={{ border: "none" }}></td>
+                {/* <td style={{ border: "none" }}></td> */}
                 {/* <td style={{ border: "none" }}></td> */}
                 <td style={{ border: "1px solid #999", textAlign: "right", fontSize: "10px" }}>
                   <strong>Gross Total</strong>
                 </td>
                 <td style={{ border: "1px solid #999", textAlign: "right", fontSize: "10px" }}>
-                  {(receiptData.subtotal || 0).toFixed(2)}
+                  {(calculatedSubtotal.toFixed(2))}
                 </td>
               </tr>
 
               <tr>
                 <td style={{ border: "none" }}></td>
                 <td style={{ border: "none" }}></td>
-                <td style={{ border: "none" }}></td>
+                {/* <td style={{ border: "none" }}></td> */}
                 {/* <td style={{ border: "none" }}></td> */}
                 <td style={{ border: "1px solid #999", textAlign: "right", fontSize: "10px" }}>
                   <strong>Delivery Price</strong>
@@ -545,49 +545,49 @@ const ReceiptView = ({ receiptData, setShowReceiptView }) => {
                 </td>
               </tr>
 
-              <tr>
+              {/* <tr>
                 <td style={{ border: "none" }}></td>
                 <td style={{ border: "none" }}></td>
-                <td style={{ border: "none" }}></td>
-                {/* <td style={{ border: "none" }}></td> */}
+                <td style={{ border: "none" }}></td> */}
+                {/* <td style={{ border: "none" }}></td>
                 <td style={{ border: "1px solid #999", textAlign: "right", fontSize: "10px" }}>
                   <strong>Special Discount</strong>
                 </td>
                 <td style={{ border: "1px solid #999", textAlign: "right", fontSize: "10px" }}>
                   {(receiptData.specialdiscount || 0).toFixed(2)}
                 </td>
-              </tr>
+              </tr> */}
 
-              <tr>
+              {/* <tr>
                 <td style={{ border: "none" }}></td>
                 <td style={{ border: "none" }}></td>
-                <td style={{ border: "none" }}></td>
-                {/* <td style={{ border: "none" }}></td> */}
+                <td style={{ border: "none" }}></td> */}
+                {/* <td style={{ border: "none" }}></td>
                 <td style={{ border: "1px solid #999", textAlign: "right", fontSize: "10px" }}>
                   <strong>Coupon Discount</strong>
                 </td>
                 <td style={{ border: "1px solid #999", textAlign: "right", fontSize: "10px" }}>
                   {(receiptData.couponediscount || 0).toFixed(2)}
                 </td>
-              </tr>
+              </tr> */}
 
               <tr>
                 <td style={{ border: "none" }}></td>
                 <td style={{ border: "none" }}></td>
-                <td style={{ border: "none" }}></td>
+                {/* <td style={{ border: "none" }}></td> */}
                 {/* <td style={{ border: "none" }}></td> */}
                 <td style={{ border: "1px solid #999", textAlign: "right", fontSize: "10px" }}>
                   <strong>Net Total</strong>
                 </td>
                 <td style={{ border: "1px solid #999", textAlign: "right", fontSize: "10px" }}>
-                  {(receiptData.total || 0).toFixed(2)}
+                  {(calculatedTotal.toFixed(2))}
                 </td>
               </tr>
 
               <tr>
                 <td style={{ border: "none" }}></td>
                 <td style={{ border: "none" }}></td>
-                <td style={{ border: "none" }}></td>
+                {/* <td style={{ border: "none" }}></td> */}
                 {/* <td style={{ border: "none" }}></td> */}
                 <td style={{ border: "1px solid #999", textAlign: "right", fontSize: "10px" }}>
                   <strong>Payment</strong>
@@ -600,7 +600,7 @@ const ReceiptView = ({ receiptData, setShowReceiptView }) => {
               <tr>
                 <td style={{ border: "none" }}></td>
                 <td style={{ border: "none" }}></td>
-                <td style={{ border: "none" }}></td>
+                {/* <td style={{ border: "none" }}></td> */}
                 {/* <td style={{ border: "none" }}></td> */}
                 <td style={{ border: "1px solid #999", textAlign: "right", fontSize: "10px" }}>
                   <strong>Balance</strong>

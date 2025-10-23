@@ -150,6 +150,7 @@ const GatePass = () => {
     };
 
     const handleOrderSelection = (order) => {
+        console.log(order);
         const updatedOrders = selectedOrders.includes(order)
             ? selectedOrders.filter(o => o !== order)
             : [...selectedOrders, order];
@@ -159,7 +160,6 @@ const GatePass = () => {
         handleEditClick1(order);
         calculateTotal(updatedOrders);
     };
-
 
     const handleEditClick1 = (order) => {
         if (!order) return;

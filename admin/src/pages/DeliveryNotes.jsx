@@ -166,6 +166,7 @@ const DeliveryNotes = () => {
             const response1 = await fetch(url1);
             const data = await response.json();
             const data1 = await response1.json();
+            console.log(data);
             setOrders(data.orders || []);
             setReturnOrders(data1.orders || []);
         } catch (error) {
@@ -309,6 +310,7 @@ const DeliveryNotes = () => {
                     : order
             )
         );
+        console.log(updatedData);
 
         try {
             const response = await fetch('http://localhost:5001/api/admin/main/issued-items-Later', {

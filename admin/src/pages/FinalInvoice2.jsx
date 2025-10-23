@@ -4,6 +4,7 @@ import { Button, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHe
 import { toast } from "react-toastify";
 
 const FinalInvoice2 = ({ selectedOrder, setShowModal2, handlePaymentUpdate }) => {
+    console.log(selectedOrder);
     const invoiceDate = new Date().toLocaleDateString();
     const [paymentType, setPaymentType] = useState(selectedOrder.payStatus);
     const [deliveryStatus, setDeliveryStatus] = useState(selectedOrder.deliveryStatus);
@@ -17,14 +18,14 @@ const FinalInvoice2 = ({ selectedOrder, setShowModal2, handlePaymentUpdate }) =>
     const [filteredItems, setFilteredItems] = useState([]); // List to store filtered items based on search term
     const [selectedItem, setSelectedItem] = useState([]);
     const [isLoading, setIsLoading] = useState(false);  // Loading state for stock fetch
-    const calculateTotal = (item) => item.quantity * (item.unitPrice);
+    const calculateTotal = (item) => item.quantity * (item.amount);
     const ItemDiscount = Number(selectedOrder.itemDiscount || 0);
     const discount = Number(selectedOrder.discount) || 0;  // Default to 0 if undefined or NaN
     const specialDiscount = Number(selectedOrder.specialDiscount || 0);
     const delivery = Number(selectedOrder.deliveryCharge) || 0;  // Default to 0 if undefined or NaN
     const subtotal = Number(selectedOrder.items.reduce((sum, item) => sum + calculateTotal(item), 0)) || 0;  // Ensure subtotal is a valid number
     const totalAdvance = Number(advance) + Number(nowPay) || 0;  // Ensure advance is valid
-    const netTotal = (subtotal + delivery-ItemDiscount- specialDiscount - discount);  // Default discount to 0 if undefined or NaN
+    const netTotal = (subtotal + delivery- specialDiscount - discount);  // Default discount to 0 if undefined or NaN
     const balance = netTotal - totalAdvance;
     const debounceTimer = useRef(null);
     useEffect(() => {
@@ -268,10 +269,10 @@ const FinalInvoice2 = ({ selectedOrder, setShowModal2, handlePaymentUpdate }) =>
                     {selectedOrder.items.map((item, index) => (
                         <tr key={index}>
                             <td>{item.itemName}</td>
-                            <td>{(item.unitPrice.toFixed(2))}</td>
+                            <td>{(item.price.toFixed(2))}</td>
                             <td>{item.discount.toFixed(2)}</td>
                             <td>{item.quantity}</td>
-                            <td>{(item.unitPrice.toFixed(2)-item.discount.toFixed(2))*(item.quantity)}</td>
+                            <td>{(item.price.toFixed(2))*(item.quantity)}</td>
                         </tr>
                     ))}
                     </tbody>
@@ -301,9 +302,9 @@ const FinalInvoice2 = ({ selectedOrder, setShowModal2, handlePaymentUpdate }) =>
                 <div className="invoice-footer">
                     <div className="total-section">
                         <p><strong>Subtotal:</strong> Rs. {subtotal.toFixed(2)}</p>
-                        <p><strong>Item Discount:</strong> Rs. {ItemDiscount.toFixed(2)}</p>
+                        {/* <p><strong>Item Discount:</strong> Rs. {ItemDiscount.toFixed(2)}</p>
                         <p><strong>Coupone Discount:</strong> Rs. {discount.toFixed(2)}</p>
-                        <p><strong>Special Discount:</strong> Rs. {specialDiscount.toFixed(2)}</p>
+                        <p><strong>Special Discount:</strong> Rs. {specialDiscount.toFixed(2)}</p> */}
                         <p><strong>Delivery:</strong> Rs. {delivery.toFixed(2)}</p>
                         <p><strong>Total:</strong> Rs. {netTotal.toFixed(2)}</p>
                         <p><strong>Advance:</strong> Rs. {advance.toFixed(2)}</p>

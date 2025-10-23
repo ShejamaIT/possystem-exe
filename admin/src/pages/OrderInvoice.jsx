@@ -1038,6 +1038,7 @@ const OrderInvoice = ({ onPlaceOrder }) => {
 
         // ✅ Calculate totalItemPrice and totalBillPrice from selectedItems
         const totalItemPrice = itemList.reduce((sum, item) => sum + parseFloat(item.price), 0);
+        console.log(totalItemPrice);
         let totalBillPrice =0;
         if(formData.dvStatus === "Delivery"){
             totalBillPrice = totalItemPrice + parseFloat(deliveryPrice || 0) - parseFloat(discountAmount || 0) - parseFloat(specialdiscountAmount || 0);

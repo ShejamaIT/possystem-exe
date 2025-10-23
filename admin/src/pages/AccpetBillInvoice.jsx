@@ -3,6 +3,7 @@ import html2canvas from "html2canvas";
 import "../style/invoice.css"; // Make sure this file includes the print styles
 
 const BillInvoice = ({ selectedOrder, setShowModal1, handleSubmit }) => {
+    console.log(selectedOrder)
     const invoiceDate = new Date().toLocaleDateString();
     const [deliveryCharge, setDeliveryCharge] = useState(selectedOrder.deliveryCharge);
     const [previousDeliveryCharge, setPreviousDeliveryCharge] = useState(selectedOrder.deliveryCharge);
@@ -13,7 +14,7 @@ const BillInvoice = ({ selectedOrder, setShowModal1, handleSubmit }) => {
     // const [isPickup, setIsPickup] = useState(false);
     const [isPickup, setIsPickup] = useState(selectedOrder.deliveryStatus === "Pick up");
 
-    const calculateTotal = (item) => item.quantity * (item.unitPrice -item.discount);
+    const calculateTotal = (item) => item.quantity * (item.amount);
     const subtotal = selectedOrder.items.reduce((sum, item) => sum + calculateTotal(item), 0);
     const validAdvance = advance ? Number(advance) : 0;
     const totalAdvance = validAdvance + Number(nowPay);
@@ -70,7 +71,7 @@ const BillInvoice = ({ selectedOrder, setShowModal1, handleSubmit }) => {
                         <th>Item</th>
                         <th>Qty</th>
                         <th>Price (Rs.)</th>
-                        <th>Discount (Rs.)</th>
+                        {/* <th>Discount (Rs.)</th> */}
                         <th>Total (Rs.)</th>
                     </tr>
                     </thead>
@@ -79,8 +80,8 @@ const BillInvoice = ({ selectedOrder, setShowModal1, handleSubmit }) => {
                         <tr key={index}>
                             <td>{item.itemName}</td>
                             <td>{item.quantity}</td>
-                            <td>{item.unitPrice.toFixed(2)}</td>
-                            <td>{item.discount.toFixed(2)}</td>
+                            <td>{item.amount.toFixed(2)}</td>
+                            {/* <td>{item.discount.toFixed(2)}</td> */}
                             <td>{calculateTotal(item).toFixed(2)}</td>
                         </tr>
                     ))}
