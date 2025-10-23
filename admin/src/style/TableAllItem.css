@@ -127,7 +127,7 @@
 
 /* Action Buttons */
 .view-btn {
-    background-color: #28a745;
+    background-color: #2850a7;
     color: white;
     border: none;
     border-radius: 4px;
@@ -156,9 +156,6 @@
     padding: 15px 0;
 }
 
-/* ================================
-   Modal Styles
-=================================== */
 .modal-overlay {
     position: fixed;
     top: 0;
