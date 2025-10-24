@@ -4,6 +4,7 @@ import { Button, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHe
 import { toast } from "react-toastify";
 
 const FinalInvoice1 = ({ selectedOrder, setShowModal2, handlePaymentUpdate,handleDeliveryNote,handleGatePass }) => {
+    console.log(selectedOrder);
     const invoiceDate = new Date().toLocaleDateString();
     const [paymentType, setPaymentType] = useState(selectedOrder.payStatus);
     const [deliveryStatus, setDeliveryStatus] = useState(selectedOrder.deliveryStatus);
@@ -17,7 +18,7 @@ const FinalInvoice1 = ({ selectedOrder, setShowModal2, handlePaymentUpdate,handl
     const [filteredItems, setFilteredItems] = useState([]); // List to store filtered items based on search term
     const [selectedItem, setSelectedItem] = useState([]);
     const [isLoading, setIsLoading] = useState(false);  // Loading state for stock fetch
-    const calculateTotal = (item) => item.quantity * (item.price/item.quantity);
+    const calculateTotal = (item) => item.quantity * (item.sellprice);
     const discount = Number(selectedOrder.discount) || 0;  // Default to 0 if undefined or NaN
     const ItemDiscount = Number(selectedOrder.ItemDiscount || 0);
     const specialDiscount = Number(selectedOrder.specialDiscount || 0);
@@ -276,7 +277,7 @@ const FinalInvoice1 = ({ selectedOrder, setShowModal2, handlePaymentUpdate,handl
                     <tr>
                         <th>Item</th>
                         <th>Price (Rs:)</th>
-                        <th>Discount (Rs:)</th>
+                        {/* <th>Discount (Rs:)</th> */}
                         <th>Qty</th>
                         <th>Total (Rs:)</th>
                     </tr>
@@ -285,8 +286,8 @@ const FinalInvoice1 = ({ selectedOrder, setShowModal2, handlePaymentUpdate,handl
                     {selectedOrder.items.map((item, index) => (
                         <tr key={index}>
                             <td>{item.itemName}</td>
-                            <td>{item.unitPrice.toFixed(2)}</td>
-                            <td>{item.discount.toFixed(2)}</td>
+                            <td>{item.sellprice.toFixed(2)}</td>
+                            {/* <td>{item.discount.toFixed(2)}</td> */}
                             <td>{item.quantity}</td>
                             <td>{item.price.toFixed(2)}</td>
                         </tr>

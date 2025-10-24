@@ -125,7 +125,7 @@ const CompleteOrderDetails = () => {
         return formData?.items && Array.isArray(formData.items)
             ? formData.items.reduce((total, item) => {
                 // Calculate price after discount per item
-                const priceAfterDiscount = (item.quantity * item.amount);
+                const priceAfterDiscount = (item.quantity * item.sellPrice);
                 return total + (priceAfterDiscount || 0);
             }, 0)
             : 0;
@@ -983,7 +983,7 @@ const CompleteOrderDetails = () => {
                                                 <li key={index} style={{ position: 'relative', marginBottom: "1rem", padding: "1rem", border: "1px solid #ccc", borderRadius: "6px" }}>
                                                     <p><strong>Item:</strong> {item.itemName}</p>
                                                     <p><strong>Unit Price:</strong> Rs. {item.unitPrice}</p>
-                                                    <p><strong>Sell Price:</strong> Rs. {item.amount}</p>
+                                                    <p><strong>Sell Price:</strong> Rs. {item.sellPrice}</p>
                                                     <p><strong>Discount:</strong> Rs. {item.discount}</p>
                                                     <p><strong>Requested Quantity:</strong> {item.quantity}</p>
                                                     <p><strong>Amount:</strong> Rs. {(item.amount) * item.quantity}</p>

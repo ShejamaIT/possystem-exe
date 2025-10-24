@@ -11,6 +11,7 @@ const BillView = ({ receiptData, setShowReceiptView }) => {
   const [adminContact, setAdminContact] = useState("");
   const [adminPassword, setAdminPassword] = useState("");
   const [pendingPrint, setPendingPrint] = useState(null);
+  
 
   useEffect(() => {
     const eid = localStorage.getItem('EID');
@@ -34,13 +35,16 @@ const BillView = ({ receiptData, setShowReceiptView }) => {
   const calculatedSubtotal = useMemo(() => {
     if (!receiptData.items?.length) return 0;
     return receiptData.items.reduce((sum, item) => {
-      return sum + (item.price) * item.quantity;
+      return sum + (item.sellprice) * item.quantity;
     }, 0);
   }, [receiptData.items]);
 
   const calculatedTotal = useMemo(() => {
     return calculatedSubtotal - (receiptData.discount || 0) - (receiptData.specialdiscount || 0) + (receiptData.delPrice || 0);
   }, [calculatedSubtotal, receiptData]);
+  const CalculateBalance = useMemo(() => {
+    return (receiptData.total || 0) - (receiptData.advance || 0);
+  }, [receiptData]);
 
   const balance = useMemo(() => {
     return calculatedTotal - (receiptData.paymentAmount || receiptData.advance);
@@ -427,7 +431,7 @@ const BillView = ({ receiptData, setShowReceiptView }) => {
                   <td>{item.itemName}</td>
                   <td>{item.unitPrice.toFixed(2)}</td>
                   {/* <td>{item.discount.toFixed(2)}</td> */}
-                  <td>{item.price.toFixed(2)}</td>
+                  <td>{item.sellprice.toFixed(2)}</td>
                   <td>{(item.quantity * (item.price)).toFixed(2)}</td>
                 </tr>
               ))}
@@ -513,8 +517,8 @@ const BillView = ({ receiptData, setShowReceiptView }) => {
                   <td style={{ fontSize: "10px" }}>{item.itemName}</td>
                   <td style={{ fontSize: "10px" , textAlign: "center"}}>{item.unitPrice.toFixed(2)}</td>
                   {/* <td style={{ fontSize: "10px" , textAlign: "center"}}>{item.discount.toFixed(2)}</td> */}
-                  <td style={{ fontSize: "10px" , textAlign: "center"}}>{(item.price).toFixed(2)}</td>
-                  <td style={{ fontSize: "10px", textAlign: "right"}}>{(item.quantity * (item.price)).toFixed(2)}</td>
+                  <td style={{ fontSize: "10px" , textAlign: "center"}}>{(item.sellprice).toFixed(2)}</td>
+                  <td style={{ fontSize: "10px", textAlign: "right"}}>{(item.quantity * (item.sellprice)).toFixed(2)}</td>
                 </tr>
               ))}
 
@@ -606,7 +610,7 @@ const BillView = ({ receiptData, setShowReceiptView }) => {
                   <strong>Balance</strong>
                 </td>
                 <td style={{ border: "1px solid #999", textAlign: "right", fontSize: "10px" }}>
-                  {(receiptData.balance || 0).toFixed(2)}
+                  {(CalculateBalance).toFixed(2)}
                 </td>
               </tr>
             </tbody>

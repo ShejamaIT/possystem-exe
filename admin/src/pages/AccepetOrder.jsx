@@ -114,6 +114,7 @@ const OrderDetails = () => {
             if (!response.ok) throw new Error("Failed to fetch order details.");
 
             const data = await response.json();
+            console.log(data);
             const data1 = response1.ok ? await response1.json() : { data: [] }; // fallback if request fails
             // Set special reserved items safely
             setSpecialReservedItems(Array.isArray(data1.data) ? data1.data : []);
@@ -170,7 +171,7 @@ const OrderDetails = () => {
     const calculateItemTotal = () => {
         return formData?.items && Array.isArray(formData.items)
             ? formData.items.reduce((total, item) => {
-                const priceAfterDiscount = (item.quantity * item.amount);
+                const priceAfterDiscount = (item.quantity * item.sellPrice);
                 return total + (priceAfterDiscount || 0);
             }, 0)
             : 0;
@@ -624,14 +625,6 @@ const OrderDetails = () => {
             setIsLoading(false);
         }
     };
-    const formatDateForDB = (dateInput) => {
-        const date = new Date(dateInput);
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-        return `${year}-${month}-${day}`;
-    };
-
     const generateBill = async () => {
         const receiptId = await fetchRecepitID();  // Wait for ID
         const invoiceId = await fetchInvoiceID();
@@ -942,10 +935,10 @@ const OrderDetails = () => {
                                                 <li key={index} style={{ position: 'relative', marginBottom: "1rem", padding: "1rem", border: "1px solid #ccc", borderRadius: "6px" }}>
                                                     <p><strong>Item:</strong> {item.itemName}</p>
                                                     <p><strong>Unit Price:</strong> Rs. {item.unitPrice}</p>
-                                                    <p><strong>Sell Price:</strong> Rs. {item.amount}</p>
+                                                    <p><strong>Sell Price:</strong> Rs. {item.sellPrice}</p>
                                                     <p><strong>Discount:</strong> Rs. {item.discount}</p>
                                                     <p><strong>Requested Quantity:</strong> {item.quantity}</p>
-                                                    <p><strong>Amount:</strong> Rs. {(item.amount) * item.quantity}</p>
+                                                    <p><strong>Amount:</strong> Rs. {(item.sellPrice) * item.quantity}</p>
                                                     <p><strong>Available Quantity:</strong> {item.availableQuantity}</p>
 
                                                     {isReserved && (

@@ -997,6 +997,7 @@ const OrderInvoice = ({ onPlaceOrder }) => {
                 itemName:item.itemName,
                 material: item.material,
                 qty: item.qty,
+                sellprice: item.price,
                 price: netPrice,
                 discount: discount,
             };
@@ -1013,6 +1014,7 @@ const OrderInvoice = ({ onPlaceOrder }) => {
                 color: item.color,
                 quantity: item.qty,
                 unitPrice: unitPrice,
+                sellprice: item.price,
                 grossprice:grossPrice,
                 price: netPrice,
                 discount: discount,
@@ -1161,6 +1163,7 @@ const OrderInvoice = ({ onPlaceOrder }) => {
                 color: item.color,
                 quantity: item.qty,
                 unitPrice: unitPrice,
+                sellprice: item.price,
                 grossprice:grossPrice,
                 price: netPrice,
                 discount: discount,
@@ -1283,6 +1286,7 @@ const OrderInvoice = ({ onPlaceOrder }) => {
             billNumber: formData.billNumber || '-',
             expectedDate: formData.expectedDate || '',
         };
+        console.log(updatedData);
          try {
                 // Make API request to the /isssued-order endpoint
                 const response = await fetch('http://localhost:5001/api/admin/main/issued-items-Now', {
