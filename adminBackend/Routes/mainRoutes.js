@@ -9379,7 +9379,7 @@ router.get("/find-completed-orders-by-date", async (req, res) => {
                             discount: 0,
                             bookedQuantity: item.bookedQty,
                             availableQuantity: item.availableQty,
-                            amount:item.tprice,
+                            sellPrice:item.tprice,
                         };
                     }
                     acc[item.I_Id].quantity += item.qty;
@@ -9388,9 +9388,8 @@ router.get("/find-completed-orders-by-date", async (req, res) => {
                 }, {})
             ).map(item => ({
                 ...item,
-                price: (item.amount * item.quantity) - item.discount,
+                price: (item.sellPrice * item.quantity) - item.discount,
             }));
-            console.log(aggregatedItems);
 
             return {
                 orderId: order.orId,

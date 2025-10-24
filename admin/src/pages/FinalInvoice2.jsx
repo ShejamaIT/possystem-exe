@@ -18,7 +18,7 @@ const FinalInvoice2 = ({ selectedOrder, setShowModal2, handlePaymentUpdate }) =>
     const [filteredItems, setFilteredItems] = useState([]); // List to store filtered items based on search term
     const [selectedItem, setSelectedItem] = useState([]);
     const [isLoading, setIsLoading] = useState(false);  // Loading state for stock fetch
-    const calculateTotal = (item) => item.quantity * (item.amount);
+    const calculateTotal = (item) => item.quantity * (item.sellPrice);
     const ItemDiscount = Number(selectedOrder.itemDiscount || 0);
     const discount = Number(selectedOrder.discount) || 0;  // Default to 0 if undefined or NaN
     const specialDiscount = Number(selectedOrder.specialDiscount || 0);
@@ -120,53 +120,53 @@ const FinalInvoice2 = ({ selectedOrder, setShowModal2, handlePaymentUpdate }) =>
     }, []);
     
     const handleSearchChange = (e) => {
-            // 🔄 Clean QR input (remove \n, \r, trim)
-            let term = e.target.value.trim().replace(/[\n\r]+/g, "");
-            setSearchTerm(term);
-    
-            if (debounceTimer.current) {
-                clearTimeout(debounceTimer.current);
+        // 🔄 Clean QR input (remove \n, \r, trim)
+        let term = e.target.value.trim().replace(/[\n\r]+/g, "");
+        setSearchTerm(term);
+
+        if (debounceTimer.current) {
+            clearTimeout(debounceTimer.current);
+        }
+
+        debounceTimer.current = setTimeout(() => {
+            const normalize = (str) => (str || "").toLowerCase().replace(/\s+/g, "").trim();
+
+            const [itemIdPart, stockIdPart, pcIdPart] = term.split("-");
+
+            const filtered = items.filter((item) => {
+                const matchItemId = itemIdPart
+                    ? normalize(item.I_Id).includes(normalize(itemIdPart))
+                    : true;
+
+                const matchStockId = stockIdPart
+                    ? normalize(item.stock_Id).includes(normalize(stockIdPart))
+                    : true;
+
+                const matchPcId = pcIdPart
+                    ? normalize(item.pc_Id).includes(normalize(pcIdPart))
+                    : true;
+
+                return matchItemId && matchStockId && matchPcId;
+            });
+
+            setFilteredItems(filtered);
+            setDropdownOpen(term !== "" && filtered.length > 0);
+
+            // ✅ Auto-select if exact match (clean both sides)
+            const exactMatch = items.find(
+                (item) =>
+                    normalize(`${item.I_Id}-${item.stock_Id}-${item.pc_Id}`) === normalize(term)
+            );
+
+            if (exactMatch) {
+                handleSelectItem(exactMatch);
+                setSearchTerm("");
+                setDropdownOpen(false);
             }
-    
-            debounceTimer.current = setTimeout(() => {
-                const normalize = (str) => (str || "").toLowerCase().replace(/\s+/g, "").trim();
-    
-                const [itemIdPart, stockIdPart, pcIdPart] = term.split("-");
-    
-                const filtered = items.filter((item) => {
-                    const matchItemId = itemIdPart
-                        ? normalize(item.I_Id).includes(normalize(itemIdPart))
-                        : true;
-    
-                    const matchStockId = stockIdPart
-                        ? normalize(item.stock_Id).includes(normalize(stockIdPart))
-                        : true;
-    
-                    const matchPcId = pcIdPart
-                        ? normalize(item.pc_Id).includes(normalize(pcIdPart))
-                        : true;
-    
-                    return matchItemId && matchStockId && matchPcId;
-                });
-    
-                setFilteredItems(filtered);
-                setDropdownOpen(term !== "" && filtered.length > 0);
-    
-                // ✅ Auto-select if exact match (clean both sides)
-                const exactMatch = items.find(
-                    (item) =>
-                        normalize(`${item.I_Id}-${item.stock_Id}-${item.pc_Id}`) === normalize(term)
-                );
-    
-                if (exactMatch) {
-                    handleSelectItem(exactMatch);
-                    setSearchTerm("");
-                    setDropdownOpen(false);
-                }
-    
-            }, 150);
-        };
-    
+
+        }, 150);
+    };
+
     const handleSelectItem = (item) => {
         const orderedItem = selectedOrder.items.find(orderItem => orderItem.itemId === item.I_Id);
 
@@ -260,7 +260,7 @@ const FinalInvoice2 = ({ selectedOrder, setShowModal2, handlePaymentUpdate }) =>
                     <tr>
                         <th>Item</th>
                         <th>Price (Rs:)</th>
-                        <th>Discount (Rs:)</th>
+                        {/* <th>Discount (Rs:)</th> */}
                         <th>Qty</th>
                         <th>Total (Rs:)</th>
                     </tr>
@@ -269,10 +269,10 @@ const FinalInvoice2 = ({ selectedOrder, setShowModal2, handlePaymentUpdate }) =>
                     {selectedOrder.items.map((item, index) => (
                         <tr key={index}>
                             <td>{item.itemName}</td>
-                            <td>{(item.price.toFixed(2))}</td>
-                            <td>{item.discount.toFixed(2)}</td>
+                            <td>{(item.sellPrice.toFixed(2))}</td>
+                            {/* <td>{item.discount.toFixed(2)}</td> */}
                             <td>{item.quantity}</td>
-                            <td>{(item.price.toFixed(2))*(item.quantity)}</td>
+                            <td>{(item.sellPrice * item.quantity).toFixed(2)}</td>
                         </tr>
                     ))}
                     </tbody>

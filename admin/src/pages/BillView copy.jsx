@@ -218,117 +218,134 @@ const BillView = ({ receiptData, setShowReceiptView }) => {
   printContentInWindow(content, styles, `Receipt - ${receiptData.orID}`);
   };
   const printFullInvoice = () => {
-    const styles = `
-      @media print {
-        @page {
-          size: A4 portrait;
-          margin: 15mm;
-        }
-
-        body {
-          width: 210mm;
-          height: 297mm;
-          margin: 0 auto;
-          padding: 15mm;
-          font-family: "Arial", sans-serif;
-          font-size: 13px;
-          color: #222;
-          border: 2px solid #000;
-          box-sizing: border-box;
-          display: flex;
-          flex-direction: column;
-          justify-content: space-between;
-        }
-
-        h2 {
-          color: #000;
-          text-align: center;
-          margin-bottom: 8px;
-          font-size: 18px;
-        }
-
-        p {
-          margin: 3px 0;
-          font-size: 13px;
-          line-height: 1.4;
-        }
-
-        .invoice-header {
-          text-align: center;
-          margin-bottom: 15px;
-          padding-bottom: 8px;
-          border-bottom: 1px solid #000;
-        }
-
-        .invoice-items {
-          width: 100%;
-          border-collapse: collapse;
-          margin-top: 12px;
-          font-size: 13px;
-          flex-grow: 1;
-        }
-
-        .invoice-items th,
-        .invoice-items td {
-          border: 1px solid #444;
-          padding: 6px;
-          text-align: left;
-          height: 22px;
-        }
-
-        .invoice-items th {
-          background-color: #f0f0f0;
-          font-weight: bold;
-        }
-
-        .totals {
-          margin-top: 15px;
-          padding-top: 10px;
-          border-top: 2px solid #000;
-          font-size: 13px;
-        }
-
-        .totals p {
-          display: flex;
-          justify-content: space-between;
-          margin: 2px 0;
-        }
-
-        .footer-note {
-          margin-top: 20px;
-          text-align: center;
-          font-style: italic;
-          color: #555;
-          font-size: 12px;
-        }
-
-        .sign-section {
-          display: flex;
-          justify-content: space-between;
-          margin-top: 25px;
-          font-size: 13px;
-        }
+  const styles = `
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 15mm;
       }
-    `;
 
-    const printWindow = window.open("", "_blank");
-    printWindow.document.open();
-    printWindow.document.write(`
-      <html>
-        <head>
-          <title>Invoice - ${receiptData.orID}</title>
-          <style>${styles}</style>
-        </head>
-        <body>
-          ${fullInvoiceRef.current.innerHTML}
-        </body>
-      </html>
-    `);
-    printWindow.document.close();
-    printWindow.focus();
-    printWindow.print();
-    printWindow.close();
-  };
+      body {
+        width: 210mm;
+        height: 297mm;
+        margin: 0 auto;
+        padding: 15mm;
+        font-family: "Arial", sans-serif;
+        font-size: 13px;
+        color: #222;
+        border: 2px solid #000; /* ✅ Full-page border */
+        box-sizing: border-box;
+      }
+
+      h2 {
+        color: #000;
+        text-align: center;
+        margin-bottom: 8px;
+        font-size: 18px;
+      }
+
+      p {
+        margin: 3px 0;
+        font-size: 13px;
+        line-height: 1.4;
+      }
+
+      .invoice-header {
+        text-align: center;
+        margin-bottom: 15px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #000;
+      }
+
+      .invoice-info {
+        width: 100%;
+        margin-top: 8px;
+      }
+
+      .invoice-info table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+      }
+
+      .invoice-info td {
+        padding: 4px 0;
+        vertical-align: top;
+      }
+
+      /* ✅ Items table styling */
+      .invoice-items {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 12px;
+        font-size: 13px;
+      }
+
+      .invoice-items th,
+      .invoice-items td {
+        border: 1px solid #444;
+        padding: 6px;
+        text-align: left;
+      }
+
+      .invoice-items th {
+        background-color: #f0f0f0;
+        font-weight: bold;
+      }
+
+      .totals {
+        margin-top: 15px;
+        padding-top: 10px;
+        border-top: 2px solid #000;
+        font-size: 13px;
+      }
+
+      .totals p {
+        display: flex;
+        justify-content: space-between;
+        margin: 2px 0;
+      }
+
+      .footer-note {
+        margin-top: 20px;
+        text-align: center;
+        font-style: italic;
+        color: #555;
+        font-size: 12px;
+      }
+
+      /* ✅ Signature section */
+      .sign-section {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 25px;
+        font-size: 13px;
+      }
+
+      .sign-section p {
+        flex: 1;
+      }
+    }
+  `;
+
+  const printWindow = window.open("", "_blank");
+  printWindow.document.open();
+  printWindow.document.write(`
+    <html>
+      <head>
+        <title>Invoice - ${receiptData.orID}</title>
+        <style>${styles}</style>
+      </head>
+      <body>
+        ${fullInvoiceRef.current.innerHTML}
+      </body>
+    </html>
+  `);
+  printWindow.document.close();
+  printWindow.focus();
+  printWindow.print();
+  printWindow.close();
+};
   const handlePrintCheck = async (type) => {
     const checkUrl = type === "receipt" 
       ? `http://localhost:5001/api/admin/main/checkReceipt/${receiptData.recepitId}`
@@ -472,7 +489,7 @@ const BillView = ({ receiptData, setShowReceiptView }) => {
 
         {/* Full Invoice (hidden) */}
         <div ref={fullInvoiceRef} style={{ display: "none" }}>
-          <div className="invoice-header">
+          <div className="invoice-header" style={{ textAlign: "center" }}>
             <h2>Shejama Homes</h2>
             <p style={{ fontStyle: "italic" }}>"From Birth to Wedding"</p>
             <p>
@@ -483,103 +500,319 @@ const BillView = ({ receiptData, setShowReceiptView }) => {
             </p>
           </div>
 
-          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "15px" }}>
+          {/* Customer left start - Date right start */}
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "15px" }}>
             <div style={{ textAlign: "left" }}>
               <p><strong>Name :</strong> {receiptData.customerName}</p>
               <p><strong>Address :</strong> {receiptData.address}</p>
               <p><strong>Tel :</strong> {receiptData.contact1}{receiptData.contact2 ? ` / ${receiptData.contact2}` : ""}</p>
             </div>
-            <div style={{ textAlign: "right" }}>
+            <div style={{ textAlign: "right" ,alignItems: "flex-start"}}>
               <p><strong>Date :</strong> {formatDateOnly(receiptData.orderDate)}</p>
               <p><strong>Bill No :</strong> {receiptData.billNumber || "-"}</p>
               <p><strong>Order ID:</strong> #{receiptData.orID}</p>
             </div>
           </div>
 
-          {/* Items Table with fixed 15 rows and index column */}
+          {/* Items + Totals */}
           <table className="invoice-items">
             <thead>
               <tr>
-                <th style={{ width: "5%", textAlign: "center" }}>#</th>
-                <th style={{ width: "45%" }}>Description</th>
-                <th style={{ width: "8%", textAlign: "center" }}>Qty</th>
-                <th style={{ width: "20%", textAlign: "center" }}>Sell Price (Rs.)</th>
-                <th style={{ width: "22%", textAlign: "right" }}>Amount (Rs.)</th>
+                <th>Qty</th>
+                <th>Description</th>
+                {/* <th>Rate (Rs.)</th> */}
+                {/* <th>Discount (Rs.)</th> */}
+                <th>Sell price (Rs.)</th>
+                <th>Amount (Rs.)</th>
               </tr>
             </thead>
             <tbody>
-              {[
-                ...receiptData.items,
-                ...Array.from({ length: Math.max(0, 15 - receiptData.items.length) }, () => ({}))
-              ].map((item, index) => (
+              {receiptData.items.map((item, index) => (
                 <tr key={index}>
-                  <td style={{ textAlign: "center" }}>
-                    {item.itemName ? index + 1 : ""}
-                  </td>
-                  <td>{item.itemName || ""}</td>
-                  <td style={{ textAlign: "center" }}>{item.quantity || ""}</td>
-                  <td style={{ textAlign: "center" }}>
-                    {item.sellprice ? item.sellprice.toFixed(2) : ""}
-                  </td>
-                  <td style={{ textAlign: "right" }}>
-                    {item.quantity && item.sellprice
-                      ? (item.quantity * item.sellprice).toFixed(2)
-                      : ""}
-                  </td>
+                  <td style={{ fontSize: "10px" }}>{item.quantity}</td>
+                  <td style={{ fontSize: "10px" }}>{item.itemName}</td>
+                  {/* <td style={{ fontSize: "10px" , textAlign: "center"}}>{item.unitPrice.toFixed(2)}</td> */}
+                  {/* <td style={{ fontSize: "10px" , textAlign: "center"}}>{item.discount.toFixed(2)}</td> */}
+                  <td style={{ fontSize: "10px" , textAlign: "center"}}>{(item.sellprice).toFixed(2)}</td>
+                  <td style={{ fontSize: "10px", textAlign: "right"}}>{(item.quantity * (item.sellprice)).toFixed(2)}</td>
                 </tr>
               ))}
 
-              {/* Totals section */}
+              {/* Totals section: border only for col 4 and 5 */}
+              {/* <tr>
+                <td style={{ border: "none" }}></td>
+                <td style={{ border: "none" }}></td>
+                <td style={{ border: "none" }}></td>
+                <td style={{ border: "none" }}></td>
+                <td style={{ border: "1px solid #999", textAlign: "right", fontSize: "10px" }}>
+                  <strong>Gross Total</strong>
+                </td>
+                <td style={{ border: "1px solid #999", textAlign: "right", fontSize: "10px" }}>
+                  {(receiptData.subtotal || 0).toFixed(2)}
+                </td>
+              </tr> */}
+
               <tr>
                 <td style={{ border: "none" }}></td>
                 <td style={{ border: "none" }}></td>
+                {/* <td style={{ border: "none" }}></td> */}
+                {/* <td style={{ border: "none" }}></td> */}
+                <td style={{ border: "1px solid #999", textAlign: "right", fontSize: "10px" }}>
+                  <strong>Delivery Price</strong>
+                </td>
+                <td style={{ border: "1px solid #999", textAlign: "right", fontSize: "10px" }}>
+                  {(receiptData.delPrice || 0).toFixed(2)}
+                </td>
+              </tr>
+
+              {/* <tr>
                 <td style={{ border: "none" }}></td>
-                <td style={{ textAlign: "right" }}><strong>Delivery Price</strong></td>
-                <td style={{ textAlign: "right" }}>{(receiptData.delPrice || 0).toFixed(2)}</td>
+                <td style={{ border: "none" }}></td>
+                <td style={{ border: "none" }}></td>
+                <td style={{ border: "none" }}></td>
+                <td style={{ border: "1px solid #999", textAlign: "right", fontSize: "10px" }}>
+                  <strong>Special Discount</strong>
+                </td>
+                <td style={{ border: "1px solid #999", textAlign: "right", fontSize: "10px" }}>
+                  {(receiptData.specialdiscount || 0).toFixed(2)}
+                </td>
               </tr>
 
               <tr>
                 <td style={{ border: "none" }}></td>
                 <td style={{ border: "none" }}></td>
                 <td style={{ border: "none" }}></td>
-                <td style={{ textAlign: "right" }}><strong>Total</strong></td>
-                <td style={{ textAlign: "right" }}>{(receiptData.total || 0).toFixed(2)}</td>
+                <td style={{ border: "none" }}></td>
+                <td style={{ border: "1px solid #999", textAlign: "right", fontSize: "10px" }}>
+                  <strong>Coupon Discount</strong>
+                </td>
+                <td style={{ border: "1px solid #999", textAlign: "right", fontSize: "10px" }}>
+                  {(receiptData.couponediscount || 0).toFixed(2)}
+                </td>
+              </tr> */}
+
+              <tr>
+                <td style={{ border: "none" }}></td>
+                <td style={{ border: "none" }}></td>
+                {/* <td style={{ border: "none" }}></td> */}
+                {/* <td style={{ border: "none" }}></td> */}
+                <td style={{ border: "1px solid #999", textAlign: "right", fontSize: "10px" }}>
+                  <strong>Total</strong>
+                </td>
+                <td style={{ border: "1px solid #999", textAlign: "right", fontSize: "10px" }}>
+                  {(receiptData.total || 0).toFixed(2)}
+                </td>
               </tr>
 
               <tr>
                 <td style={{ border: "none" }}></td>
                 <td style={{ border: "none" }}></td>
-                <td style={{ border: "none" }}></td>
-                <td style={{ textAlign: "right" }}><strong>Advance</strong></td>
-                <td style={{ textAlign: "right" }}>{(receiptData.advance || 0).toFixed(2)}</td>
+                {/* <td style={{ border: "none" }}></td> */}
+                {/* <td style={{ border: "none" }}></td> */}
+                <td style={{ border: "1px solid #999", textAlign: "right", fontSize: "10px" }}>
+                  {/* <strong>Payment</strong> */}
+                  <strong>Advance</strong>
+                </td>
+                <td style={{ border: "1px solid #999", textAlign: "right", fontSize: "10px" }}>
+                  {(receiptData.advance || 0).toFixed(2)}
+                </td>
               </tr>
 
               <tr>
                 <td style={{ border: "none" }}></td>
                 <td style={{ border: "none" }}></td>
-                <td style={{ border: "none" }}></td>
-                <td style={{ textAlign: "right" }}><strong>Balance</strong></td>
-                <td style={{ textAlign: "right" }}>{CalculateBalance.toFixed(2)}</td>
+                {/* <td style={{ border: "none" }}></td> */}
+                {/* <td style={{ border: "none" }}></td> */}
+                <td style={{ border: "1px solid #999", textAlign: "right", fontSize: "10px" }}>
+                  <strong>Balance</strong>
+                </td>
+                <td style={{ border: "1px solid #999", textAlign: "right", fontSize: "10px" }}>
+                  {(CalculateBalance).toFixed(2)}
+                </td>
               </tr>
             </tbody>
+
           </table>
 
-
-          {/* Footer stays near bottom */}
-          <div style={{ marginTop: "40px", display: "flex", justifyContent: "space-between" }}>
+          {/* Footer */}
+          <div style={{ display: "flex", justifyContent: "space-between", marginTop: "20px" }}>
             <p><strong>Sale by :</strong> {receiptData.salesperson}</p>
+            <p>I certify that the goods were received<br/>
+               in good condition.Please turnover for <br/>more details. Cash not refundable.</p>
+          </div>
+
+          <div style={{ display: "flex", justifyContent: "space-between", marginTop: "30px" }}>
+            <p><strong>Vehicle No :</strong> {receiptData.vehicleNo || "_____________"}</p>
+            <p><strong>Issued by :</strong> {empName}</p>
+            <p><strong>Customer Sign :</strong>_____________</p>
+          </div>
+        </div>
+
+
+
+        
+
+        <div ref={fullInvoiceRef} style={{ display: "none" }}>
+          <div className="invoice-header" style={{ textAlign: "center" }}>
+            <h2>Shejama Homes</h2>
+            <p style={{ fontStyle: "italic" }}>"From Birth to Wedding"</p>
             <p>
-              I certify that the goods were received in good condition.<br />
-              Please turnover for more details. Cash not refundable.
+              75, Sri Premarathana Mawatha, Moratumulla, Moratuwa.<br />
+              Tel: 011 265 4444 / 011 265 3577 / 070 3 608 108 / 077 3 608 108 <br />
+              Email: info.shejamahomes@gmail.com <br />
+              Facebook: FB/ShejamaHomes
             </p>
           </div>
 
-          <div className="sign-section">
+          {/* Customer left start - Date right start */}
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "15px" }}>
+            <div style={{ textAlign: "left" }}>
+              <p><strong>Name :</strong> {receiptData.customerName}</p>
+              <p><strong>Address :</strong> {receiptData.address}</p>
+              <p><strong>Tel :</strong> {receiptData.contact1}{receiptData.contact2 ? ` / ${receiptData.contact2}` : ""}</p>
+            </div>
+            <div style={{ textAlign: "right" ,alignItems: "flex-start"}}>
+              <p><strong>Date :</strong> {formatDateOnly(receiptData.orderDate)}</p>
+              <p><strong>Bill No :</strong> {receiptData.billNumber || "-"}</p>
+              <p><strong>Order ID:</strong> #{receiptData.orID}</p>
+            </div>
+          </div>
+
+          {/* Items + Totals */}
+          <table className="invoice-items">
+            <thead>
+              <tr>
+                <th>Qty</th>
+                <th>Description</th>
+                {/* <th>Rate (Rs.)</th> */}
+                {/* <th>Discount (Rs.)</th> */}
+                <th>Sell price (Rs.)</th>
+                <th>Amount (Rs.)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {receiptData.items.map((item, index) => (
+                <tr key={index}>
+                  <td style={{ fontSize: "10px" }}>{item.quantity}</td>
+                  <td style={{ fontSize: "10px" }}>{item.itemName}</td>
+                  {/* <td style={{ fontSize: "10px" , textAlign: "center"}}>{item.unitPrice.toFixed(2)}</td> */}
+                  {/* <td style={{ fontSize: "10px" , textAlign: "center"}}>{item.discount.toFixed(2)}</td> */}
+                  <td style={{ fontSize: "10px" , textAlign: "center"}}>{(item.amount).toFixed(2)}</td>
+                  <td style={{ fontSize: "10px", textAlign: "right"}}>{(item.quantity * (item.amount)).toFixed(2)}</td>
+                </tr>
+              ))}
+
+              {/* Totals section: border only for col 4 and 5 */}
+              <tr>
+                <td style={{ border: "none" }}></td>
+                <td style={{ border: "none" }}></td>
+                {/* <td style={{ border: "none" }}></td> */}
+                {/* <td style={{ border: "none" }}></td> */}
+                <td style={{ border: "1px solid #999", textAlign: "right", fontSize: "10px" }}>
+                  <strong>Gross Total</strong>
+                </td>
+                <td style={{ border: "1px solid #999", textAlign: "right", fontSize: "10px" }}>
+                  {(calculatedSubtotal.toFixed(2))}
+                </td>
+              </tr>
+
+              <tr>
+                <td style={{ border: "none" }}></td>
+                <td style={{ border: "none" }}></td>
+                {/* <td style={{ border: "none" }}></td> */}
+                {/* <td style={{ border: "none" }}></td> */}
+                <td style={{ border: "1px solid #999", textAlign: "right", fontSize: "10px" }}>
+                  <strong>Delivery Price</strong>
+                </td>
+                <td style={{ border: "1px solid #999", textAlign: "right", fontSize: "10px" }}>
+                  {(receiptData.delPrice || 0).toFixed(2)}
+                </td>
+              </tr>
+
+              {/* <tr>
+                <td style={{ border: "none" }}></td>
+                <td style={{ border: "none" }}></td>
+                <td style={{ border: "none" }}></td> */}
+                {/* <td style={{ border: "none" }}></td>
+                <td style={{ border: "1px solid #999", textAlign: "right", fontSize: "10px" }}>
+                  <strong>Special Discount</strong>
+                </td>
+                <td style={{ border: "1px solid #999", textAlign: "right", fontSize: "10px" }}>
+                  {(receiptData.specialdiscount || 0).toFixed(2)}
+                </td>
+              </tr> */}
+
+              {/* <tr>
+                <td style={{ border: "none" }}></td>
+                <td style={{ border: "none" }}></td>
+                <td style={{ border: "none" }}></td> */}
+                {/* <td style={{ border: "none" }}></td>
+                <td style={{ border: "1px solid #999", textAlign: "right", fontSize: "10px" }}>
+                  <strong>Coupon Discount</strong>
+                </td>
+                <td style={{ border: "1px solid #999", textAlign: "right", fontSize: "10px" }}>
+                  {(receiptData.couponediscount || 0).toFixed(2)}
+                </td>
+              </tr> */}
+
+              <tr>
+                <td style={{ border: "none" }}></td>
+                <td style={{ border: "none" }}></td>
+                {/* <td style={{ border: "none" }}></td> */}
+                {/* <td style={{ border: "none" }}></td> */}
+                <td style={{ border: "1px solid #999", textAlign: "right", fontSize: "10px" }}>
+                  <strong>Total</strong>
+                </td>
+                <td style={{ border: "1px solid #999", textAlign: "right", fontSize: "10px" }}>
+                  {(calculatedTotal.toFixed(2))}
+                </td>
+              </tr>
+
+              <tr>
+                <td style={{ border: "none" }}></td>
+                <td style={{ border: "none" }}></td>
+                {/* <td style={{ border: "none" }}></td> */}
+                {/* <td style={{ border: "none" }}></td> */}
+                <td style={{ border: "1px solid #999", textAlign: "right", fontSize: "10px" }}>
+                  <strong>Payment</strong>
+                </td>
+                <td style={{ border: "1px solid #999", textAlign: "right", fontSize: "10px" }}>
+                  {(receiptData.advance || 0).toFixed(2)}
+                </td>
+              </tr>
+
+              <tr>
+                <td style={{ border: "none" }}></td>
+                <td style={{ border: "none" }}></td>
+                {/* <td style={{ border: "none" }}></td> */}
+                {/* <td style={{ border: "none" }}></td> */}
+                <td style={{ border: "1px solid #999", textAlign: "right", fontSize: "10px" }}>
+                  <strong>Balance</strong>
+                </td>
+                <td style={{ border: "1px solid #999", textAlign: "right", fontSize: "10px" }}>
+                  {(receiptData.balance || 0).toFixed(2)}
+                </td>
+              </tr>
+            </tbody>
+
+          </table>
+
+          {/* Footer */}
+          <div style={{ display: "flex", justifyContent: "space-between", marginTop: "20px" }}>
+            <p><strong>Sale by :</strong> {receiptData.salesperson}</p>
+            <p>I certify that the goods were received<br/>
+               in good condition.Please turnover for <br/>more details. Cash not refundable.</p>
+          </div>
+
+          <div style={{ display: "flex", justifyContent: "space-between", marginTop: "30px" }}>
             <p><strong>Vehicle No :</strong> {receiptData.vehicleNo || "_____________"}</p>
             <p><strong>Issued by :</strong> {empName}</p>
-            <p><strong>Customer Sign :</strong> _____________</p>
+            <p><strong>Customer Sign :</strong>_____________</p>
           </div>
         </div>
+
+
+
 
       </div>
     </div>
