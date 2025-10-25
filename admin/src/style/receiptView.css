@@ -123,7 +123,7 @@ p {
 }
 
 /* Print-Specific */
-@media print {
+/* @media print {
     body * { visibility: hidden !important; }
     .receipt-modal, .receipt-modal * { visibility: visible !important; }
     .receipt-modal { position: absolute; top: 0; left: 0; width: 80mm !important; padding: 0.5rem; font-size: 11px !important; font-family: monospace; box-shadow: none; border: none; }
@@ -132,4 +132,4 @@ p {
     h3, h5 { font-size: 12px !important; text-align: center; margin: 4px 0 !important; }
     hr { border-top: 1px dashed #000 !important; margin: 6px 0 !important; }
     .modal-buttons, .modal-overlay { display: none !important; }
-}
+} */

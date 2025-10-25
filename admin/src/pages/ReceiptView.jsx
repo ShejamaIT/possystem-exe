@@ -218,71 +218,90 @@ const ReceiptView = ({ receiptData, setShowReceiptView }) => {
     const styles = `
       @media print {
         @page {
-          size: A4 portrait;
-          margin: 15mm;
+          size: A4 landscape;
+          margin: 5mm; /* Small margin so borders are visible */
+        }
+
+        * {
+          text-shadow: none !important;
+          -webkit-font-smoothing: none !important;
+          -webkit-text-stroke: 0 !important;
+          color: #000 !important;
+          font-weight: normal !important;
         }
 
         body {
-          width: 210mm;
-          height: 297mm;
-          margin: 0 auto;
-          padding: 15mm;
+          width: 297mm;
+          height: 210mm;
+          margin: 0;
+          padding: 0;
           font-family: "Arial", sans-serif;
-          font-size: 13px;
-          color: #222;
-          border: 2px solid #000;
+          color: #000;
+          display: flex;
+          justify-content: flex-start; /* Align left side of page */
+          align-items: flex-start;
           box-sizing: border-box;
+        }
+
+        .invoice-wrapper {
+          width: 148mm;
+          height: 200mm;
+          padding: 4mm;
+          box-sizing: border-box;
+          border: 2px solid #000;
           display: flex;
           flex-direction: column;
           justify-content: space-between;
+          margin-bottom: 10mm;          /* gap between invoices */
+          page-break-inside: avoid;     /* don’t split an invoice */
         }
 
         h2 {
           color: #000;
           text-align: center;
-          margin-bottom: 8px;
-          font-size: 18px;
+          margin-bottom: 6px;
+          font-size: 16px;
         }
 
         p {
-          margin: 3px 0;
-          font-size: 13px;
+          margin: 2px 0;
+          font-size: 12px;
           line-height: 1.4;
         }
 
         .invoice-header {
           text-align: center;
-          margin-bottom: 15px;
-          padding-bottom: 8px;
+          margin-bottom: 10px;
+          padding-bottom: 5px;
           border-bottom: 1px solid #000;
         }
 
         .invoice-items {
           width: 100%;
           border-collapse: collapse;
-          margin-top: 12px;
-          font-size: 13px;
+          margin-top: 6px;
+          font-size: 11px;
           flex-grow: 1;
         }
 
         .invoice-items th,
         .invoice-items td {
           border: 1px solid #444;
-          padding: 6px;
+          padding: 4px;
           text-align: left;
-          height: 22px;
+          height: 18px;
         }
 
         .invoice-items th {
           background-color: #f0f0f0;
-          font-weight: bold;
+          text-align: center;
         }
 
         .totals {
-          margin-top: 15px;
-          padding-top: 10px;
+          margin-top: 10px;
+          padding-top: 5px;
           border-top: 2px solid #000;
-          font-size: 13px;
+          font-size: 12px;
         }
 
         .totals p {
@@ -291,22 +310,23 @@ const ReceiptView = ({ receiptData, setShowReceiptView }) => {
           margin: 2px 0;
         }
 
-        .footer-note {
-          margin-top: 20px;
-          text-align: center;
-          font-style: italic;
-          color: #555;
-          font-size: 12px;
-        }
-
         .sign-section {
           display: flex;
           justify-content: space-between;
-          margin-top: 25px;
-          font-size: 13px;
+          margin-top: 10px;
+          font-size: 12px;
+        }
+
+        .footer-note {
+          margin-top: 10px;
+          text-align: center;
+          font-style: italic;
+          color: #555;
+          font-size: 11px;
         }
       }
     `;
+    const invoiceHTML = fullInvoiceRef.current.innerHTML;
 
     const printWindow = window.open("", "_blank");
     printWindow.document.open();
@@ -317,7 +337,9 @@ const ReceiptView = ({ receiptData, setShowReceiptView }) => {
           <style>${styles}</style>
         </head>
         <body>
-          ${fullInvoiceRef.current.innerHTML}
+          <div class="invoice-wrapper">
+            ${invoiceHTML}
+          </div>
         </body>
       </html>
     `);
@@ -484,19 +506,63 @@ const ReceiptView = ({ receiptData, setShowReceiptView }) => {
               Facebook: FB/ShejamaHomes
             </p>
           </div>
+          <table
+            style={{
+              fontFamily: "Arial, sans-serif",
+              fontSize: "12px",
+              lineHeight: "1.4",
+              borderCollapse: "collapse",
+              width: "100%",
+            }}
+          >
+            <tbody>
+              {/* Row 1 */}
+              <tr>
+                <td style={{ textAlign: "left", width: "50px", paddingRight: "5px" }}>Name</td>
+                <td style={{ width: "300px" }}>
+                  <span>:</span>
+                  <span style={{ marginLeft: "6px" }}>{receiptData.customerName}</span>
+                </td>
+                <td style={{ textAlign: "left", width: "50px", paddingRight: "5px" }}>Date</td>
+                <td style={{ width: "120px" }}>
+                  <span>:</span>
+                  <span style={{ marginLeft: "6px" }}>{formatDateOnly(receiptData.orderDate)}</span>
+                </td>
+              </tr>
 
-          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "15px" }}>
-            <div style={{ textAlign: "left" }}>
-              <p><strong>Name :</strong> {receiptData.customerName}</p>
-              <p><strong>Address :</strong> {receiptData.address}</p>
-              <p><strong>Tel :</strong> {receiptData.contact1}{receiptData.contact2 ? ` / ${receiptData.contact2}` : ""}</p>
-            </div>
-            <div style={{ textAlign: "right" }}>
-              <p><strong>Date :</strong> {formatDateOnly(receiptData.orderDate)}</p>
-              <p><strong>Bill No :</strong> {receiptData.billNumber || "-"}</p>
-              <p><strong>Order ID:</strong> #{receiptData.orID}</p>
-            </div>
-          </div>
+              {/* Row 2 */}
+              <tr>
+                <td style={{ textAlign: "left", paddingRight: "5px" }}>Address</td>
+                <td>
+                  <span>:</span>
+                  <span style={{ marginLeft: "6px" }}>{receiptData.address}</span>
+                </td>
+                <td style={{ textAlign: "left", paddingRight: "5px" }}>Bill No</td>
+                <td>
+                  <span>:</span>
+                  <span style={{ marginLeft: "6px" }}>{receiptData.billNumber || "-"}</span>
+                </td>
+              </tr>
+
+              {/* Row 3 */}
+              <tr>
+                <td style={{ textAlign: "left", paddingRight: "5px" }}>Tel</td>
+                <td>
+                  <span>:</span>
+                  <span style={{ marginLeft: "6px" }}>
+                    {receiptData.contact1}
+                    {receiptData.contact2 ? ` / ${receiptData.contact2}` : ""}
+                  </span>
+                </td>
+                <td style={{ textAlign: "left", paddingRight: "5px" }}>Order ID</td>
+                <td>
+                  <span>:</span>
+                  <span style={{ marginLeft: "6px" }}>#{receiptData.orID}</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
 
           {/* Items Table with fixed 15 rows and index column */}
           <table className="invoice-items">
@@ -568,8 +634,12 @@ const ReceiptView = ({ receiptData, setShowReceiptView }) => {
 
 
           {/* Footer stays near bottom */}
-          <div style={{ marginTop: "40px", display: "flex", justifyContent: "space-between" }}>
-            <p><strong>Sale by :</strong> {receiptData.salesperson}</p>
+          <div style={{ marginTop: "20px", display: "flex", justifyContent: "space-between" }}>
+            <div>
+              <p>Sale by   : {receiptData.salesperson}</p>
+              <p>Issued by : {empName}</p>
+            </div>
+            
             <p>
               I certify that the goods were received in good condition.<br />
               Please turnover for more details. Cash not refundable.
@@ -577,10 +647,22 @@ const ReceiptView = ({ receiptData, setShowReceiptView }) => {
           </div>
 
           <div className="sign-section">
-            <p><strong>Vehicle No :</strong> {receiptData.vehicleNo || "_____________"}</p>
-            <p><strong>Issued by :</strong> {empName}</p>
-            <p><strong>Customer Sign :</strong> _____________</p>
+            <p>
+              <strong>Vehicle No :</strong> {receiptData.vehicleNo || "_____________"}
+            </p>
+            <p>
+              <strong>Customer Sign :</strong>
+              <span
+                style={{
+                  display: "inline-block",
+                  borderBottom: "1px dotted #000",
+                  width: "180px", // increased width
+                  marginLeft: "8px",
+                }}
+              ></span>
+            </p>
           </div>
+
         </div>
       </div>
     </div>
@@ -588,3 +670,5 @@ const ReceiptView = ({ receiptData, setShowReceiptView }) => {
 };
 
 export default ReceiptView;
+
+
