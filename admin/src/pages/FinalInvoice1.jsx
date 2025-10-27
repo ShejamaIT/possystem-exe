@@ -289,7 +289,7 @@ const FinalInvoice1 = ({ selectedOrder, setShowModal2, handlePaymentUpdate,handl
                             <td>{item.sellprice.toFixed(2)}</td>
                             {/* <td>{item.discount.toFixed(2)}</td> */}
                             <td>{item.quantity}</td>
-                            <td>{item.price.toFixed(2)}</td>
+                            <td>{(item.sellprice * item.quantity).toFixed(2)}</td>
                         </tr>
                     ))}
                     </tbody>

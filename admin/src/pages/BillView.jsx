@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect, useMemo } from "react";
 import "../style/receiptView.css";
 
 const BillView = ({ receiptData, setShowReceiptView }) => {
+  console.log(receiptData);
   const receiptRef = useRef(null);
   const fullInvoiceRef = useRef(null);
   const [empName, setEmpName] = useState('');
@@ -439,7 +440,7 @@ const BillView = ({ receiptData, setShowReceiptView }) => {
               <tr>
                 <th>Qty</th>
                 <th>Item</th>
-                <th>Rate</th>
+                {/* <th>Rate</th> */}
                 {/* <th>Discount</th> */}
                 <th>Sell Price</th>
                 <th>Total</th>
@@ -450,10 +451,10 @@ const BillView = ({ receiptData, setShowReceiptView }) => {
                 <tr key={idx}>
                   <td>{item.quantity}</td>
                   <td>{item.itemName}</td>
-                  <td>{item.unitPrice.toFixed(2)}</td>
+                  {/* <td>{item.unitPrice.toFixed(2)}</td> */}
                   {/* <td>{item.discount.toFixed(2)}</td> */}
                   <td>{item.sellprice.toFixed(2)}</td>
-                  <td>{(item.quantity * (item.price)).toFixed(2)}</td>
+                  <td>{(item.quantity * (item.sellprice)).toFixed(2)}</td>
                 </tr>
               ))}
             </tbody>
@@ -462,8 +463,8 @@ const BillView = ({ receiptData, setShowReceiptView }) => {
           <div className="receipt-summary">
             <p><strong>Gross Total:</strong> Rs. {calculatedSubtotal.toFixed(2)}</p>
             <p><strong>Delivery:</strong> {receiptData.delPrice === 0 && receiptData.delStatus === 'Delivery' ? "Free" : `Rs. ${receiptData.delPrice.toFixed(2)}`}</p>
-            <p><strong>Special Discount:</strong> Rs. {receiptData.specialdiscount.toFixed(2)}</p>
-            <p><strong>Coupon Discount:</strong> Rs. {receiptData.couponediscount.toFixed(2)}</p>
+            {/* <p><strong>Special Discount:</strong> Rs. {receiptData.specialdiscount.toFixed(2)}</p>
+            <p><strong>Coupon Discount:</strong> Rs. {receiptData.couponediscount.toFixed(2)}</p> */}
             <p><strong>Net Total:</strong> Rs. {calculatedTotal.toFixed(2)}</p>
             <p><strong>Payment:</strong> Rs. {receiptData.advance.toFixed(2)}</p>
             {renderBalanceLine()}
@@ -585,11 +586,11 @@ const BillView = ({ receiptData, setShowReceiptView }) => {
                   <td>{item.itemName || ""}</td>
                   <td style={{ textAlign: "center" }}>{item.quantity || ""}</td>
                   <td style={{ textAlign: "center" }}>
-                    {item.sellPrice ? item.sellPrice.toFixed(2) : ""}
+                    {item.sellprice ? item.sellprice.toFixed(2) : ""}
                   </td>
                   <td style={{ textAlign: "right" }}>
-                    {item.quantity && item.sellPrice
-                      ? (item.quantity * item.sellPrice).toFixed(2)
+                    {item.quantity && item.sellprice
+                      ? (item.quantity * item.sellprice).toFixed(2)
                       : ""}
                   </td>
                 </tr>

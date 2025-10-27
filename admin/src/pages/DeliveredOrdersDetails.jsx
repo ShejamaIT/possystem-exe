@@ -279,7 +279,8 @@ const DeliveredOrderDetails = () => {
                                         <p><strong>Color:</strong> {item.color}</p>
                                         <p><strong>Qty:</strong> {item.quantity}</p>
                                         <p><strong>Price:</strong> Rs. {item.unitPrice}</p>
-                                        <p><strong>Discount:</strong> Rs. {item.discount}</p>
+                                        {/* <p><strong>Discount:</strong> Rs. {item.discount}</p> */}
+                                        <p><strong>Sell Price:</strong> Rs. {item.sellPrice}</p>
                                         <p><strong>Amount:</strong> Rs. {item.amount}</p>
                                     </div>
                                     ))}
