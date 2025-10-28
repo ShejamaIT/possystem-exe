@@ -22,43 +22,35 @@ const AddCategory = () => {
     fetchMainCategories();
   }, []);
 
-  // -------------------- Fetch Main Categories --------------------
+  // -------------------- Fetch Main Categories (from new API) --------------------
   const fetchMainCategories = async () => {
+    setLoading(true);
     try {
-      const response = await fetch("http://localhost:5001/api/admin/main/categories");
+      const response = await fetch(
+        "http://localhost:5001/api/admin/main/categoriesvice"
+      );
       const data = await response.json();
+
       if (data.success) {
         setMainCategories(data.data || []);
       } else {
         toast.error("Failed to load main categories.");
       }
     } catch (err) {
-      toast.error("Failed to load main categories.");
-    }
-  };
-
-  // -------------------- Fetch Types (Subcategories) --------------------
-  const fetchTypes = async (mainCategoryName) => {
-    if (!mainCategoryName) return;
-    setLoading(true);
-    try {
-      const response = await fetch("http://localhost:5001/api/admin/main/categories/hierarchy");
-      const data = await response.json();
-
-      if (data.success && Array.isArray(data.data)) {
-        const selected = data.data.find(
-          (item) => item.mainCategory === mainCategoryName
-        );
-        setTypes(selected ? selected.subCategories : []);
-      } else {
-        toast.error("Failed to load type data.");
-      }
-    } catch (err) {
       console.error(err);
-      toast.error("Error loading type data.");
+      toast.error("Failed to load main categories.");
     } finally {
       setLoading(false);
     }
+  };
+
+  // -------------------- Handle Main Category Selection --------------------
+  const handleMainCategorySelect = (mainCategoryName) => {
+    setSelectedMainCat(mainCategoryName);
+    const selected = mainCategories.find(
+      (cat) => cat.mainCategory === mainCategoryName
+    );
+    setTypes(selected ? selected.subCategories : []);
   };
 
   // -------------------- Save Main Category --------------------
@@ -70,11 +62,14 @@ const AddCategory = () => {
 
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:5001/api/admin/main/category", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ Catname: catname.Catname }),
-      });
+      const response = await fetch(
+        "http://localhost:5001/api/admin/main/category",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ Catname: catname.Catname }),
+        }
+      );
 
       const result = await response.json();
 
@@ -98,7 +93,6 @@ const AddCategory = () => {
     <Container className="add-item-container mt-4">
       <Row className="justify-content-center">
         <Col lg="8" className="d-flex flex-column gap-4">
-
           {/* ---------------- Add Main Category ---------------- */}
           <div className="p-3 border rounded shadow-sm bg-light">
             <Label className="fw-bold mb-2">Add Main Category</Label>
@@ -110,7 +104,11 @@ const AddCategory = () => {
               value={catname.Catname}
               onChange={(e) => setCatname({ Catname: e.target.value })}
             />
-            <Button color="primary" onClick={handleSaveMainCategory} disabled={loading}>
+            <Button
+              color="primary"
+              onClick={handleSaveMainCategory}
+              disabled={loading}
+            >
               {loading ? <Spinner size="sm" /> : "Add Category"}
             </Button>
           </div>
@@ -122,15 +120,12 @@ const AddCategory = () => {
               type="select"
               className="mb-3"
               value={selectedMainCat}
-              onChange={(e) => {
-                setSelectedMainCat(e.target.value);
-                fetchTypes(e.target.value);
-              }}
+              onChange={(e) => handleMainCategorySelect(e.target.value)}
             >
               <option value="">-- Select Main Category --</option>
-              {mainCategories.map((cat) => (
-                <option key={cat.id} value={cat.name}>
-                  {cat.name}
+              {mainCategories.map((cat, index) => (
+                <option key={index} value={cat.mainCategory}>
+                  {cat.mainCategory} ({cat.totalCount})
                 </option>
               ))}
             </Input>
@@ -150,7 +145,7 @@ const AddCategory = () => {
                     <thead className="table-primary">
                       <tr>
                         <th>#</th>
-                        <th>Type Name</th>
+                        <th>Sub Category</th>
                         <th>Item Count</th>
                       </tr>
                     </thead>
@@ -167,12 +162,12 @@ const AddCategory = () => {
                 </>
               ) : (
                 <p className="text-center text-muted mb-0">
-                  No types available for <b>{selectedMainCat}</b>.
+                  No subcategories available for <b>{selectedMainCat}</b>.
                 </p>
               )
             ) : (
               <p className="text-center text-muted mb-0">
-                Select a main category to view its types.
+                Select a main category to view its subcategories.
               </p>
             )}
           </div>

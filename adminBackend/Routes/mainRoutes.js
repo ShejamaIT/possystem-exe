@@ -8280,21 +8280,22 @@ router.get("/categories", async (req, res) => {
 
 router.get("/categoriesvice", async (req, res) => {
   try {
-    // Get all main categories and their subcategory counts
+    // Fetch category hierarchy with main + sub + counts
     const [results] = await db.query(`
       SELECT 
-          c.name AS mainCategory,
-          i.type AS subCategory,
+          i.mnCategory AS mainCategory,
+          c.name AS subCategory,
           COUNT(i.I_Id) AS totalItems
-      FROM Category c
-      LEFT JOIN Item i 
-          ON i.mnCategory = c.name
-      GROUP BY c.name, i.type
-      ORDER BY c.name, i.type;
+      FROM Item i
+      LEFT JOIN Category c 
+          ON i.type = c.name
+      WHERE i.mnCategory IN ('Home', 'Kids', 'Office', 'Hotel')
+      GROUP BY i.mnCategory, c.name
+      ORDER BY i.mnCategory, c.name;
     `);
 
     // If no data found
-    if (results.length === 0) {
+    if (!results || results.length === 0) {
       return res.status(200).json({
         success: true,
         message: "No category data found.",
@@ -8303,9 +8304,10 @@ router.get("/categoriesvice", async (req, res) => {
       });
     }
 
-    // Group by mainCategory
+    // Group data by mainCategory
     const groupedData = results.reduce((acc, row) => {
       const { mainCategory, subCategory, totalItems } = row;
+
       if (!acc[mainCategory]) {
         acc[mainCategory] = {
           mainCategory,
@@ -8314,7 +8316,6 @@ router.get("/categoriesvice", async (req, res) => {
         };
       }
 
-      // Only add valid subcategories
       if (subCategory) {
         acc[mainCategory].subCategories.push({
           subCategory,
@@ -8322,23 +8323,24 @@ router.get("/categoriesvice", async (req, res) => {
         });
       }
 
-      // Add total even if type is null
       acc[mainCategory].totalCount += totalItems;
       return acc;
     }, {});
 
-    // Convert object to array
+    // Convert grouped data to array
     const dataArray = Object.values(groupedData);
 
     // Calculate grand total
-    const grandTotal = dataArray.reduce((sum, c) => sum + c.totalCount, 0);
+    const grandTotal = dataArray.reduce((sum, cat) => sum + cat.totalCount, 0);
 
+    // Return response
     return res.status(200).json({
       success: true,
       message: "Category hierarchy fetched successfully",
       totalCount: grandTotal,
       data: dataArray,
     });
+
   } catch (error) {
     console.error("Error fetching category hierarchy:", error.message);
     return res.status(500).json({
@@ -8348,6 +8350,7 @@ router.get("/categoriesvice", async (req, res) => {
     });
   }
 });
+
 
 //API to Get All Sub Categories (sub_one and sub_two) by Category ID (Ca_Id):
 router.get("/subcategories", async (req, res) => {
