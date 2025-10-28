@@ -66,7 +66,7 @@ router.put("/update-item", async (req, res) => {
     try {
         const {
             previousId,I_Id,I_name,descrip,color,material,price,warrantyPeriod, stockQty,bookedQty,
-            availableQty,damageQty,dispatchedQty,reservedQty,suppliers,minQTY ,type
+            availableQty,damageQty,dispatchedQty,reservedQty,suppliers,minQTY ,type,mnCategory
         } = req.body;
 
         if (!previousId) {
@@ -83,7 +83,7 @@ router.put("/update-item", async (req, res) => {
 
         // Prepare dynamic fields for Item update
         const fields = {
-            I_Id, I_name,descrip, color,material,price: parsedPrice,warrantyPeriod,stockQty,bookedQty, availableQty, damageQty,dispatchedQty,reservedQty,minQTY,type
+            I_Id, I_name,descrip, color,material,price: parsedPrice,warrantyPeriod,stockQty,bookedQty, availableQty, damageQty,dispatchedQty,reservedQty,minQTY,type,mnCategory
         };
 
         const updateFields = [];
@@ -4452,7 +4452,7 @@ router.get("/item-details", async (req, res) => {
             SELECT
                 I.I_Id, I.I_name, I.descrip, I.price, I.stockQty, I.bookedQty, I.availableQty, 
                 I.minQTY, I.damageQty, I.reservedQty, I.dispatchedQty,
-                I.warrantyPeriod, I.color, I.material , I.type
+                I.warrantyPeriod, I.color, I.material , I.type , I.mnCategory
             FROM Item I
             WHERE I.I_Id = ?`;
 
@@ -4530,6 +4530,7 @@ router.get("/item-details", async (req, res) => {
                 minQTY: itemData.minQTY,
                 suppliers: suppliers,
                 stockDetails: stockDetails,
+                category: itemData.mnCategory,
                 type:itemData.type
             }
         };
@@ -8277,6 +8278,76 @@ router.get("/categories", async (req, res) => {
     }
 });
 
+router.get("/categoriesvice", async (req, res) => {
+  try {
+    // Get all main categories and their subcategory counts
+    const [results] = await db.query(`
+      SELECT 
+          c.name AS mainCategory,
+          i.type AS subCategory,
+          COUNT(i.I_Id) AS totalItems
+      FROM Category c
+      LEFT JOIN Item i 
+          ON i.mnCategory = c.name
+      GROUP BY c.name, i.type
+      ORDER BY c.name, i.type;
+    `);
+
+    // If no data found
+    if (results.length === 0) {
+      return res.status(200).json({
+        success: true,
+        message: "No category data found.",
+        data: [],
+        totalCount: 0,
+      });
+    }
+
+    // Group by mainCategory
+    const groupedData = results.reduce((acc, row) => {
+      const { mainCategory, subCategory, totalItems } = row;
+      if (!acc[mainCategory]) {
+        acc[mainCategory] = {
+          mainCategory,
+          totalCount: 0,
+          subCategories: [],
+        };
+      }
+
+      // Only add valid subcategories
+      if (subCategory) {
+        acc[mainCategory].subCategories.push({
+          subCategory,
+          itemCount: totalItems,
+        });
+      }
+
+      // Add total even if type is null
+      acc[mainCategory].totalCount += totalItems;
+      return acc;
+    }, {});
+
+    // Convert object to array
+    const dataArray = Object.values(groupedData);
+
+    // Calculate grand total
+    const grandTotal = dataArray.reduce((sum, c) => sum + c.totalCount, 0);
+
+    return res.status(200).json({
+      success: true,
+      message: "Category hierarchy fetched successfully",
+      totalCount: grandTotal,
+      data: dataArray,
+    });
+  } catch (error) {
+    console.error("Error fetching category hierarchy:", error.message);
+    return res.status(500).json({
+      success: false,
+      message: "Error fetching category hierarchy",
+      details: error.message,
+    });
+  }
+});
 
 //API to Get All Sub Categories (sub_one and sub_two) by Category ID (Ca_Id):
 router.get("/subcategories", async (req, res) => {

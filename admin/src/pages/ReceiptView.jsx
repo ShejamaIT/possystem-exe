@@ -219,7 +219,7 @@ const ReceiptView = ({ receiptData, setShowReceiptView }) => {
       @media print {
         @page {
           size: A4 landscape;
-          margin: 5mm; /* Small margin so borders are visible */
+          margin: 3mm; /* Small margin so borders are visible */
         }
 
         * {
@@ -443,7 +443,7 @@ const ReceiptView = ({ receiptData, setShowReceiptView }) => {
                 <th>Item</th>
                 {/* <th>Rate</th> */}
                 {/* <th>Discount</th> */}
-                <th>Sell Price</th>
+                <th>Rate</th>
                 <th>Total</th>
               </tr>
             </thead>
@@ -571,7 +571,7 @@ const ReceiptView = ({ receiptData, setShowReceiptView }) => {
                 <th style={{ width: "5%", textAlign: "center" }}>#</th>
                 <th style={{ width: "45%" }}>Description</th>
                 <th style={{ width: "8%", textAlign: "center" }}>Qty</th>
-                <th style={{ width: "20%", textAlign: "center" }}>Sell Price (Rs.)</th>
+                <th style={{ width: "20%", textAlign: "center" }}>Rate (Rs.)</th>
                 <th style={{ width: "22%", textAlign: "right" }}>Amount (Rs.)</th>
               </tr>
             </thead>
@@ -602,7 +602,7 @@ const ReceiptView = ({ receiptData, setShowReceiptView }) => {
                 <td style={{ border: "none" }}></td>
                 <td style={{ border: "none" }}></td>
                 <td style={{ border: "none" }}></td>
-                <td style={{ textAlign: "right" }}><strong>Delivery Price</strong></td>
+                <td style={{ textAlign: "right" }}><strong>Delivery</strong></td>
                 <td style={{ textAlign: "right" }}>{(receiptData.delPrice || 0).toFixed(2)}</td>
               </tr>
 
@@ -656,7 +656,7 @@ const ReceiptView = ({ receiptData, setShowReceiptView }) => {
                 style={{
                   display: "inline-block",
                   borderBottom: "1px dotted #000",
-                  width: "180px", // increased width
+                  width: "200px", // increased width
                   marginLeft: "8px",
                 }}
               ></span>

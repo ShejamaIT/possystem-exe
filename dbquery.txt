@@ -889,3 +889,5 @@ CREATE TABLE return_item_details (
 );
 ALTER TABLE `item` ADD `type` VARCHAR(25) NULL AFTER `minQTY`;
 ALTER TABLE `category` ADD `count` INT NOT NULL AFTER `name`;
+ALTER TABLE `item` ADD `mnCategory` VARCHAR(25) NOT NULL AFTER `minQTY`;
+ALTER TABLE `item` CHANGE `mnCategory` `mnCategory` VARCHAR(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL;

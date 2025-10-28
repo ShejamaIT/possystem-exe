@@ -677,6 +677,27 @@ const ItemDetails = () => {
                                                         </Input>
                                                     </FormGroup>
                                                 )}
+                                                {!isEditing ? (
+                                                    <p>
+                                                        <strong>Main Category:</strong> {item.category ? item.category : "None"}
+                                                    </p>
+                                                ) : (
+                                                    <FormGroup>
+                                                        <Label><strong>Main Category:</strong></Label>
+                                                        <Input
+                                                            type="select"
+                                                            name="mnCategory"
+                                                            value={formData.mnCategory || ""}
+                                                            onChange={handleChange}
+                                                        >
+                                                            <option value="">Select Main Category</option>
+                                                            <option value="Home">Home Furniture</option>
+                                                            <option value="Kids">Kids Furniture</option>
+                                                            <option value="Office">Office Furniture</option>
+                                                            <option value="Hotel">Hotel Furniture</option>
+                                                        </Input>
+                                                    </FormGroup>
+                                                )}
 
                                             </Col>
                                         </Row>
