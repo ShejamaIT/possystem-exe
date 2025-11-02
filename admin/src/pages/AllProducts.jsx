@@ -14,6 +14,7 @@ import SupplierPayment from "./SupplierPayments";
 import classnames from "classnames";
 import TablePurchaseNote from "../components/tables/TablePurchaseNote";
 import BarcodeSearchView from "./BarcodeSearchView";
+import UpdateItem from "./updateItem";
 
 
 const AllProducts = () => {
@@ -32,6 +33,7 @@ const AllProducts = () => {
         "Add Categories",
         "Item Purchase",
         "QrChecker",
+        "Update Items",
     ];
 
     // Read the active tab from the URL
@@ -172,7 +174,13 @@ const AllProducts = () => {
                                 </Col>
                             </Row>
                         </TabPane>
-                        
+                        <TabPane tabId="Update Items">
+                            <Row>
+                                <Col>
+                                    <UpdateItem />
+                                </Col>
+                            </Row>
+                        </TabPane>
 
                     </TabContent>
                 </Container>

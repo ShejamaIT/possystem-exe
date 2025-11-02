@@ -61,6 +61,45 @@ router.post('/login', async (req, res) => {
     }
 });
 
+//customer create account
+router.post('/sign-in', async (req, res) => {
+    const { fname,lname,email, password} = req.body;
+
+    try {
+        if (!email || !password  || !fname || !lname) {
+            return res.status(400).json({
+                success: false,
+                message: 'All fields are required.' });
+        }
+
+        const [rows] = await db.query(`SELECT * FROM customer_log WHERE email = ?`, [email]);
+
+        if (rows.length === 1) {
+            return res.status(404).json({
+                success: false,
+                message: "This Username is currently inuse",  });
+        }
+        const Cust_id = await generateNewId("Customer", "c_ID", "Cus");
+        await db.query(
+            `INSERT INTO Customer (c_ID, FtName, SrName) VALUES (?, ? , ?)`,
+            [Cust_id, fname,lname]
+        );
+        await db.query(
+            `INSERT INTO customer_log (name, email, password) VALUES (?, ? , ?)`,
+            [Cust_id, email,password]
+        );
+
+        res.status(200).json({
+            success: true,
+            message: "Account create successfully ",
+            
+        });
+    } catch (err) {
+        console.error('Error during login:', err);
+        res.status(500).json({ message: 'Internal server error.' });
+    }
+});
+
 // Logout Route
 router.post('/logout', async (req, res) => {
     const authHeader = req.headers['authorization'];
@@ -221,6 +260,14 @@ router.post('/emp/login', async (req, res) => {
         });
     }
 });
+
+const generateNewId = async (table, column, prefix) => {
+    const [rows] = await db.query(`SELECT ${column} FROM ${table} ORDER BY ${column} DESC LIMIT 1`);
+    if (rows.length === 0) return `${prefix}_001`; // First entry
+    const lastId = rows[0][column]; // Get last ID
+    const lastNum = parseInt(lastId.split("_")[1],10) + 1; // Extract number and increment
+    return `${prefix}_${String(lastNum).padStart(3, "0")}`;
+};
 
 
 module.exports = router;

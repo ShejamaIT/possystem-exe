@@ -129,7 +129,6 @@ router.put("/update-item", async (req, res) => {
         res.status(500).json({ success: false, message: "Error updating item", details: err.message });
     }
 });
-
 // Delete item
 router.delete("/drop-item/:I_Id", async (req, res) => {
     const { I_Id } = req.params;

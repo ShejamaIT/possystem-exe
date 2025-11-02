@@ -891,3 +891,14 @@ ALTER TABLE `item` ADD `type` VARCHAR(25) NULL AFTER `minQTY`;
 ALTER TABLE `category` ADD `count` INT NOT NULL AFTER `name`;
 ALTER TABLE `item` ADD `mnCategory` VARCHAR(25) NOT NULL AFTER `minQTY`;
 ALTER TABLE `item` CHANGE `mnCategory` `mnCategory` VARCHAR(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL;
+CREATE TABLE item_details (
+    I_Id VARCHAR(25),
+    stDesc TEXT,
+    lgdesc TEXT,
+    width VARCHAR(10),
+    height VARCHAR(10),
+    depth VARCHAR(10),
+    image LONGBLOB, 
+    CONSTRAINT FOREIGN KEY (I_Id) REFERENCES Item (I_Id)
+        ON DELETE CASCADE ON UPDATE CASCADE
+);
