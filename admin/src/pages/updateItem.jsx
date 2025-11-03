@@ -14,14 +14,28 @@ const UpdateItem = () => {
         lgdesc: "",
         height: "",
         width: "",
-        depth: ""
+        depth: "",
+        mnCategory:"",
+        type:"",
     });
     const [imageFile, setImageFile] = useState(null);
+    const [categories, setCategories] = useState([]);
 
     // Fetch all items on load
     useEffect(() => {
-        fetchItems();
+        fetchItems();fetchCategories();
     }, []);
+
+    const fetchCategories = async () => {
+        try {
+            const response = await fetch("http://localhost:5001/api/admin/main/categories");
+            const data = await response.json();
+            console.log(data);
+            setCategories(data.data.length > 0 ? data.data : []);
+        } catch (err) {
+            toast.error("Failed to load categories.");
+        }
+    };
 
     const fetchItems = async () => {
         setLoading(true);
@@ -48,6 +62,7 @@ const UpdateItem = () => {
         const itemId = e.target.value;
         setSelectedItem(itemId);
         const selected = items.find((item) => item.I_Id === itemId);
+        console.log(selected);
         if (selected) {
             setFormData({
                 I_Id: selected.I_Id || "",
@@ -55,7 +70,10 @@ const UpdateItem = () => {
                 lgdesc: selected.lgdesc || "",
                 height: selected.height || "",
                 width: selected.width || "",
-                depth: selected.depth || ""
+                depth: selected.depth || "",
+                mnCategory: selected.mnCategory || "",
+                type: selected.type || "",
+
             });
         } else {
             handleClear();
@@ -106,7 +124,9 @@ const UpdateItem = () => {
             lgdesc: "",
             height: "",
             width: "",
-            depth: ""
+            depth: "",
+            mnCategory:"",
+            type:"",
         });
         setImageFile(null);
         setSelectedItem("");
@@ -149,6 +169,41 @@ const UpdateItem = () => {
                                 onChange={handleChange}
                                 required
                             />
+                        </FormGroup>
+
+                        <FormGroup>
+                            <Label for="mnCategory">Main Category</Label>
+                            <Input
+                                type="select"
+                                name="mnCategory"
+                                id="mnCategory"
+                                value={formData.mnCategory}
+                                onChange={handleChange}
+                            >
+                                <option value="">Select Main Category</option>
+                                <option value="Home">Home Furniture</option>
+                                <option value="Kids">Kids Furniture</option>
+                                <option value="Office">Office Furniture</option>
+                                <option value="Hotel">Hotel Furniture</option>
+                            </Input>
+                        </FormGroup>
+
+                        <FormGroup>
+                            <Label for="type">Sub Category</Label>
+                            <Input
+                                type="select"
+                                name="type"
+                                id="type"
+                                value={formData.type}
+                                onChange={handleChange}
+                            >
+                                <option value="">Select Category</option>
+                                {categories.map((cat) => (
+                                    <option key={cat.Ca_Id} value={cat.name}>
+                                        {cat.name}
+                                    </option>
+                                ))}
+                            </Input>
                         </FormGroup>
 
                         <FormGroup>
